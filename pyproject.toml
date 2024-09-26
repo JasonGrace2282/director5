@@ -1,21 +1,26 @@
 [project]
 name = "director5"
 version = "0.1.0"
-description = "Add your description here"
+description = "A next generation website hosting platform"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "django>=5.1.1",
+    "django>=5.1",
+    "typing-extensions>=4.12",
 ]
 
 [tool.uv]
 dev-dependencies = [
+    "django-stubs[compatible-mypy]>=5.1.0",
     "furo>=2024.8.6",
+    "mypy>=1.11.2",
     "myst-parser>=4.0.0",
     "pre-commit>=3.8.0",
-    "sphinx>=8.0.2",
+    "pytest>=8.3.3",
+    "pytest-django>=4.9.0",
     "sphinx-copybutton>=0.5.2",
-    "sphinxcontrib-django>=2.5",
+    "sphinx>=8.0.2",
+    "pytest-xdist>=3.6.1",
 ]
 
 [tool.ruff]
@@ -29,6 +34,7 @@ extend-exclude = [
 ]
 
 show-fixes = false
+fix = true
 
 line-length = 100
 
@@ -42,6 +48,8 @@ select = [
     "BLE",
     # flake8-comprehensions
     "C4",
+    # mccabe code complexity
+    "C90",
     # pydocstyle
     "D",
     # flake8-django
@@ -60,8 +68,12 @@ select = [
     "PL",
     # Pytest
     "PT",
+    # flake8-use-pathlib
+    "PTH",
     # pygrep hooks
     "PGH",
+    # flake8-return
+    "RET",
     # ruff
     "RUF",
     # pyupgrade

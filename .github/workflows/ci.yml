@@ -36,6 +36,11 @@ jobs:
       - name: Run Tests
         run: uv run pytest
 
+      - name: Run mypy on Manager
+        run: |
+          cd manager
+          uv run mypy manager
+
   docs:
     runs-on: ubuntu-latest
 
