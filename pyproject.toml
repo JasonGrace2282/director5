@@ -1,0 +1,98 @@
+[project]
+name = "director5"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.1.1",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "furo>=2024.8.6",
+    "myst-parser>=4.0.0",
+    "pre-commit>=3.8.0",
+    "sphinx>=8.0.2",
+    "sphinx-copybutton>=0.5.2",
+    "sphinxcontrib-django>=2.5",
+]
+
+[tool.ruff]
+extend-exclude = [
+  ".github",
+  ".env",
+  "env",
+  "secret",
+  "media",
+  "migrations",
+]
+
+show-fixes = false
+
+line-length = 100
+
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    # flake8-bugbear
+    "B",
+    # flake8-blind-except
+    "BLE",
+    # flake8-comprehensions
+    "C4",
+    # pydocstyle
+    "D",
+    # flake8-django
+    "DJ",
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # flake8-boolean-trap
+    "FBT",
+    # isort
+    "I",
+    # pep8-naming
+    "N",
+    # Pylint
+    "PL",
+    # Pytest
+    "PT",
+    # pygrep hooks
+    "PGH",
+    # ruff
+    "RUF",
+    # pyupgrade
+    "UP",
+]
+ignore = [
+  # magic number comparison
+  "PLR2004",
+  # mutable class attrs annotated as typing.ClassVar
+  "RUF012",
+  # missing docstring
+  "D1",
+  # as recommended by https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+  "E111",
+  "E114",
+  "E117",
+  "E501",
+  "D206",
+  "D300",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-pytest-style]
+parametrize-names-type = "tuple"
+parametrize-values-type = "tuple"
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.codespell]
+write-changes = true
