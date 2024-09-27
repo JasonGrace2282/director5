@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django>=5.1",
+    "social-auth-app-django>=5.4.2",
     "typing-extensions>=4.12",
 ]
 
@@ -108,3 +109,7 @@ line-ending = "lf"
 
 [tool.codespell]
 write-changes = true
+
+[tool.djlint]
+indent = 2
+blank_line_before_tag = "block"
