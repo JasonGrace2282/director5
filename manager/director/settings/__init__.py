@@ -80,10 +80,21 @@ WSGI_APPLICATION = "director.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "manager-postgres",
+        "PORT": "5432",
+        "NAME": "manager",
+        "USER": "manager",
+        "PASSWORD": "pwd",
+    },
 }
+
+TESTING = os.environ.get("PYTEST_VERSION") is not None
+
+# allow testing outside of docker
+if TESTING:
+    DATABASES["default"]["ENGINE"] = "django.db.backends.sqlite3"
+    DATABASES["default"]["NAME"] = ":memory:"
 
 
 # Password validation
