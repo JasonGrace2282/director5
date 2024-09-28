@@ -1,0 +1,85 @@
+services:
+  redis:
+    container_name: director_redis
+    image: redis:latest
+    networks:
+      - director_net
+    expose:
+      - "6379"
+
+  postgres:
+    container_name: director_postgres
+    image: postgres:latest
+    networks:
+      - director_net
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_DB=director
+      - POSTGRES_USER=director
+      - POSTGRES_PASSWORD=director
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  celery:
+    container_name: director_celery
+    image: director_base
+    networks:
+      - director_net
+    volumes:
+      - ../../:/director5:z
+      - /director5/.venv
+    depends_on:
+      - django
+
+  celerybeat:
+    container_name: director_celerybeat
+    image: director_base
+    networks:
+      - director_net
+    volumes:
+      - ../../:/director5:z
+      - /director5/.venv
+    depends_on:
+      - django
+
+  django:
+    container_name: director_django
+    build:
+      context: ../../
+      dockerfile: ./dev/docker/Dockerfile
+    image: director_base
+    networks:
+      - director_net
+    ports:
+      - 8080:8080
+    volumes:
+      - ../../:/director5:z
+      - /director5/.venv
+    depends_on:
+      - redis
+      - postgres
+    entrypoint:
+      [
+        "/bin/sh",
+        "-c",
+        "dev/docker/docker-entrypoint.sh"
+      ]
+
+  tailwind:
+    container_name: director_tailwind
+    image: director_base
+    networks:
+      - director_net
+    volumes:
+      - ../../:/director5:z
+      - /director5/.venv
+    depends_on:
+      - django
+
+networks:
+  director_net:
+    driver: bridge
+
+volumes:
+  pgdata:

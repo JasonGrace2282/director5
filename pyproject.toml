@@ -27,6 +27,7 @@ dev-dependencies = [
 [tool.ruff]
 extend-exclude = [
   ".github",
+  "dev",
   ".env",
   "env",
   "secret",
@@ -113,3 +114,6 @@ write-changes = true
 [tool.djlint]
 indent = 2
 blank_line_before_tag = "block"
+
+[tool.setuptools]
+py-modules = []
