@@ -86,6 +86,8 @@ select = [
 ignore = [
   # magic number comparison
   "PLR2004",
+  # pytest fixture not returning anything should have underscore
+  "PT004",
   # mutable class attrs annotated as typing.ClassVar
   "RUF012",
   # missing docstring
