@@ -27,10 +27,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --no-install-project --locked
 
+      - name: Set env vars
+        run: echo "CI=1" >> $GITHUB_ENV
+
       - name: Run Tests on Manager
         run: |
-          cd manager
-          uv run pytest
+          uv run pytest -c "manager/pyproject.toml"
 
       - name: Run mypy on Manager
         run: |
