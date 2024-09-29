@@ -9,10 +9,10 @@ dependencies = [
     "social-auth-app-django>=5.4.2",
     "typing-extensions>=4.12",
     "django-tailwind[reload]>=3.8.0",
-    "pip>=24.2",
 ]
 
 [tool.uv]
+package = false
 dev-dependencies = [
     "django-stubs[compatible-mypy]>=5.1.0",
     "furo>=2024.8.6",
@@ -25,6 +25,9 @@ dev-dependencies = [
     "sphinx>=8.0.2",
     "pytest-xdist>=3.6.1",
 ]
+
+[tool.uv.workspace]
+members = ["manager", "orchestrator"]
 
 [tool.ruff]
 extend-exclude = [

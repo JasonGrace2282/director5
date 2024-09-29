@@ -1,4 +1,4 @@
-FROM python:3.12.6-slim-bookworm
+FROM ghcr.io/astral-sh/uv:0.4-python3.12-alpine
 
 ENV TZ America/New_York
 
@@ -7,12 +7,12 @@ WORKDIR /director5
 ENV UV_LINK_MODE=copy \
     UV_COMPILE_BYTECODE=1 \
     UV_PYTHON_DOWNLOADS=never \
-    UV_PYTHON=python3.12
+    UV_PYTHON=python3.12 \
+    PATH="/director5/.venv/bin:$PATH"
 
 COPY pyproject.toml .
 COPY uv.lock .
 
-RUN apt update && \
-    DEBIAN_FRONTEND=noninteractive apt install -y nodejs npm && \
-    pip3 install uv && \
-    uv sync --frozen --no-install-project
+RUN apk update && \
+    apk add nodejs npm && \
+    uv sync --frozen

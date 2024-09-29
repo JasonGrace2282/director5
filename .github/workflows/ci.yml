@@ -37,7 +37,7 @@ jobs:
       - name: Run mypy on Manager
         run: |
           cd manager
-          uv run mypy manager
+          uv run mypy director
 
   docs:
     runs-on: ubuntu-latest

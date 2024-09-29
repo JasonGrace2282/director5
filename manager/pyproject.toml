@@ -2,14 +2,34 @@
 name = "Manager"
 version = "0.1.0"
 description = "A next generation website hosting platform"
-publish = false
+dependencies = [
+    "django",
+    "social-auth-app-django",
+    "typing-extensions",
+    "django-tailwind[reload]",
+]
+
+[tool.uv]
+package = false
+dev-dependencies = [
+    "django-stubs[compatible-mypy]",
+    "furo",
+    "mypy",
+    "myst-parser",
+    "pre-commit",
+    "pytest",
+    "pytest-django",
+    "sphinx-copybutton",
+    "sphinx",
+    "pytest-xdist",
+]
 
 [tool.mypy]
 ignore_missing_imports = true
 warn_unreachable = true
 plugins = ["mypy_django_plugin.main"]
 
-[tool.mypy.overrides]
+[[tool.mypy.overrides]]
 module = "director.apps.*.migrations.*"
 ignore_errors = true
 

@@ -1,11 +1,13 @@
 #!/bin/sh
 
+cd manager
+
 while true
 do
     if [ "$1" = "django" ]; then
-        uv run python manager/manage.py runserver 0.0.0.0:8080
+        python manage.py runserver 0.0.0.0:8080
     elif [ "$1" = "tailwind" ]; then
-        uv run python manager/manage.py tailwind start
+        python manage.py tailwind start
     else
         echo "Expected 'django' or 'tailwind'"
         exit 1
