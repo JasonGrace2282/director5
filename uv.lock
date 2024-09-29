@@ -168,6 +168,8 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "django" },
+    { name = "django-tailwind", extra = ["reload"] },
+    { name = "pip" },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
 ]
@@ -189,6 +191,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = ">=5.1" },
+    { name = "django-tailwind", extras = ["reload"], specifier = ">=3.8.0" },
+    { name = "pip", specifier = ">=24.2" },
     { name = "social-auth-app-django", specifier = ">=5.4.2" },
     { name = "typing-extensions", specifier = ">=4.12" },
 ]
@@ -231,6 +235,19 @@ wheels = [
 ]
 
 [[package]]
+name = "django-browser-reload"
+version = "1.15.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ee/85/51b753207a37c85f9af458daf5d501f8e4529ff49c66254f1cd33c98c635/django_browser_reload-1.15.0.tar.gz", hash = "sha256:ed094386c587a95ff4f34a0d302ecd58f15e919784c4c76a97f7cb977446104c", size = 14579 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/96/ad37ea95d4cc3244c8b19ad01e546d52aadbdc06d770f4d26b2da57ac349/django_browser_reload-1.15.0-py3-none-any.whl", hash = "sha256:55b72335568b988e3a2beddb1703db6951516355925d3fc9c587f0bbd9e8efaa", size = 12280 },
+]
+
+[[package]]
 name = "django-stubs"
 version = "5.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -262,6 +279,23 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/60/a5/dfb120bf3ce1f0da109481605f704ffe72533f056f42e8cffd5a486504a7/django_stubs_ext-5.1.0.tar.gz", hash = "sha256:ed7d51c0b731651879fc75f331fb0806d98b67bfab464e96e2724db6b46ef926", size = 9491 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/eb/03/20a5a19d1b8d26eddd8420261304ee9e6accd802f5332e360daaa2202afb/django_stubs_ext-5.1.0-py3-none-any.whl", hash = "sha256:a455fc222c90b30b29ad8c53319559f5b54a99b4197205ddbb385aede03b395d", size = 8966 },
+]
+
+[[package]]
+name = "django-tailwind"
+version = "3.8.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3c/ee/1065c57c87213f566d76b398f8391cd544380ef9661f7fdacdfe4264633c/django_tailwind-3.8.0.tar.gz", hash = "sha256:31c2f4a7879d685c2de0feaf0b63f246200b37337bea4d7dbafb59bc3f10c008", size = 8969 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cf/14/20c40882d9ee91f7a2a20d3c0175cf813340c02ae31c975ce567de2c7c67/django_tailwind-3.8.0-py3-none-any.whl", hash = "sha256:fa969c5b95d314b173fe2b2ed2cb2c03f2e2c94fdc2c01ff73a993fa159085da", size = 12936 },
+]
+
+[package.optional-dependencies]
+reload = [
+    { name = "django-browser-reload" },
 ]
 
 [[package]]
@@ -474,6 +508,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/51/65/50db4dda066951078f0a96cf12f4b9ada6e4b811516bf0262c0f4f7064d4/packaging-24.1.tar.gz", hash = "sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002", size = 148788 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl", hash = "sha256:5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124", size = 53985 },
+]
+
+[[package]]
+name = "pip"
+version = "24.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/87/fb90046e096a03aeab235e139436b3fe804cdd447ed2093b0d70eba3f7f8/pip-24.2.tar.gz", hash = "sha256:5b5e490b5e9cb275c879595064adce9ebd31b854e3e803740b72f9ccf34a45b8", size = 1922041 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d4/55/90db48d85f7689ec6f81c0db0622d704306c5284850383c090e6c7195a5c/pip-24.2-py3-none-any.whl", hash = "sha256:2cd581cf58ab7fcfca4ce8efa6dcacd0de5bf8d0a3eb9ec927e07405f4d9e2a2", size = 1815170 },
 ]
 
 [[package]]

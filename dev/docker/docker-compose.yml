@@ -63,7 +63,7 @@ services:
       [
         "/bin/sh",
         "-c",
-        "dev/docker/docker-entrypoint.sh"
+        "dev/docker/docker-entrypoint.sh django",
       ]
 
   tailwind:
@@ -76,6 +76,13 @@ services:
       - /director5/.venv
     depends_on:
       - django
+    entrypoint:
+      [
+        "/bin/sh",
+        "-c",
+        "dev/docker/docker-entrypoint.sh tailwind",
+      ]
+
 
 networks:
   director_net:

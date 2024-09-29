@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     "social_django",
     "director.apps.auth",
     "director.apps.users",
+    "tailwind",  # django-tailwind
+    "director.apps.tailwindcss",  # django-tailwind individual app name
+    "django_browser_reload",
 ]
 
 MIDDLEWARE = [
@@ -52,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = "director.urls"
@@ -159,6 +163,11 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Tailwind
+
+TAILWIND_APP_NAME = "director.apps.tailwindcss"
+
+NPM_BIN_PATH = "/usr/bin/npm"
 
 # Load secret files
 with contextlib.suppress(ImportError):

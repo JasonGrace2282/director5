@@ -1,3 +1,4 @@
+{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,7 +12,11 @@
     </title>
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
 
-    {% block head %}{% endblock %}
+    {% block js %}{% endblock %}
+
+    {% block css %}
+      {% tailwind_css %}
+    {% endblock %}
   </head>
   <body>
 

@@ -13,5 +13,6 @@ COPY pyproject.toml .
 COPY uv.lock .
 
 RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive apt install -y nodejs npm && \
     pip3 install uv && \
-    uv sync --locked --no-install-project
+    uv sync --frozen --no-install-project
