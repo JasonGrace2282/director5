@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.contrib.auth.views import LoginView
 from django.urls import path
 
 from . import views
@@ -5,6 +7,15 @@ from . import views
 app_name = "auth"
 
 urlpatterns = [
-    path("accounts/login/", views.login_view, name="login"),
-    path("accounts/logout/", views.logout_view, name="logout"),
+    path("login/", views.login_view, name="login"),
+    path("logout/", views.logout_view, name="logout"),
 ]
+
+if not settings.PRODUCTION:
+    urlpatterns.append(
+        path(
+            "password-login/",
+            LoginView.as_view(template_name="auth/password-login.html"),
+            name="password_login",
+        )
+    )

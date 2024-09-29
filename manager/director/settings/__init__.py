@@ -108,7 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ("director.apps.auth.oauth.IonOauth2",)
+AUTHENTICATION_BACKENDS = ["director.apps.auth.oauth.IonOauth2"]
+if not PRODUCTION:
+    AUTHENTICATION_BACKENDS.append("django.contrib.auth.backends.ModelBackend")
 
 SOCIAL_AUTH_USER_FIELDS = [
     "username",
@@ -136,6 +138,12 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 AUTH_USER_MODEL = "users.User"
+
+
+LOGIN_REDIRECT_URL = "/"
+
+SOCIAL_AUTH_LOGIN_ERROR_URL = "/"
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 
 # Internationalization
