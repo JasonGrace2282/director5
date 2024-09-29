@@ -1,17 +1,11 @@
-.. Director5 documentation master file, created by
-   sphinx-quickstart on Thu Sep 26 19:25:24 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Director5 documentation
 =======================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
-
+Welcome to Director5, the next generation website hosting platform!
+Check out the following sections to get started:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
+   contributing
