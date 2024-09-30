@@ -4,12 +4,14 @@
 
 {% block main %}
   <div class="login-box">
-    <p>
-      <h2 class="font-bold">Log in with your Intranet account</h2>
+    <div class="pb-10">
+      <h2 class="text-3xl font-bold">Log in with your Intranet account</h2>
       to access the site management interface.
-    </p>
-    <a href="{% url 'social:begin' 'ion' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}"
-       class="btn btn-ion">Log in with Ion</a>
+    </div>
+    <div class="pb-0">
+      <a href="{% url 'social:begin' 'ion' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}"
+         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Log in with Ion</a>
+    </div>
     {% if not prod %}
       <br>
       <a href="{% url 'auth:password_login' %}{% if request.GET.next %}?next={{ request.GET.next | urlencode }}{% endif %}"
