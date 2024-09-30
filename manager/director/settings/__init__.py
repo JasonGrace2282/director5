@@ -22,12 +22,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-yr31n(-7zgl2=i@pq5istf+i(nh3fryf5xn7l_=(y1$@=oh!is"
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 PRODUCTION = bool(os.environ.get("PRODUCTION"))
 
-ALLOWED_HOSTS = ["director.tjhsst.edu", "localhost", ".local", "127.0.0.1"]
+if PRODUCTION:
+    DEBUG = False
+
+ALLOWED_HOSTS = [
+    "director.tjhsst.edu",
+    "localhost",
+    ".local",
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -40,11 +47,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "social_django",
+    "tailwind",  # django-tailwind
+    "django_browser_reload",
     "director.apps.auth",
     "director.apps.users",
-    "tailwind",  # django-tailwind
     "director.apps.tailwindcss",  # django-tailwind individual app name
-    "django_browser_reload",
 ]
 
 MIDDLEWARE = [
@@ -84,10 +91,21 @@ WSGI_APPLICATION = "director.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "postgres",
+        "PORT": "5432",
+        "NAME": "director",
+        "USER": "director",
+        "PASSWORD": "director",
+    },
 }
+
+TESTING = os.environ.get("PYTEST_VERSION") is not None
+
+# allow testing outside of docker
+if TESTING:
+    DATABASES["default"]["ENGINE"] = "django.db.backends.sqlite3"
+    DATABASES["default"]["NAME"] = ":memory:"
 
 
 # Password validation

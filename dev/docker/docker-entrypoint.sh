@@ -1,16 +1,21 @@
 #!/bin/sh
 
+set -e
+
+uv sync
 cd manager
 
-while true
-do
-    if [ "$1" = "django" ]; then
-        python manage.py runserver 0.0.0.0:8080
-    elif [ "$1" = "tailwind" ]; then
-        python manage.py tailwind start
-    else
-        echo "Expected 'django' or 'tailwind'"
-        exit 1
-    fi
-    sleep 1
-done
+
+if [ "$1" = "django" ]; then
+    while true; do
+      python manage.py runserver 0.0.0.0:8080
+      sleep 1
+    done
+elif [ $1 = "tailwind" ]; then
+    python manage.py tailwind install
+    python manage.py tailwind start
+    exec sleep infinity
+else
+    echo "Expected 'django' or 'tailwind'"
+    exit 1
+fi

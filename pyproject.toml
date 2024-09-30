@@ -5,10 +5,11 @@ description = "A next generation website hosting platform"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "django-tailwind[reload]>=3.8.0",
     "django>=5.1",
+    "psycopg[binary]>3.1.8",
     "social-auth-app-django>=5.4.2",
     "typing-extensions>=4.12",
-    "django-tailwind[reload]>=3.8.0",
 ]
 
 [tool.uv]
