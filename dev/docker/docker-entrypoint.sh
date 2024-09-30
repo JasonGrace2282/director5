@@ -8,10 +8,8 @@ cd manager
 
 if [ "$1" = "django" ]; then
     python manage.py migrate --noinput
-    while true; do
-      python manage.py runserver 0.0.0.0:8080
-      sleep 1
-    done
+    # hand control over to django to handle SIGTERM
+    exec python manage.py runserver 0.0.0.0:8080
 elif [ $1 = "tailwind" ]; then
     python manage.py tailwind install
     python manage.py tailwind start

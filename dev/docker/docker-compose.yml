@@ -69,6 +69,7 @@ services:
   tailwind:
     container_name: director_tailwind
     image: director_base
+    stop_grace_period: 1s
     networks:
       - director_net
     volumes:
