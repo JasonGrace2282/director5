@@ -5,7 +5,8 @@
 {% block main %}
   <div class="login-box">
     <p>
-      <span class="bold">Log in with your Intranet account</span> to access the site management interface.
+      <h2 class="font-bold">Log in with your Intranet account</h2>
+      to access the site management interface.
     </p>
     <a href="{% url 'social:begin' 'ion' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}"
        class="btn btn-ion">Log in with Ion</a>
