@@ -52,11 +52,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "social_django",
-    "tailwind",  # django-tailwind
     "django_browser_reload",
     "director.apps.auth",
     "director.apps.users",
-    "director.apps.tailwindcss",  # django-tailwind individual app name
 ]
 
 MIDDLEWARE = [
@@ -195,12 +193,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Tailwind
-
-TAILWIND_APP_NAME = "director.apps.tailwindcss"
-
-NPM_BIN_PATH = "/usr/bin/npm"
 
 # Load secret files
 with contextlib.suppress(ImportError):

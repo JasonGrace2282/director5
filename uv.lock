@@ -174,7 +174,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "django" },
-    { name = "django-tailwind", extra = ["reload"] },
+    { name = "django-browser-reload" },
     { name = "psycopg", extra = ["binary"] },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
@@ -197,7 +197,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = ">=5.1" },
-    { name = "django-tailwind", extras = ["reload"], specifier = ">=3.8.0" },
+    { name = "django-browser-reload", specifier = ">=1.15.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">3.1.8" },
     { name = "social-auth-app-django", specifier = ">=5.4.2" },
     { name = "typing-extensions", specifier = ">=4.12" },

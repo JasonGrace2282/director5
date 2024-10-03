@@ -14,5 +14,5 @@ COPY pyproject.toml .
 COPY uv.lock .
 
 RUN apk update && \
-    apk add libpq nodejs npm && \
+    apk add libpq && \
     uv sync --frozen

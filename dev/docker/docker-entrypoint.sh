@@ -3,17 +3,14 @@
 set -e
 
 uv sync
-cd manager
-
 
 if [ "$1" = "django" ]; then
+    cd manager
     python manage.py migrate --noinput
     # hand control over to django to handle SIGTERM
     exec python manage.py runserver 0.0.0.0:8080
-elif [ $1 = "tailwind" ]; then
-    python manage.py tailwind install
-    python manage.py tailwind start
-    exec sleep infinity
+elif [ "$1" = "tailwind" ]; then
+    exec dev/tailwind/tailwindcss -i manager/director/static/tailwind/input.css -o manager/director/static/tailwind/build.css --config dev/tailwind/tailwind.config.js --watch --poll
 else
     echo "Expected 'django' or 'tailwind'"
     exit 1
