@@ -25,8 +25,8 @@ module.exports = {
 		/* JS 1: Ignore any JavaScript in node_modules folder. */
 		// '!../../**/node_modules',
 		/* JS 2: Process all JavaScript files in the project. */
-		"../../manager/director/static/**/*.js",
-		"../../manager/director/static/*.js",
+		"./manager/director/static/**/*.js",
+		"./manager/director/static/*.js",
 
 		/**
 		 * Python: If you use Tailwind CSS classes in Python, uncomment the following line
