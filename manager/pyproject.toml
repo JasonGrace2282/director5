@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A next generation website hosting platform"
 dependencies = [
     "django",
-    "django-tailwind[reload]",
+    "django-browser-reload",
     "psycopg[binary]",
     "social-auth-app-django",
     "typing-extensions",
