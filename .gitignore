@@ -162,3 +162,7 @@ cython_debug/
 #.idea/
 
 **/settings/secret.py
+
+# Pycharm tailwind autocomplete workaround folder
+
+pyc-autocomplete/
