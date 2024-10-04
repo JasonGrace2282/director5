@@ -13,7 +13,6 @@ dependencies = [
 ]
 
 [tool.uv]
-package = false
 dev-dependencies = [
     "django-stubs[compatible-mypy]>=5.1.0",
     "furo>=2024.8.6",
@@ -120,8 +119,9 @@ line-ending = "lf"
 write-changes = true
 
 [tool.djlint]
-indent = 2
+indent = 4
 blank_line_before_tag = "block"
+preserve_blank_lines=true
 
 [tool.setuptools]
 py-modules = []
