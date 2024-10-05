@@ -1,25 +1,29 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
 
-      {% block title %}
-        Director
-      {% endblock title %}
-    </title>
-    <link rel="icon" href="{% static "img/favicon.ico" %}" type="image/x-icon">
+            {% block title %}
+                Director
+            {% endblock title %}
+        </title>
+        <link rel="icon" href="{% static "img/favicon.ico" %}" type="image/x-icon">
 
-    {% block js %}{% endblock %}
+        {% block js %}{% endblock %}
 
-    {% block css %}
-      <link rel="stylesheet" href="{% static "tailwind/build.css" %}" type="text/css">
-    {% endblock %}
-  </head>
-  <body>
+        {% block css %}
+            <link rel="stylesheet" href="{% static "tailwind/build.css" %}" type="text/css">
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+                  rel="stylesheet">
+        {% endblock %}
+    </head>
+    <body>
 
-    {% block main %}{% endblock %}
-  </body>
+        {% block main %}{% endblock %}
+    </body>
 </html>

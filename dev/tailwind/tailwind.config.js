@@ -35,9 +35,14 @@ module.exports = {
 		// '../../**/*.py'
 	],
 	theme: {
-		extend: {},
+		extend: {
+			colors: {
+				"dt-blue": "#0067c0",
+				"dt-lightblue": "#0b76d8",
+			},
+		},
 		fontFamily: {
-			sans: ["Inter", "sans-serif"],
+			sans: ["Open Sans", "sans-serif"],
 		},
 	},
 	plugins: [
