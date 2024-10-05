@@ -13,4 +13,4 @@ npm install @tailwindcss/aspect-ratio
 npx tailwindcss -i ../../../manager/director/static/tailwind/input.css -o ../../../manager/director/static/tailwind/build.css
 
 echo Installed tailwind using npm
-echo For next steps, see ide-guide.md
+echo For next steps, see ide-guide.rst

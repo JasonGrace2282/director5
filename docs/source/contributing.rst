@@ -11,3 +11,4 @@ To get started, check out how to :doc:`set up your development environment <cont
 
    contributing/setup
    contributing/dependencies
+   contributing/ide-guide

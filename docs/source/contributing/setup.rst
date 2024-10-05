@@ -47,3 +47,8 @@ or ``uv run pre-commit run --all-files`` to run the linter/formatter.
 .. tip::
 
    Use ``uv run --package manager`` to run something using the dependencies of the manager.
+
+Next Steps
+----------
+You're almost done! Now, we need to add some plugins that will make development easier in your IDE.
+Visit :doc:`the ide setup guide <contributing/ide-guide>`
