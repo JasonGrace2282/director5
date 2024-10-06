@@ -10,6 +10,7 @@ dependencies = [
     "social-auth-app-django>=5.4.2",
     "typing-extensions>=4.12",
     "django-browser-reload>=1.15.0",
+    "heroicons[django]>=2.8.0",
 ]
 
 [tool.uv]

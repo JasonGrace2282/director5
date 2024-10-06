@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "django_browser_reload",
     "director.apps.auth",
     "director.apps.users",
+    "heroicons",
 ]
 
 MIDDLEWARE = [
@@ -81,6 +82,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+            ],
+            "builtins": [
+                "heroicons.templatetags.heroicons",
             ],
         },
     },
