@@ -51,4 +51,4 @@ or ``uv run pre-commit run --all-files`` to run the linter/formatter.
 Next Steps
 ----------
 You're almost done! Now, we need to add some plugins that will make development easier in your IDE.
-Visit :doc:`the ide setup guide <contributing/ide-guide>`
+Visit :doc:`the ide setup guide <ide-guide>`
