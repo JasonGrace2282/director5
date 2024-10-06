@@ -166,3 +166,5 @@ cython_debug/
 # Pycharm tailwind autocomplete workaround folder
 
 pyc-autocomplete/
+
+docker/
