@@ -4,13 +4,6 @@
 			"lineWidth": 100
 		}
 	},
-	"linter": {
-		"rules": {
-			"nursery": {
-				"useSortedClasses": "error"
-			}
-		}
-	},
 	"files": {
 		"ignore": ["build.css"]
 	}
