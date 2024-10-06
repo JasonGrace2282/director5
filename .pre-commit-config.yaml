@@ -40,3 +40,13 @@ repos:
       hooks:
       -   id: biome-check
           additional_dependencies: ["@biomejs/biome@1.9.2"]
+  - repo: local
+    hooks:
+      - id: rustywind # Remove rustywind once biomejs tailwind sorting is competent: https://github.com/biomejs/biome/issues/1274
+        name: Tailwind CSS Class sorter
+        language: node
+        additional_dependencies:
+          - rustywind@latest
+        entry: rustywind
+        args: [--write]
+        types_or: [html]

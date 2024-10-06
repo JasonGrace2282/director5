@@ -5,19 +5,19 @@
 {% block main %}
     <div class="login-box">
         <div class="flex justify-center mt-[20vh]">
-            <div class="outline-2 outline-black outline justify-center rounded-sm p-4">
+            <div class="justify-center p-4 rounded-sm outline-black outline-2 outline">
                 <p>
                     Log in with your <b>Intranet account</b> to access Director
                 </p>
                 <div class="flex justify-center mt-6">
-                    <a class="dt-btn inline-block" href="{% url 'social:begin' 'ion' %}">Log in with Ion</a>
+                    <a class="inline-block dt-btn" href="{% url 'social:begin' 'ion' %}">Log in with Ion</a>
                 </div>
             </div>
         </div>
         {% if not prod %}
             <br>
             <a href="{% url 'auth:password_login' %}{% if request.GET.next %}?next={{ request.GET.next | urlencode }}{% endif %}"
-               class="font-bold underline ml-1 inline-block fixed bottom-1">Password login</a>
+               class="inline-block fixed bottom-1 ml-1 font-bold underline">Password login</a>
         {% endif %}
     </div>
 {% endblock %}
