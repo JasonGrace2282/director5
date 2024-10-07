@@ -5,6 +5,7 @@ description = "A next generation website hosting platform"
 dependencies = [
     "django",
     "django-browser-reload",
+    "heroicons[django]",
     "psycopg[binary]",
     "social-auth-app-django",
     "typing-extensions",

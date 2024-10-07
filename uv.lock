@@ -400,6 +400,7 @@ source = { virtual = "manager" }
 dependencies = [
     { name = "django" },
     { name = "django-browser-reload" },
+    { name = "heroicons", extra = ["django"] },
     { name = "psycopg", extra = ["binary"] },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
@@ -423,6 +424,7 @@ dev = [
 requires-dist = [
     { name = "django" },
     { name = "django-browser-reload" },
+    { name = "heroicons", extras = ["django"] },
     { name = "psycopg", extras = ["binary"] },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
