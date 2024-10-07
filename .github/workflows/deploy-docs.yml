@@ -13,22 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
-        with:
-          version: "0.4.x"
-          enable-cache: true
-
-      - name: Set up Python
-        run: uv python install
-
       - name: Install dependencies
-        run: uv sync --no-install-project --locked
+        uses: './.github/actions/ci-setup'
 
       - name: Build docs
-        run: |
-          cd docs
-          uv run make html
+        working-directory: ./docs
+        run: uv run make html
 
       - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v3

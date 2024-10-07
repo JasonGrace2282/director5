@@ -3,9 +3,6 @@ on:
   - push
   - pull_request
 
-env:
-  CI: 1
-
 defaults:
   run:
     shell: bash
@@ -40,8 +37,8 @@ jobs:
         uses: './.github/actions/ci-setup'
 
       - name: Run Tests on Manager
-        run: |
-          uv run pytest -c "manager/pyproject.toml"
+        working-directory: ./manager
+        run: uv run pytest
 
   docs:
     runs-on: ubuntu-latest
@@ -54,6 +51,5 @@ jobs:
         uses: './.github/actions/ci-setup'
 
       - name: Build Docs
-        run: |
-          cd docs
-          uv run make html SPHINXOPTS="-W --keep-going"
+        working-directory: ./docs
+        run: uv run make html SPHINXOPTS="-W --keep-going"
