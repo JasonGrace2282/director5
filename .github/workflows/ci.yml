@@ -3,11 +3,32 @@ on:
   - push
   - pull_request
 
+env:
+  CI: 1
+
 defaults:
   run:
     shell: bash
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: './.github/actions/ci-setup'
+
+      - name: Run pre-commit
+        run: uv run pre-commit run --all-files --show-diff-on-failure
+
+      - name: Run mypy on Manager
+        run: |
+          cd manager
+          uv run mypy director
+
   test:
     runs-on: ubuntu-latest
 
@@ -15,29 +36,12 @@ jobs:
       - name: Set up repo
         uses: actions/checkout@v4
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
-        with:
-          version: "0.4.x"
-          enable-cache: true
-
-      - name: Set up Python
-        run: uv python install
-
       - name: Install dependencies
-        run: uv sync --no-install-project --locked
-
-      - name: Set env vars
-        run: echo "CI=1" >> $GITHUB_ENV
+        uses: './.github/actions/ci-setup'
 
       - name: Run Tests on Manager
         run: |
           uv run pytest -c "manager/pyproject.toml"
-
-      - name: Run mypy on Manager
-        run: |
-          cd manager
-          uv run mypy director
 
   docs:
     runs-on: ubuntu-latest
@@ -46,17 +50,8 @@ jobs:
       - name: Set up repo
         uses: actions/checkout@v4
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
-        with:
-          version: "0.4.x"
-          enable-cache: true
-
-      - name: Set up Python
-        run: uv python install
-
       - name: Install dependencies
-        run: uv sync --no-install-project --locked
+        uses: './.github/actions/ci-setup'
 
       - name: Build Docs
         run: |
