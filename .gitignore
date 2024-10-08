@@ -167,4 +167,4 @@ cython_debug/
 
 pyc-autocomplete/
 
-docker/
+docker/data/
