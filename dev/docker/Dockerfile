@@ -20,5 +20,5 @@ ENV UV_LINK_MODE=copy \
     PATH="/director5/.venv/bin:$PATH"
 
 RUN apk update && \
-    apk add libpq bash && \
+    apk add libpq bash openssh && \
     uv sync --frozen
