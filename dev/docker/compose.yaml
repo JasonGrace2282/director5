@@ -23,6 +23,8 @@ services:
   celery:
     container_name: director_celery
     image: director_base
+    entrypoint: uv run celery -A director worker --loglevel=INFO
+    working_dir: /director5/manager
     networks:
       - director_net
     volumes:
@@ -34,6 +36,8 @@ services:
   celerybeat:
     container_name: director_celerybeat
     image: director_base
+    entrypoint: uv run celery -A director beat --loglevel=INFO
+    working_dir: /director5/manager
     networks:
       - director_net
     volumes:
@@ -55,6 +59,7 @@ services:
     volumes:
       - ../../:/director5:z
       - /director5/.venv
+      - firecracker-socket:/tmp/firecracker-socket:z
     depends_on:
       - redis
       - postgres
@@ -84,6 +89,35 @@ services:
         "dev/docker/docker-entrypoint.sh tailwind",
       ]
 
+  firecracker:
+    container_name: director_firecracker
+    stop_grace_period: 1s
+    build:
+      context: .
+      dockerfile: ./Dockerfile.firecracker
+    image: director_firecracker
+
+    devices:
+      - /dev/kvm
+    volumes:
+      - firecracker-socket:/tmp/firecracker-socket:z
+      - .:/tmp/firecracker
+    entrypoint: /tmp/firecracker/firecracker.sh
+
+  apiproxy:
+    container_name: director_apiproxy
+    image: director_firecracker
+    ports:
+      - "12345:12345"
+    depends_on:
+      - firecracker
+    entrypoint:
+      - socat
+      - TCP-LISTEN:12345,,reuseaddr,fork
+      - UNIX-CONNECT:/tmp/firecracker-socket/control.sock
+    volumes:
+      - firecracker-socket:/tmp/firecracker-socket
+
 
 networks:
   director_net:
@@ -91,3 +125,4 @@ networks:
 
 volumes:
   pgdata:
+  firecracker-socket:
