@@ -28,13 +28,10 @@ repos:
     hooks:
       - id: djlint-reformat-django
         args: ["--configuration=pyproject.toml"]
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.26.0
     hooks:
-      - id: codespell
-        files: ^.*\.(py|md|rst)$
-        additional_dependencies:
-          - tomli
+      - id: typos
   -   repo: https://github.com/biomejs/pre-commit
       rev: v0.5.0
       hooks:
