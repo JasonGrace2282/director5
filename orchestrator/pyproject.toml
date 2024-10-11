@@ -1,0 +1,15 @@
+[project]
+name = "Orchestrator"
+version = "0.1.0"
+description = "A next generation website hosting platform"
+dependencies = [
+    "fastapi[standard]",
+    "pydantic",
+    "typing-extensions",
+]
+
+[tool.uv]
+package = false
+dev-dependencies = [
+  "pytest",
+]

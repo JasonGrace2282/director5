@@ -5,13 +5,15 @@ description = "A next generation website hosting platform"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "celery>=5.4.0",
+    "django-browser-reload>=1.15.0",
     "django>=5.1",
+    "fastapi[standard]>=0.115.0",
+    "heroicons[django]>=2.8.0",
     "psycopg[binary]>3.1.8",
+    "pydantic>=2.9.2",
     "social-auth-app-django>=5.4.2",
     "typing-extensions>=4.12",
-    "django-browser-reload>=1.15.0",
-    "heroicons[django]>=2.8.0",
-    "celery>=5.4.0",
 ]
 
 [tool.uv]
@@ -25,7 +27,7 @@ dev-dependencies = [
     "pytest-xdist>=3.6.1",
     "pytest>=8.3.3",
     "sphinx-copybutton>=0.5.2",
-    "sphinx>=8.0.2",
+    "sphinx>=8.1.0",
 ]
 
 [tool.uv.workspace]

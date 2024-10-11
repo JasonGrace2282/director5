@@ -7,12 +7,10 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 from __future__ import annotations
 
-from datetime import datetime
-
 # -- Project information -----------------------------------------------------
 
 project = "Director5"
-copyright = f"{datetime.now().year}, Sysadmins at TJ CSL"
+copyright = "%Y, Sysadmins at TJ CSL"
 author = "Sysadmins at TJ CSL"
 
 # -- General configuration ---------------------------------------------------

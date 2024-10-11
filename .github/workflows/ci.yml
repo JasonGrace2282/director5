@@ -25,6 +25,10 @@ jobs:
         working-directory: manager
         run: uv run --package manager mypy director
 
+      - name: Run mypy on Orchestrator
+        working-directory: ./orchestrator
+        run: uv run --package orchestrator mypy orchestrator
+
   test:
     runs-on: ubuntu-latest
 
@@ -35,9 +39,21 @@ jobs:
       - name: Install dependencies
         uses: './.github/actions/ci-setup'
 
+      - name: Check migrations
+        working-directory: ./manager
+        run: uv run --package manager python manage.py makemigrations --check --noinput
+
+      - name:
+        working-directory: ./manager
+        run: uv run --package manager python manage.py migrate --noinput
+
       - name: Run Tests on Manager
         working-directory: ./manager
         run: uv run --package manager pytest
+
+      - name: Run Tests on Orchestrator
+        working-directory: ./orchestrator
+        run: uv run --package orchestrator pytest
 
   docs:
     runs-on: ubuntu-latest
