@@ -5,7 +5,7 @@ inputs:
   python-version:
     description: The python version to install with uv
     required: false
-    default: ''
+    default: '3.12'
 
 runs:
   using: composite

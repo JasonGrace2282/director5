@@ -17,6 +17,7 @@ dependencies = [
 ]
 
 [tool.uv]
+package = false
 dev-dependencies = [
     "django-stubs[compatible-mypy]>=5.1.0",
     "furo>=2024.8.6",
@@ -126,6 +127,3 @@ write-changes = true
 indent = 4
 blank_line_before_tag = "block"
 preserve_blank_lines=true
-
-[tool.setuptools]
-py-modules = []
