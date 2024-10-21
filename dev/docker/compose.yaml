@@ -78,6 +78,7 @@ services:
     volumes:
       - ../../:/director5:z
       - /director5/.venv
+      - vm:/tmp/firecracker/
     entrypoint:
       - "dev/docker/docker-entrypoint.sh"
       - "fastapi"
@@ -98,37 +99,10 @@ services:
       - "dev/docker/docker-entrypoint.sh"
       - "tailwind"
 
-  firecracker:
-    container_name: director_firecracker
-    stop_grace_period: 1s
-    image: director_base
-
-    devices:
-      - /dev/kvm:/dev/kvm
-    volumes:
-      - firecracker-socket:/tmp/firecracker-socket:z
-      - .:/tmp/firecracker
-    entrypoint: /tmp/firecracker/firecracker.sh
-
-  apiproxy:
-    container_name: director_apiproxy
-    image: director_base
-    ports:
-      - "12345:12345"
-    depends_on:
-      - firecracker
-    entrypoint:
-      - socat
-      - TCP-LISTEN:12345,,reuseaddr,fork
-      - UNIX-CONNECT:/tmp/firecracker-socket/control.sock
-    volumes:
-      - firecracker-socket:/tmp/firecracker-socket
-
-
 networks:
   director_net:
     driver: bridge
 
 volumes:
   pgdata:
-  firecracker-socket:
+  vm:

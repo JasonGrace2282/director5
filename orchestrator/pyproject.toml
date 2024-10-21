@@ -5,6 +5,9 @@ description = "A next generation website hosting platform"
 dependencies = [
     "fastapi[standard]",
     "pydantic",
+    "pydantic-extra-types",
+    "requests",
+    "requests-unixsocket",
     "typing-extensions",
 ]
 

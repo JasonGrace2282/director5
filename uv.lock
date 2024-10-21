@@ -312,6 +312,9 @@ dependencies = [
     { name = "heroicons", extra = ["django"] },
     { name = "psycopg", extra = ["binary"] },
     { name = "pydantic" },
+    { name = "pydantic-extra-types" },
+    { name = "requests" },
+    { name = "requests-unixsocket" },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
 ]
@@ -340,6 +343,9 @@ requires-dist = [
     { name = "heroicons", extras = ["django"], specifier = ">=2.8.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">3.1.8" },
     { name = "pydantic", specifier = ">=2.9.2" },
+    { name = "pydantic-extra-types", specifier = ">=2.9.0" },
+    { name = "requests", specifier = ">=2.32.3" },
+    { name = "requests-unixsocket", specifier = ">=0.3.0" },
     { name = "social-auth-app-django", specifier = ">=5.4.2" },
     { name = "typing-extensions", specifier = ">=4.12" },
 ]
@@ -857,6 +863,9 @@ source = { virtual = "orchestrator" }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic" },
+    { name = "pydantic-extra-types" },
+    { name = "requests" },
+    { name = "requests-unixsocket" },
     { name = "typing-extensions" },
 ]
 
@@ -869,6 +878,9 @@ dev = [
 requires-dist = [
     { name = "fastapi", extras = ["standard"] },
     { name = "pydantic" },
+    { name = "pydantic-extra-types" },
+    { name = "requests" },
+    { name = "requests-unixsocket" },
     { name = "typing-extensions" },
 ]
 
@@ -1045,6 +1057,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pydantic-extra-types"
+version = "2.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fb/95/d61dcadd933cb34461adc271c13bbe14a7080b9922b9e0dc3c1d18b421cb/pydantic_extra_types-2.9.0.tar.gz", hash = "sha256:e061c01636188743bb69f368dcd391f327b8cfbfede2fe1cbb1211b06601ba3b", size = 39578 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/37/2f/efc4877d1a1536ec76ca0114c3e9dee7d0a10a262c53d384d50163f5684c/pydantic_extra_types-2.9.0-py3-none-any.whl", hash = "sha256:f0bb975508572ba7bf3390b7337807588463b7248587e69f43b1ad7c797530d0", size = 30544 },
+]
+
+[[package]]
 name = "pygments"
 version = "2.18.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1196,6 +1220,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/42/f2/05f29bc3913aea15eb670be136045bf5c5bbf4b99ecb839da9b422bb2c85/requests-oauthlib-2.0.0.tar.gz", hash = "sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9", size = 55650 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl", hash = "sha256:7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36", size = 24179 },
+]
+
+[[package]]
+name = "requests-unixsocket"
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c3/ea/0fb87f844d8a35ff0dcc8b941e1a9ffc9eb46588ac9e4267b9d9804354eb/requests-unixsocket-0.3.0.tar.gz", hash = "sha256:28304283ea9357d45fff58ad5b11e47708cfbf5806817aa59b2a363228ee971e", size = 14478 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b3/63/e9e81d5e7370d46f08407c37399b507725125587b01fff46b4da5ddd3a4a/requests_unixsocket-0.3.0-py2.py3-none-any.whl", hash = "sha256:c685c680f0809e1b2955339b1e5afc3c0022b3066f4f7eb343f43a6065fc0e5d", size = 11835 },
 ]
 
 [[package]]
