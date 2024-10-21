@@ -11,6 +11,9 @@ if [ "$1" = "django" ]; then
     exec python manage.py runserver 0.0.0.0:8080
 elif [ "$1" = "tailwind" ]; then
     exec dev/tailwind/tailwindcss -i manager/director/static/tailwind/input.css -o manager/director/static/tailwind/build.css --config dev/tailwind/tailwind.config.js --watch --poll
+elif [ "$1" = "fastapi" ]; then
+    cd orchestrator
+    exec fastapi dev orchestrator/main.py --host 0.0.0.0 --port 8080
 else
     echo "Expected 'django' or 'tailwind'"
     exit 1

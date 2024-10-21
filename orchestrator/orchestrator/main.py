@@ -2,7 +2,10 @@ from fastapi import FastAPI
 
 from . import firecracker
 
-app = FastAPI()
+app = FastAPI(
+    name="orchestrator",
+    contact={"name": "Sysadmins", "email": "director@tjhsst.edu"},
+)
 
 
 @app.get("/ping", tags=["status"])

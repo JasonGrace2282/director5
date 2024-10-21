@@ -2,10 +2,17 @@ Director5 documentation
 =======================
 
 Welcome to Director5, the next generation website hosting platform!
-Check out the following sections to get started:
+
+It improves on Director4 by using modern technologies, allowing it to be
+much more fault tolerant and scalable.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Contents:
+   :hidden:
+
+   usage
+
+.. toctree::
+   :caption: Development
+   :hidden:
 
    contributing

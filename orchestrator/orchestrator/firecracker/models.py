@@ -3,4 +3,4 @@ from pydantic.networks import IPvAnyAddress
 
 
 class CreateInstanceOut(BaseModel):
-    ip_address: IPvAnyAddress
+    firecracker_ip: IPvAnyAddress

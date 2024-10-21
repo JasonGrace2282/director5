@@ -59,16 +59,30 @@ services:
     volumes:
       - ../../:/director5:z
       - /director5/.venv
-      - firecracker-socket:/tmp/firecracker-socket:z
     depends_on:
       - redis
       - postgres
     entrypoint:
       [
-        "/bin/sh",
-        "-c",
-        "dev/docker/docker-entrypoint.sh django",
+        "dev/docker/docker-entrypoint.sh",
+        "django",
       ]
+
+  fastapi:
+    container_name: director_orchestrator
+    image: director_base
+    networks:
+      - director_net
+    devices:
+      - /dev/kvm:/dev/kvm
+    ports:
+      - 80:8080
+    volumes:
+      - ../../:/director5:z
+      - /director5/.venv
+    entrypoint:
+      - "dev/docker/docker-entrypoint.sh"
+      - "fastapi"
 
   tailwind:
     container_name: director_tailwind
@@ -84,9 +98,8 @@ services:
       - django
     entrypoint:
       [
-        "/bin/sh",
-        "-c",
-        "dev/docker/docker-entrypoint.sh tailwind",
+        "dev/docker/docker-entrypoint.sh",
+        "tailwind",
       ]
 
   firecracker:
