@@ -63,10 +63,8 @@ services:
       - redis
       - postgres
     entrypoint:
-      [
-        "dev/docker/docker-entrypoint.sh",
-        "django",
-      ]
+      - "dev/docker/docker-entrypoint.sh"
+      - "django"
 
   fastapi:
     container_name: director_orchestrator
@@ -97,10 +95,8 @@ services:
     depends_on:
       - django
     entrypoint:
-      [
-        "dev/docker/docker-entrypoint.sh",
-        "tailwind",
-      ]
+      - "dev/docker/docker-entrypoint.sh"
+      - "tailwind"
 
   firecracker:
     container_name: director_firecracker
