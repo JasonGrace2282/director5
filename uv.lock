@@ -319,19 +319,23 @@ dependencies = [
     { name = "typing-extensions" },
 ]
 
-[package.dev-dependencies]
-dev = [
-    { name = "django-stubs", extra = ["compatible-mypy"] },
+[package.dependency-groups]
+docs = [
     { name = "furo" },
-    { name = "mypy" },
     { name = "myst-parser" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-django" },
-    { name = "pytest-xdist" },
     { name = "sphinx" },
     { name = "sphinx-copybutton" },
     { name = "sphinxcontrib-django" },
+]
+lint = [
+    { name = "django-stubs", extra = ["compatible-mypy"] },
+    { name = "mypy" },
+    { name = "pre-commit" },
+]
+test = [
+    { name = "pytest" },
+    { name = "pytest-django" },
+    { name = "pytest-xdist" },
 ]
 
 [package.metadata]
@@ -350,19 +354,23 @@ requires-dist = [
     { name = "typing-extensions", specifier = ">=4.12" },
 ]
 
-[package.metadata.requires-dev]
-dev = [
-    { name = "django-stubs", extras = ["compatible-mypy"], specifier = ">=5.1.0" },
+[package.metadata.dependency-groups]
+docs = [
     { name = "furo", specifier = ">=2024.8.6" },
-    { name = "mypy", specifier = ">=1.11.2" },
     { name = "myst-parser", specifier = ">=4.0.0" },
-    { name = "pre-commit", specifier = ">=3.8.0" },
-    { name = "pytest", specifier = ">=8.3.3" },
-    { name = "pytest-django", specifier = ">=4.9.0" },
-    { name = "pytest-xdist", specifier = ">=3.6.1" },
     { name = "sphinx", specifier = ">=8.1.0" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
     { name = "sphinxcontrib-django", specifier = ">=2.5" },
+]
+lint = [
+    { name = "django-stubs", extras = ["compatible-mypy"], specifier = ">=5.1.0" },
+    { name = "mypy", specifier = ">=1.11.2" },
+    { name = "pre-commit", specifier = ">=3.8.0" },
+]
+test = [
+    { name = "pytest", specifier = ">=8.3.3" },
+    { name = "pytest-django", specifier = ">=4.9.0" },
+    { name = "pytest-xdist", specifier = ">=3.6.1" },
 ]
 
 [[package]]
@@ -684,7 +692,7 @@ dependencies = [
     { name = "typing-extensions" },
 ]
 
-[package.dev-dependencies]
+[package.dependency-groups]
 dev = [
     { name = "django-stubs", extra = ["compatible-mypy"] },
     { name = "furo" },
@@ -709,7 +717,7 @@ requires-dist = [
     { name = "typing-extensions" },
 ]
 
-[package.metadata.requires-dev]
+[package.metadata.dependency-groups]
 dev = [
     { name = "django-stubs", extras = ["compatible-mypy"] },
     { name = "furo" },
@@ -869,7 +877,7 @@ dependencies = [
     { name = "typing-extensions" },
 ]
 
-[package.dev-dependencies]
+[package.dependency-groups]
 dev = [
     { name = "pytest" },
 ]
@@ -884,7 +892,7 @@ requires-dist = [
     { name = "typing-extensions" },
 ]
 
-[package.metadata.requires-dev]
+[package.metadata.dependency-groups]
 dev = [{ name = "pytest" }]
 
 [[package]]

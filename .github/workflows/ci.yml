@@ -17,6 +17,8 @@ jobs:
 
       - name: Install dependencies
         uses: './.github/actions/ci-setup'
+        with:
+          groups: "lint"
 
       - name: Run pre-commit
         run: uv run pre-commit run --all-files --show-diff-on-failure
@@ -38,6 +40,8 @@ jobs:
 
       - name: Install dependencies
         uses: './.github/actions/ci-setup'
+        with:
+          groups: "test"
 
       - name: Check migrations
         working-directory: ./manager
@@ -64,6 +68,8 @@ jobs:
 
       - name: Install dependencies
         uses: './.github/actions/ci-setup'
+        with:
+          groups: "docs"
 
       - name: Build Docs
         working-directory: ./docs

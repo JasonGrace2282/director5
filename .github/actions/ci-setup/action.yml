@@ -6,6 +6,10 @@ inputs:
     description: The python version to install with uv
     required: false
     default: '3.12'
+  groups:
+    description: The dependency groups to install.
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -22,4 +26,4 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: uv sync --locked
+      run: ${{ github.action_path }}/uv-sync.sh ${{ inputs.groups }}
