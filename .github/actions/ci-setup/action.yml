@@ -7,7 +7,9 @@ inputs:
     required: false
     default: '3.12'
   groups:
-    description: The dependency groups to install.
+    description: >-
+      A space-separated list of dependency groups to install.
+      Leave empty to install all (default) groups.
     required: false
     default: ""
 
