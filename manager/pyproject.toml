@@ -12,20 +12,23 @@ dependencies = [
     "typing-extensions",
 ]
 
+[dependency-groups]
+lint = [
+  "django-stubs[compatible-mypy]",
+  "mypy",
+  "pre-commit",
+]
+
+test = [
+  "pytest",
+  "pytest-django",
+  "pytest-xdist",
+]
+
+
 [tool.uv]
 package = false
-dev-dependencies = [
-    "django-stubs[compatible-mypy]",
-    "furo",
-    "mypy",
-    "myst-parser",
-    "pre-commit",
-    "pytest",
-    "pytest-django",
-    "sphinx-copybutton",
-    "sphinx",
-    "pytest-xdist",
-]
+default-groups = ["lint", "test"]
 
 [tool.mypy]
 ignore_missing_imports = true

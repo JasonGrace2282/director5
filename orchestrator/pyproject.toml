@@ -11,8 +11,17 @@ dependencies = [
     "typing-extensions",
 ]
 
+[dependency-groups]
+lint = [
+  "mypy",
+  "pre-commit",
+]
+test = [
+  "httpx",
+  "pytest",
+  "pytest-xdist",
+]
+
 [tool.uv]
 package = false
-dev-dependencies = [
-  "pytest",
-]
+default-groups = ["lint", "test"]

@@ -333,6 +333,7 @@ lint = [
     { name = "pre-commit" },
 ]
 test = [
+    { name = "httpx" },
     { name = "pytest" },
     { name = "pytest-django" },
     { name = "pytest-xdist" },
@@ -368,6 +369,7 @@ lint = [
     { name = "pre-commit", specifier = ">=3.8.0" },
 ]
 test = [
+    { name = "httpx", specifier = ">=0.27.2" },
     { name = "pytest", specifier = ">=8.3.3" },
     { name = "pytest-django", specifier = ">=4.9.0" },
     { name = "pytest-xdist", specifier = ">=3.6.1" },
@@ -693,17 +695,15 @@ dependencies = [
 ]
 
 [package.dependency-groups]
-dev = [
+lint = [
     { name = "django-stubs", extra = ["compatible-mypy"] },
-    { name = "furo" },
     { name = "mypy" },
-    { name = "myst-parser" },
     { name = "pre-commit" },
+]
+test = [
     { name = "pytest" },
     { name = "pytest-django" },
     { name = "pytest-xdist" },
-    { name = "sphinx" },
-    { name = "sphinx-copybutton" },
 ]
 
 [package.metadata]
@@ -718,17 +718,15 @@ requires-dist = [
 ]
 
 [package.metadata.dependency-groups]
-dev = [
+lint = [
     { name = "django-stubs", extras = ["compatible-mypy"] },
-    { name = "furo" },
     { name = "mypy" },
-    { name = "myst-parser" },
     { name = "pre-commit" },
+]
+test = [
     { name = "pytest" },
     { name = "pytest-django" },
     { name = "pytest-xdist" },
-    { name = "sphinx" },
-    { name = "sphinx-copybutton" },
 ]
 
 [[package]]
@@ -878,8 +876,14 @@ dependencies = [
 ]
 
 [package.dependency-groups]
-dev = [
+lint = [
+    { name = "mypy" },
+    { name = "pre-commit" },
+]
+test = [
+    { name = "httpx" },
     { name = "pytest" },
+    { name = "pytest-xdist" },
 ]
 
 [package.metadata]
@@ -893,7 +897,15 @@ requires-dist = [
 ]
 
 [package.metadata.dependency-groups]
-dev = [{ name = "pytest" }]
+lint = [
+    { name = "mypy" },
+    { name = "pre-commit" },
+]
+test = [
+    { name = "httpx" },
+    { name = "pytest" },
+    { name = "pytest-xdist" },
+]
 
 [[package]]
 name = "packaging"
