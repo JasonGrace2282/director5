@@ -1,6 +1,10 @@
 from fastapi import FastAPI
+from requests import RequestException
+from starlette.requests import Request
 
-from . import firecracker
+from .api.router import main_router
+from .core.exceptions import FirecrackerError
+from .core.schema import APIResponse, APIError
 
 app = FastAPI(
     name="orchestrator",
@@ -14,4 +18,15 @@ async def root(message: str = "pong"):
     return {"message": message}
 
 
-app.include_router(firecracker.router, tags=["firecracker"])
+@app.exception_handler(FirecrackerError)
+async def firecracker_exception_handler(request: Request, exc: FirecrackerError) -> APIResponse:
+    error_details = exc.asdict()
+
+    return APIResponse(
+        success=False,
+        message=f"A {exc.type} error occurred. See the errors field for more info.",
+        data=None,
+        errors=error_details,
+    )
+
+app.include_router(main_router, prefix="/api", tags=["api"])

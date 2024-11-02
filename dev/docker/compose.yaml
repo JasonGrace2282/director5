@@ -50,7 +50,7 @@ services:
     container_name: director_django
     build:
       context: ../../
-      dockerfile: ./dev/docker/Dockerfile
+      dockerfile: ./dev/docker/Dockerfile.main
     image: director_base
     networks:
       - director_net
@@ -78,10 +78,25 @@ services:
     volumes:
       - ../../:/director5:z
       - /director5/.venv
-      - vm:/tmp/firecracker/
+      - firecracker-socket:/tmp/firecracker-socket:z
     entrypoint:
       - "dev/docker/docker-entrypoint.sh"
       - "fastapi"
+
+  firecracker:
+    container_name: director_firecracker
+    stop_grace_period: 1s
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile.firecracker
+    devices:
+      - /dev/kvm:/dev/kvm
+    volumes:
+      - firecracker-socket:/tmp/firecracker-socket:z
+      - .:/tmp/firecracker
+    entrypoint:
+      - "/tmp/firecracker/firecracker.sh"
 
   tailwind:
     container_name: director_tailwind
@@ -105,4 +120,4 @@ networks:
 
 volumes:
   pgdata:
-  vm:
+  firecracker-socket:

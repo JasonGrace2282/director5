@@ -3,12 +3,10 @@ from __future__ import annotations
 import subprocess
 from os import PathLike
 from pathlib import Path
+from subprocess import CompletedProcess
+from typing import List
 
 from fastapi import HTTPException, status
-
-from .exceptions import FirecrackerError, IpError
-
-__all__ = ["assert_path_exists", "_run_cmd"]
 
 
 def assert_path_exists(*paths: tuple[Path, str], status: int = status.HTTP_400_BAD_REQUEST):
@@ -28,16 +26,16 @@ def assert_path_exists(*paths: tuple[Path, str], status: int = status.HTTP_400_B
         raise HTTPException(status_code=status, detail=errors)
 
 
-def _run_cmd(
-    args: list[str | PathLike],
-    err_message: str,
-    err: type[FirecrackerError] = IpError,
-) -> subprocess.CompletedProcess[bytes]:
-    """Run a command, raising an error if it fails.
-
-    This takes care of the boilerplate of running a command.
+def run_commands(commands: list[str]) -> list[CompletedProcess[str]]:
+    """Run a list of shell commands and return their outputs.
+      May raise subprocess.CalledProcessError if any command fails.
     """
-    p = subprocess.run(args, capture_output=True, check=False)
-    if p.returncode != 0:
-        raise err(err_message, p)
-    return p
+    results = []
+    for command in commands:
+        try:
+            result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+            results.append(result)
+        except subprocess.CalledProcessError as e:
+            raise
+
+    return results
