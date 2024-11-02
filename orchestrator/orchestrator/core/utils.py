@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import subprocess
-from os import PathLike
+from collections.abc import Iterable
 from pathlib import Path
 from subprocess import CompletedProcess
-from typing import List
 
 from fastapi import HTTPException, status
 
@@ -26,16 +25,17 @@ def assert_path_exists(*paths: tuple[Path, str], status: int = status.HTTP_400_B
         raise HTTPException(status_code=status, detail=errors)
 
 
-def run_commands(commands: list[str]) -> list[CompletedProcess[str]]:
+def run_commands(commands: Iterable[str]) -> list[CompletedProcess[str]]:
     """Run a list of shell commands and return their outputs.
-      May raise subprocess.CalledProcessError if any command fails.
+
+    May raise subprocess.CalledProcessError if any command fails.
     """
     results = []
     for command in commands:
         try:
             result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
             results.append(result)
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             raise
 
     return results

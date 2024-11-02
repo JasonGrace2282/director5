@@ -3,9 +3,11 @@ from typing import Literal
 
 
 class FirecrackerError(Exception):
-    _type: Literal["networking", "no_resources"]
+    _type: Literal["networking", "insufficient_resources"]
 
-    def __init__(self, msg: str, process: subprocess.CompletedProcess[str] | subprocess.CalledProcessError) -> None:
+    def __init__(
+        self, msg: str, process: subprocess.CompletedProcess[str] | subprocess.CalledProcessError
+    ) -> None:
         super().__init__(msg)
         self.process = process
 
@@ -28,10 +30,12 @@ class FirecrackerError(Exception):
 
 
 class NetworkingError(FirecrackerError):
-    """A network or network-related error occurred during a firecracker task execution"""
+    """A networking-related error occurred during a firecracker task execution."""
+
     _type = "networking"
 
 
 class NoResourcesError(FirecrackerError):
-    """Not enough resources were found to execute a given firecracker task"""
-    _type = "no_resources"
+    """Not enough resources were found to execute a given firecracker task."""
+
+    _type = "insufficient_resources"

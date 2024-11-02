@@ -104,6 +104,8 @@ select = [
     "UP",
 ]
 ignore = [
+  # too many return statements
+  "PLR0911",
   # magic number comparison
   "PLR2004",
   # pytest fixture not returning anything should have underscore
