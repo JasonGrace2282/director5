@@ -8,8 +8,8 @@ from fastapi import APIRouter
 from ...core import settings
 from ...core.schema import APIError, APIResponse, DetailedAPIError
 from ...core.utils import run_commands
+from . import networking as net
 from .schema import VMCreateRequest
-from .utils import ip_exists, ip_to_mac, tap_device_exists
 
 vm_router = APIRouter()
 
@@ -18,21 +18,21 @@ vm_router = APIRouter()
 async def create_vm(request: VMCreateRequest) -> APIResponse:
     # Create VM TAP device
 
-    if tap_device_exists(request.name):
+    if net.tap_device_exists(request.name):
         return APIError(f"TAP device {request.name} already exists")
 
-    if ip_exists(request.internal_ip):
+    if net.ip_exists(request.internal_ip):
         return APIError(f"The IP {request.internal_ip} has already been taken")
+
+    su_ip = ["su", "-", settings.IP_CHANGEABLE_USER, "-c"]
+    subprocess.run([*su_ip, f"ip link del {request.name}"], check=False)
 
     try:
         run_commands(
             [
-                f"su - root -c ip link del {request.name} 2> /dev/null || true",
-                f"su - root -c ip tuntap add dev {request.name} mode tap",
-                f"su - root -c ip addr add {request.internal_ip} dev {request.name}",
-                f"su - root -c ip link set dev {request.name} up",
-                f"su - root -c iptables -D FORWARD -i {request.name} -o {settings.INTERNET_FACING_INTERFACE} -j ACCEPT || true"
-                f"su - root -c iptables -A FORWARD -i {request.name} -o {settings.INTERNET_FACING_INTERFACE} -j ACCEPT",
+                [*su_ip, f"ip tuntap add dev {request.name} mode tap"],
+                [*su_ip, f"ip addr add {request.internal_ip} dev {request.name}"],
+                [*su_ip, f"ip link set dev {request.name} up"],
             ]
         )
     except subprocess.CalledProcessError as e:
@@ -41,6 +41,14 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
             "the host. See the errors field for more info",
             e,
         )
+
+    subprocess.run(
+        [
+            *su_ip,
+            f"iptables -D FORWARD -i {request.name} -o {settings.INTERNET_FACING_INTERFACE} -j ACCEPT",
+        ],
+        check=False,
+    )
 
     log_dir = Path(f"{settings.DATA_STORAGE_PATH}/sites/{request.site_id}/debug")
     log_path = log_dir / "vm.log"
@@ -83,7 +91,7 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
         settings.SOCKET_REQUEST_URL + f"/network-interfaces/{settings.INTERNET_FACING_INTERFACE}",
         {
             "iface_id": settings.INTERNET_FACING_INTERFACE,
-            "guest_mac": ip_to_mac("06:00", request.internal_ip),
+            "guest_mac": net.ip_to_mac("06:00", request.internal_ip),
             "host_dev_name": request.name,
         },
     )

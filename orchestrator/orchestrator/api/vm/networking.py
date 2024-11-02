@@ -11,7 +11,7 @@ def tap_device_exists(device_name: str) -> bool:
         bool: True if tap device exists, False otherwise
     """
     try:
-        run_commands([f"ip link show {device_name}"])
+        run_commands(["ip", "link", "show", device_name])
 
     except subprocess.CalledProcessError as e:
         if "does not exist" in e.stderr or "can't find" in e.stderr:
@@ -23,7 +23,7 @@ def tap_device_exists(device_name: str) -> bool:
 
 def ip_exists(internal_ip: str) -> bool:
     try:
-        output = run_commands(["ip addr show"])
+        output = run_commands(["ip", "addr", "show"])
     except subprocess.CalledProcessError as e:
         raise NetworkingError("An error occurred while trying to check for a IP address", e) from e
 

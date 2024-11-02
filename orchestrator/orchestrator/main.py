@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from starlette.requests import Request
 
 from .api.router import main_router
@@ -22,10 +22,10 @@ async def firecracker_exception_handler(request: Request, exc: FirecrackerError)
     error_details = exc.asdict()
 
     return APIResponse(
-        success=False,
         message=f"A {exc.type} error occurred. See the errors field for more info.",
         data=None,
         errors=error_details,
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
     )
 
 

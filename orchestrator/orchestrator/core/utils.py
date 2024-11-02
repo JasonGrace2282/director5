@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import subprocess
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from pathlib import Path
 from subprocess import CompletedProcess
 
@@ -25,17 +25,14 @@ def assert_path_exists(*paths: tuple[Path, str], status: int = status.HTTP_400_B
         raise HTTPException(status_code=status, detail=errors)
 
 
-def run_commands(commands: Iterable[str]) -> list[CompletedProcess[str]]:
+def run_commands(commands: Iterable[Sequence[str]]) -> list[CompletedProcess[str]]:
     """Run a list of shell commands and return their outputs.
 
-    May raise subprocess.CalledProcessError if any command fails.
+    May raise :class:`subprocess.CalledProcessError` if any command fails.
     """
     results = []
     for command in commands:
-        try:
-            result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-            results.append(result)
-        except subprocess.CalledProcessError:
-            raise
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        results.append(result)
 
     return results

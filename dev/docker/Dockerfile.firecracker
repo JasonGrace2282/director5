@@ -2,16 +2,16 @@ FROM alpine:latest
 
 WORKDIR /vm
 COPY install-firecracker.sh .
-COPY install-linux.sh .
+
+# Firecracker version is the version to install,
+# Firecracker-dev is the prefix needed to install the rootfs images
+# for VMs
 ENV FIRECRACKER_VERSION=1.9.1 \
     FIRECRACKER_DEV_VERSION=1.10
 
 RUN apk update \
-    && apk add curl qemu-system-x86_64 libvirt \
-    && apk add libvirt-daemon dbus polkit \
-    && apk add qemu-img bash iproute2 e2fsprogs \
-    && apk add curl tar socat \
-    && ./install-firecracker.sh \
-    && ./install-linux.sh \
-    && rm -f install-firecracker.sh install-linux.sh
+    && apk add curl tar qemu-system-x86_64 libvirt libvirt-daemon dbus qemu-img e2fsprogs
 
+RUN ./install-firecracker.sh \
+    && rm -f install-firecracker.sh \
+    && apk del curl tar
