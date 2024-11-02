@@ -22,7 +22,7 @@ ENV UV_LINK_MODE=copy \
     PATH="/director5/.venv/bin:$PATH"
 
 RUN apk update && \
-    apk add curl grep iptables libpq openssh socat wget && \
+    apk add curl grep iptables iproute2 libpq openssh socat wget && \
     uv sync --frozen
 
 RUN ./install-firecracker.sh && \
