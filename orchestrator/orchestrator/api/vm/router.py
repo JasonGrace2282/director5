@@ -93,9 +93,8 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
             "An error occurred while trying to set up a network error for the VM", r
         )
 
-    sleep(
-        0.015
-    )  # Firecracker handles requests async, so we need to ensure it has had time to update networking etc
+    # Firecracker handles requests async, so we need to ensure it has had time to update networking etc
+    sleep(0.015)
 
     r = session.put(settings.SOCKET_REQUEST_URL + "/actions", {"action_type": "InstanceStart"})
 
@@ -104,4 +103,4 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
             "An error occurred while trying to set up a network error for the VM", r
         )
 
-    return APIResponse(success=True, message="VM Creation successful.")
+    return APIResponse(message="VM Creation successful.")
