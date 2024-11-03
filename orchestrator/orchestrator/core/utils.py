@@ -14,7 +14,7 @@ def assert_path_exists(*paths: tuple[Path, str], status: int = status.HTTP_400_B
     Each ``path`` must be a tuple of the :class:`pathlib.Path`
     and the name to be used in the error message.
     """
-    errors = {}
+    errors: dict[str, list[str]] = {}
     for path, detail_prefix in paths:
         errors.setdefault(detail_prefix, [])
         if not path.is_absolute():
@@ -30,7 +30,7 @@ def run_commands(commands: Iterable[Sequence[str]]) -> list[CompletedProcess[str
 
     May raise :class:`subprocess.CalledProcessError` if any command fails.
     """
-    results = []
+    results: list[subprocess.CompletedProcess[str]] = []
     for command in commands:
         result = subprocess.run(command, check=True, capture_output=True, text=True)
         results.append(result)

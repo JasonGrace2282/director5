@@ -11,7 +11,7 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
 ]
 
-if not settings.PRODUCTION:
+if settings.DEBUG:
     urlpatterns.append(
         path(
             "password-login/",

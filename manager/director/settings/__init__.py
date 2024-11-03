@@ -24,11 +24,6 @@ SECRET_KEY = "django-insecure-yr31n(-7zgl2=i@pq5istf+i(nh3fryf5xn7l_=(y1$@=oh!is
 
 DEBUG = True
 
-PRODUCTION = bool(os.environ.get("PRODUCTION"))
-
-if PRODUCTION:
-    DEBUG = False
-
 ALLOWED_HOSTS = [
     "director.tjhsst.edu",
     "localhost",
@@ -107,7 +102,7 @@ DATABASES = {
     },
 }
 
-TESTING = os.environ.get("PYTEST_VERSION") is not None
+TESTING = "PYTEST_VERSION" in os.environ or "CI" in os.environ
 
 # allow testing outside of docker
 if TESTING:
@@ -134,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = ["director.apps.auth.oauth.IonOauth2"]
-if not PRODUCTION:
+if DEBUG:
     AUTHENTICATION_BACKENDS.append("django.contrib.auth.backends.ModelBackend")
 
 SOCIAL_AUTH_USER_FIELDS = [

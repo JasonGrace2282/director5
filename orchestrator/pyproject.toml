@@ -18,6 +18,7 @@ dependencies = [
 lint = [
   "mypy",
   "pre-commit",
+  "types-requests",
 ]
 test = [
   "httpx",
@@ -28,3 +29,7 @@ test = [
 [tool.uv]
 package = false
 default-groups = ["lint", "test"]
+
+[[tool.mypy.overrides]]
+module = ["requests_unixsocket"]
+ignore_missing_imports = true

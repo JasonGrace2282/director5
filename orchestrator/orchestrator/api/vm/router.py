@@ -1,13 +1,13 @@
-import subprocess
 from pathlib import Path
 from time import sleep
 
+import iptc
 import requests_unixsocket
 from fastapi import APIRouter
+from pyroute2 import IPRoute, NetlinkError
 
 from ...core import settings
 from ...core.schema import APIError, APIResponse, DetailedAPIError
-from ...core.utils import run_commands
 from . import networking as net
 from .schema import VMCreateRequest
 
@@ -16,39 +16,43 @@ vm_router = APIRouter()
 
 @vm_router.post("/create")
 async def create_vm(request: VMCreateRequest) -> APIResponse:
+    """Create a VM.
+
+    ## Expects
+    * `site_id` must be unique
+    * `name` must be the name of a tap device that doesn't exist
+    * `internal_ip` must not already be taken
+    """
     # Create VM TAP device
 
     if net.tap_device_exists(request.name):
         return APIError(f"TAP device {request.name} already exists")
 
-    if net.ip_exists(request.internal_ip):
-        return APIError(f"The IP {request.internal_ip} has already been taken")
-
-    su_ip = ["su", "-", settings.IP_CHANGEABLE_USER, "-c"]
-    subprocess.run([*su_ip, f"ip link del {request.name}"], check=False)
+    if net.ip_exists(request.ip_interface):
+        return APIError(f"The IP {request.ip_interface} has already been taken")
 
     try:
-        run_commands(
-            [
-                [*su_ip, f"ip tuntap add dev {request.name} mode tap"],
-                [*su_ip, f"ip addr add {request.internal_ip} dev {request.name}"],
-                [*su_ip, f"ip link set dev {request.name} up"],
-            ]
-        )
-    except subprocess.CalledProcessError as e:
+        ip = IPRoute()
+
+        ip.link("add", ifname=request.name, kind="tap")
+        ip.addr("add", ifname=request.name, address=request.ip_interface)
+        ip.link("set", ifname=request.name, state="up")
+
+        chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), "FORWARD")
+        new_rule = iptc.Rule()
+        new_rule.in_interface = request.name
+        new_rule.out_interface = settings.INTERNET_FACING_INTERFACE
+        new_rule.target = iptc.Target(new_rule, "ACCEPT")
+
+        if not any(new_rule == rule for rule in chain.rules):
+            chain.insert_rule(new_rule)
+
+    except (NetlinkError, iptc.IPTCError) as e:
         return DetailedAPIError(
             "An error occurred while running a command to set up networking for a tap device on "
             "the host. See the errors field for more info",
             e,
         )
-
-    subprocess.run(
-        [
-            *su_ip,
-            f"iptables -D FORWARD -i {request.name} -o {settings.INTERNET_FACING_INTERFACE} -j ACCEPT",
-        ],
-        check=False,
-    )
 
     log_dir = Path(f"{settings.DATA_STORAGE_PATH}/sites/{request.site_id}/debug")
     log_path = log_dir / "vm.log"
@@ -59,7 +63,7 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
     session = requests_unixsocket.Session()
 
     r = session.put(
-        settings.SOCKET_REQUEST_URL + "/logger",
+        f"{settings.SOCKET_REQUEST_URL}/logger",
         {"log_path": log_path, "level": "Debug", "show_level": True, "show_log_origin": True},
     )
 
@@ -67,7 +71,7 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
         return DetailedAPIError("An error occurred while trying to enable logging for the VM", r)
 
     r = session.put(
-        settings.SOCKET_REQUEST_URL + "/boot-source",
+        f"{settings.SOCKET_REQUEST_URL}/boot-source",
         {"kernel_image_path": settings.VM_IMAGE_PATH, "boot_args": settings.VM_BOOT_ARGS},
     )
 
@@ -75,7 +79,7 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
         return DetailedAPIError("An error occurred while trying to set a boot source for the VM", r)
 
     r = session.put(
-        settings.SOCKET_REQUEST_URL + "/drives/rootfs",
+        f"{settings.SOCKET_REQUEST_URL}/drives/rootfs",
         {
             "drive_id": "rootfs",
             "path_on_host": settings.VM_ROOTFS_PATH,
@@ -88,10 +92,10 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
         return DetailedAPIError("An error occurred while trying to set a rootFS for the VM", r)
 
     r = session.put(
-        settings.SOCKET_REQUEST_URL + f"/network-interfaces/{settings.INTERNET_FACING_INTERFACE}",
+        f"{settings.SOCKET_REQUEST_URL}/network-interfaces/{settings.INTERNET_FACING_INTERFACE}",
         {
             "iface_id": settings.INTERNET_FACING_INTERFACE,
-            "guest_mac": net.ip_to_mac("06:00", request.internal_ip),
+            "guest_mac": net.ip_to_mac("06:00", request.ip_interface),
             "host_dev_name": request.name,
         },
     )
@@ -104,11 +108,9 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
     # Firecracker handles requests async, so we need to ensure it has had time to update networking etc
     sleep(0.015)
 
-    r = session.put(settings.SOCKET_REQUEST_URL + "/actions", {"action_type": "InstanceStart"})
+    r = session.put(f"{settings.SOCKET_REQUEST_URL}/actions", {"action_type": "InstanceStart"})
 
     if r.status_code != 200:
-        return DetailedAPIError(
-            "An error occurred while trying to set up a network error for the VM", r
-        )
+        return DetailedAPIError("An error occurred while trying to start the VM", r)
 
     return APIResponse(message="VM Creation successful.")

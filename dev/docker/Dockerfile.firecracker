@@ -3,12 +3,6 @@ FROM ubuntu:latest
 WORKDIR /vm
 COPY install-firecracker.sh .
 
-# Firecracker version is the version to install,
-# Firecracker-dev is the prefix needed to install the rootfs images
-# for VMs
-ENV FIRECRACKER_VERSION=1.9.1 \
-    FIRECRACKER_DEV_VERSION=1.10
-
 RUN apt-get update && \
     apt-get install -y \
         curl \

@@ -6,12 +6,6 @@ COPY pyproject.toml .
 COPY uv.lock .
 COPY /dev/docker/install-linux.sh .
 
-# Firecracker version is the version to install,
-# Firecracker-dev is the prefix needed to install the rootfs images
-# for VMs
-ENV FIRECRACKER_VERSION=1.9.1 \
-    FIRECRACKER_DEV_VERSION=1.10
-
 ENV TZ=America/New_York
 
 ENV UV_LINK_MODE=copy \

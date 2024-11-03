@@ -19,13 +19,14 @@ async def root(message: str = "pong"):
 
 @app.exception_handler(FirecrackerError)
 async def firecracker_exception_handler(request: Request, exc: FirecrackerError) -> APIResponse:
-    error_details = exc.asdict()
+    error_details = exc.to_dict()
 
     return APIResponse(
-        message=f"A {exc.type} error occurred. See the errors field for more info.",
+        message=f"A {exc.type_} error occurred. See the errors field for more info.",
         data=None,
         errors=error_details,
         status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        tb=exc,
     )
 
 

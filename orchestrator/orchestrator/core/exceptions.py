@@ -1,41 +1,40 @@
-import subprocess
-from typing import Literal
+from typing import Any, Protocol
+
+
+class HasStdoutStderr(Protocol):
+    @property
+    def stdout(self) -> str: ...
+
+    @property
+    def stderr(self) -> str: ...
 
 
 class FirecrackerError(Exception):
-    _type: Literal["networking", "insufficient_resources"]
+    type_: str = "firecracker"
 
     def __init__(
-        self, msg: str, process: subprocess.CompletedProcess[str] | subprocess.CalledProcessError
+        self,
+        process: HasStdoutStderr,
+        msg: str = "",
     ) -> None:
         super().__init__(msg)
         self.process = process
 
-    def __str__(self) -> str:
-        return f"{self.process.stderr} ({self._type})"
-
-    def asdict(self) -> dict[str, str]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "stdout": self.process.stdout,
             "stderr": self.process.stderr,
-            "error_type": self.type,
+            "error_type": getattr(self, "type_", "No Description Provided"),
         }
-
-    @property
-    def type(self) -> str:
-        try:
-            return self._type
-        except AttributeError:
-            return "error"
 
 
 class NetworkingError(FirecrackerError):
     """A networking-related error occurred during a firecracker task execution."""
 
-    _type = "networking"
+    type_ = "networking"
 
 
 class NoResourcesError(FirecrackerError):
     """Not enough resources were found to execute a given firecracker task."""
 
-    _type = "insufficient_resources"
+    type_ = "insufficient_resources"

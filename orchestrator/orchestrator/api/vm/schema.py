@@ -1,9 +1,13 @@
+"""Pydantic base models for validation."""
+
+from ipaddress import IPv4Interface
+
 from pydantic import BaseModel
 
 
 class VMCreateRequest(BaseModel):
     name: str
-    internal_ip: str
-    ram_mb: int
-    vcpu_count: float
+    ip_interface: IPv4Interface
     site_id: int
+    ram_mb: int
+    vcpu_count: int

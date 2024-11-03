@@ -14,7 +14,7 @@
                 </div>
             </div>
         </div>
-        {% if not prod %}
+        {% if debug %}
             <br>
             <a href="{% url 'auth:password_login' %}{% if request.GET.next %}?next={{ request.GET.next | urlencode }}{% endif %}"
                class="inline-block fixed bottom-1 ml-1 font-bold underline">Password login</a>

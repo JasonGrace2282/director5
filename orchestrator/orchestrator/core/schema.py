@@ -1,14 +1,23 @@
 import subprocess
+import traceback
+from typing import Any, assert_never
 
+import iptc
+import pyroute2
 import requests
 from fastapi import status
-from starlette.responses import JSONResponse
+from fastapi.responses import JSONResponse
 
 from .exceptions import FirecrackerError
 
 
 class APIResponse(JSONResponse):
-    media_type = "application/json"
+    """A specialized :class:`fastapi.responses.JSONResponse`.
+
+    ### Notes
+
+    The success field is automatically set based on the status code.
+    """
 
     def __init__(
         self,
@@ -16,20 +25,21 @@ class APIResponse(JSONResponse):
         data: list[str] | None = None,
         errors: dict[str, str] | None = None,
         status_code: int = 200,
+        tb: BaseException | None = None,
     ):
-        content = {
+        content: dict[str, Any] = {
             "success": 200 <= status_code <= 300,
             "message": message,
             "data": data,
-            "errors": errors,
+            "errors": {"data": errors},
         }
+        if tb:
+            content["errors"]["traceback"] = traceback.format_exception(tb)
         super().__init__(content=content, status_code=status_code)
 
 
 class APIError(APIResponse):
     """Probable user error occurred leading to a failure of a task."""
-
-    media_type = "application/json"
 
     def __init__(self, message: str):
         errors = {"stdout": "", "stderr": "", "type": "error"}
@@ -46,22 +56,33 @@ class DetailedAPIError(APIResponse):
     There is also more information available (such as a :class:`subprocess.CalledProcessError` or :class:`requests.models.Response`)
     """
 
-    media_type = "application/json"
-
     def __init__(
-        self, message: str, exception: subprocess.CalledProcessError | requests.models.Response
+        self,
+        message: str,
+        exception: subprocess.CalledProcessError
+        | requests.models.Response
+        | pyroute2.NetlinkError
+        | iptc.IPTCError,
     ):
         if isinstance(exception, subprocess.CalledProcessError):
-            errors = FirecrackerError("", exception).asdict()
-            message = message + " " + str(exception.args)
+            errors = FirecrackerError(exception).to_dict()
+            errors["subprocess-args"] = exception.cmd
         elif isinstance(exception, requests.models.Response):
             errors = {
                 "stdout": exception.text,
                 "stderr": f"{exception.reason} {exception.status_code} when sending to {exception.url} with {exception.headers}",
                 "type": "requests",
             }
+        elif isinstance(exception, pyroute2.NetlinkError):
+            errors = {
+                "stdout": "",
+                "stderr": f"{exception.code}: {exception.args[1]}",
+                "type": "pyroute2",
+            }
+        elif isinstance(exception, iptc.IPTCError):
+            errors = {"stdout": "", "stderr": exception.args[0], "type": "python-iptables"}
         else:
-            raise TypeError
+            assert_never(exception)
 
         super().__init__(
             message=message,
