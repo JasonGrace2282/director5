@@ -14,7 +14,7 @@ elif [ "$1" = "tailwind" ]; then
     exec dev/tailwind/tailwindcss -i $static/input.css -o $static/build.css --config dev/tailwind/tailwind.config.js --watch --poll
 elif [ "$1" = "fastapi" ]; then
     cd orchestrator
-    exec fastapi dev orchestrator/main.py --host 0.0.0.0 --port 8080
+    exec sudo uv run fastapi dev orchestrator/main.py --host 0.0.0.0 --port 8080
 else
     echo "Unknown command command $@"
     exit 1

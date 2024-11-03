@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM ubuntu:latest
 
 WORKDIR /vm
 COPY install-firecracker.sh .
@@ -9,9 +9,18 @@ COPY install-firecracker.sh .
 ENV FIRECRACKER_VERSION=1.9.1 \
     FIRECRACKER_DEV_VERSION=1.10
 
-RUN apk update \
-    && apk add curl tar qemu-system-x86_64 libvirt libvirt-daemon dbus qemu-img e2fsprogs
+RUN apt-get update && \
+    apt-get install -y \
+        curl \
+        wget \
+        unzip \
+        jq \
+        socat \
+        iproute2 \
+        iptables \
+        iputils-ping \
+        linux-headers-generic \
+        && rm -rf /var/lib/apt/lists/*   # Reduce image size
 
 RUN ./install-firecracker.sh \
-    && rm -f install-firecracker.sh \
-    && apk del curl tar
+    && rm -f install-firecracker.sh

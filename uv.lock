@@ -319,7 +319,7 @@ dependencies = [
     { name = "typing-extensions" },
 ]
 
-[package.dependency-groups]
+[package.dev-dependencies]
 docs = [
     { name = "furo" },
     { name = "myst-parser" },
@@ -355,7 +355,7 @@ requires-dist = [
     { name = "typing-extensions", specifier = ">=4.12" },
 ]
 
-[package.metadata.dependency-groups]
+[package.metadata.requires-dev]
 docs = [
     { name = "furo", specifier = ">=2024.8.6" },
     { name = "myst-parser", specifier = ">=4.0.0" },
@@ -694,7 +694,7 @@ dependencies = [
     { name = "typing-extensions" },
 ]
 
-[package.dependency-groups]
+[package.dev-dependencies]
 lint = [
     { name = "django-stubs", extra = ["compatible-mypy"] },
     { name = "mypy" },
@@ -717,7 +717,7 @@ requires-dist = [
     { name = "typing-extensions" },
 ]
 
-[package.metadata.dependency-groups]
+[package.metadata.requires-dev]
 lint = [
     { name = "django-stubs", extras = ["compatible-mypy"] },
     { name = "mypy" },
@@ -870,12 +870,15 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic" },
     { name = "pydantic-extra-types" },
+    { name = "pyroute2" },
+    { name = "python-iptables" },
     { name = "requests" },
     { name = "requests-unixsocket" },
+    { name = "setuptools" },
     { name = "typing-extensions" },
 ]
 
-[package.dependency-groups]
+[package.dev-dependencies]
 lint = [
     { name = "mypy" },
     { name = "pre-commit" },
@@ -891,12 +894,15 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"] },
     { name = "pydantic" },
     { name = "pydantic-extra-types" },
+    { name = "pyroute2", specifier = ">=0.7.12" },
+    { name = "python-iptables", specifier = ">=1.0.1" },
     { name = "requests" },
     { name = "requests-unixsocket" },
+    { name = "setuptools", specifier = ">=75.3.0" },
     { name = "typing-extensions" },
 ]
 
-[package.metadata.dependency-groups]
+[package.metadata.requires-dev]
 lint = [
     { name = "mypy" },
     { name = "pre-commit" },
@@ -1107,6 +1113,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pyroute2"
+version = "0.7.12"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "win-inet-pton", marker = "platform_system == 'Windows'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/39/16/323b947c34530436658331e2cf393b72ebcbd923a75154a7efb28feefd5d/pyroute2-0.7.12.tar.gz", hash = "sha256:54d226fc3ff2732f49bac9b26853c50c9d05be05a4d9daf09c7cf6d77301eff3", size = 423519 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ef/24/abfa808cbf32659f75092601d74fd24c5608daf408008ab6a7bfdc2807e9/pyroute2-0.7.12-py3-none-any.whl", hash = "sha256:9df8d0fcb5fb0a724603bcfdef76ffbd287f00f69e9fb660c20a06962b24691a", size = 460493 },
+]
+
+[[package]]
 name = "pytest"
 version = "8.3.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1166,6 +1184,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/bc/57/e84d88dfe0aec03b7
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6a/3e/b68c118422ec867fa7ab88444e1274aa40681c606d59ac27de5a5588f082/python_dotenv-1.0.1-py3-none-any.whl", hash = "sha256:f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a", size = 19863 },
 ]
+
+[[package]]
+name = "python-iptables"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/35/e4/33e639b9e153c2d798d73342a96715a4edca6f46431d763b275a34b3aeca/python-iptables-1.0.1.tar.gz", hash = "sha256:1989f2b48598392c3574052a95f456985cb06fb4287b61bf8794e93ebc37eddb", size = 52287 }
 
 [[package]]
 name = "python-multipart"
@@ -1265,6 +1289,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/aa/9e/1784d15b057b0075e5136445aaea92d23955aad2c93eaede673718a40d95/rich-13.9.2.tar.gz", hash = "sha256:51a2c62057461aaf7152b4d611168f93a9fc73068f8ded2790f29fe2b5366d0c", size = 222843 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/67/91/5474b84e505a6ccc295b2d322d90ff6aa0746745717839ee0c5fb4fdcceb/rich-13.9.2-py3-none-any.whl", hash = "sha256:8c82a3d3f8dcfe9e734771313e606b39d8247bb6b826e196f4914b333b743cf1", size = 242117 },
+]
+
+[[package]]
+name = "setuptools"
+version = "75.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ed/22/a438e0caa4576f8c383fa4d35f1cc01655a46c75be358960d815bfbb12bd/setuptools-75.3.0.tar.gz", hash = "sha256:fba5dd4d766e97be1b1681d98712680ae8f2f26d7881245f2ce9e40714f1a686", size = 1351577 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/90/12/282ee9bce8b58130cb762fbc9beabd531549952cac11fc56add11dcb7ea0/setuptools-75.3.0-py3-none-any.whl", hash = "sha256:f2504966861356aa38616760c0f66568e535562374995367b4e69c7143cf6bcd", size = 1251070 },
 ]
 
 [[package]]
@@ -1669,4 +1702,13 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/35/c6/12e3aab52c11aeb289e3dbbc05929e7a9d90d7a9173958477d3ef4f8ce2d/websockets-13.1-cp313-cp313-win32.whl", hash = "sha256:624459daabeb310d3815b276c1adef475b3e6804abaf2d9d2c061c319f7f187d", size = 158709 },
     { url = "https://files.pythonhosted.org/packages/41/d8/63d6194aae711d7263df4498200c690a9c39fb437ede10f3e157a6343e0d/websockets-13.1-cp313-cp313-win_amd64.whl", hash = "sha256:c518e84bb59c2baae725accd355c8dc517b4a3ed8db88b4bc93c78dae2974bf2", size = 159144 },
     { url = "https://files.pythonhosted.org/packages/56/27/96a5cd2626d11c8280656c6c71d8ab50fe006490ef9971ccd154e0c42cd2/websockets-13.1-py3-none-any.whl", hash = "sha256:a9a396a6ad26130cdae92ae10c36af09d9bfe6cafe69670fd3b6da9b07b4044f", size = 152134 },
+]
+
+[[package]]
+name = "win-inet-pton"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/da/0b1487b5835497dea00b00d87c2aca168bb9ca2e2096981690239e23760a/win_inet_pton-1.1.0.tar.gz", hash = "sha256:dd03d942c0d3e2b1cf8bab511844546dfa5f74cb61b241699fa379ad707dea4f", size = 2949 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/be/31/ff772a44aa56319df8afbb0b34f1a856f66f05b9d5f1fed917849e47fdae/win_inet_pton-1.1.0-py2.py3-none-any.whl", hash = "sha256:eaf0193cbe7152ac313598a0da7313fb479f769343c0c16c5308f64887dc885b", size = 4848 },
 ]

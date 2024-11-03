@@ -87,9 +87,11 @@ services:
     container_name: director_firecracker
     stop_grace_period: 1s
     privileged: true
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile.firecracker
+    image: director_firecracker
     devices:
       - /dev/kvm:/dev/kvm
     volumes:

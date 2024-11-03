@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:0.4-python3.12-alpine
+FROM ghcr.io/astral-sh/uv:0.4-python3.12-bookworm
 
 WORKDIR /director5
 
@@ -20,10 +20,10 @@ ENV UV_LINK_MODE=copy \
     UV_PYTHON=python3.12 \
     PATH="/director5/.venv/bin:$PATH"
 
-RUN apk update && \
-    apk add curl grep iptables libpq openssh socat wget && \
+RUN apt update && \
+    apt install -y curl grep iptables libpq-dev socat wget sudo && \
     uv sync --frozen
 
-RUN ./install-linux.sh && \
-    rm -f install-firecracker.sh install-linux.sh && \
-    apk del curl wget grep
+RUN ./install-linux.sh \
+    && rm -f install-linux.sh \
+    && rm -rf /var/lib/apt/lists/*   # Reduce image size
