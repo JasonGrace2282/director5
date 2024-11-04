@@ -9,7 +9,7 @@ dependencies = [
     "pyroute2>=0.7.12",
     "python-iptables>=1.0.1",
     "requests",
-    "requests-unixsocket",
+    "requests-unixsocket2>=0.4.2",
     "setuptools>=75.3.0",
     "typing-extensions",
 ]

@@ -875,7 +875,7 @@ dependencies = [
     { name = "pyroute2" },
     { name = "python-iptables" },
     { name = "requests" },
-    { name = "requests-unixsocket" },
+    { name = "requests-unixsocket2" },
     { name = "setuptools" },
     { name = "typing-extensions" },
 ]
@@ -900,7 +900,7 @@ requires-dist = [
     { name = "pyroute2", specifier = ">=0.7.12" },
     { name = "python-iptables", specifier = ">=1.0.1" },
     { name = "requests" },
-    { name = "requests-unixsocket" },
+    { name = "requests-unixsocket2", specifier = ">=0.4.2" },
     { name = "setuptools", specifier = ">=75.3.0" },
     { name = "typing-extensions" },
 ]
@@ -1280,6 +1280,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c3/ea/0fb87f844d8a35ff0dcc8b941e1a9ffc9eb46588ac9e4267b9d9804354eb/requests-unixsocket-0.3.0.tar.gz", hash = "sha256:28304283ea9357d45fff58ad5b11e47708cfbf5806817aa59b2a363228ee971e", size = 14478 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/63/e9e81d5e7370d46f08407c37399b507725125587b01fff46b4da5ddd3a4a/requests_unixsocket-0.3.0-py2.py3-none-any.whl", hash = "sha256:c685c680f0809e1b2955339b1e5afc3c0022b3066f4f7eb343f43a6065fc0e5d", size = 11835 },
+]
+
+[[package]]
+name = "requests-unixsocket2"
+version = "0.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/14/66/88737c8720685f44e6a1c04cb2185301a6ec4538ac82324f0f33c9dc5fd5/requests_unixsocket2-0.4.2.tar.gz", hash = "sha256:929c58ecc5981f3d127661ceb9ec8c76e0f08d31c52e44ab1462ac0dcd55b5f5", size = 6367 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/43/34/b1072b2b1310572d8b801adcf3b148197eea2f8207f3750f73fcd2a6db5d/requests_unixsocket2-0.4.2-py3-none-any.whl", hash = "sha256:701fcd49d74bc0f759bbe45c4dfda0045fd89652948c2b473b1a312214c3770b", size = 7786 },
 ]
 
 [[package]]

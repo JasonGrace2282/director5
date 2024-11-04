@@ -21,4 +21,3 @@ VM_ROOTFS_PATH: str = f"{DATA_STORAGE_PATH}/images/rootfs.ext4"
 
 # ip configuration
 INTERNET_FACING_INTERFACE: str = "eth0"
-IP_CHANGEABLE_USER = "root"
