@@ -85,7 +85,5 @@ class DetailedAPIError(APIResponse):
             assert_never(exception)
 
         super().__init__(
-            message=message,
-            errors=errors,
-            status_code=status.HTTP_400_BAD_REQUEST,
+            message=message, errors=errors, status_code=status.HTTP_400_BAD_REQUEST, tb=exception
         )

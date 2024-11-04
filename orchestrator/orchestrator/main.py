@@ -1,9 +1,15 @@
+import os
+import sys
+
 from fastapi import FastAPI, status
 from starlette.requests import Request
 
 from .api.router import main_router
 from .core.exceptions import FirecrackerError
 from .core.schema import APIResponse
+
+if os.geteuid() != 0:
+    sys.exit("Please run orchestrator with root privileges. Exiting.")
 
 app = FastAPI(
     name="orchestrator",

@@ -83,6 +83,8 @@ services:
     entrypoint:
       - "dev/docker/docker-entrypoint.sh"
       - "fastapi"
+    cap_add:
+      - NET_ADMIN
 
   firecracker:
     container_name: director_firecracker

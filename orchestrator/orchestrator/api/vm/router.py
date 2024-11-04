@@ -1,3 +1,4 @@
+from ipaddress import IPv4Interface
 from pathlib import Path
 from time import sleep
 
@@ -9,13 +10,14 @@ from pyroute2 import IPRoute, NetlinkError
 from ...core import settings
 from ...core.schema import APIError, APIResponse, DetailedAPIError
 from . import networking as net
-from .schema import VMCreateRequest
 
 vm_router = APIRouter()
 
 
 @vm_router.post("/create")
-async def create_vm(request: VMCreateRequest) -> APIResponse:
+async def create_vm(
+    name: str, ip_interface: IPv4Interface, site_id: int, ram_mb: int, vcpu_count: int
+) -> APIResponse:
     """Create a VM.
 
     ## Expects
@@ -25,22 +27,28 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
     """
     # Create VM TAP device
 
-    if net.tap_device_exists(request.name):
-        return APIError(f"TAP device {request.name} already exists")
+    if net.tap_device_exists(name):
+        return APIError(f"TAP device {name} already exists")
 
-    if net.ip_exists(request.ip_interface):
-        return APIError(f"The IP {request.ip_interface} has already been taken")
+    if net.ip_exists(ip_interface):
+        return APIError(f"The IP {ip_interface} has already been taken")
 
     try:
         ip = IPRoute()
 
-        ip.link("add", ifname=request.name, kind="tap")
-        ip.addr("add", ifname=request.name, address=request.ip_interface)
-        ip.link("set", ifname=request.name, state="up")
+        ip.link("add", ifname=name, kind="tuntap", mode="tap")
+        interface_index = ip.link_lookup(ifname=name)[0]
+        ip.addr(
+            "add",
+            index=interface_index,
+            address=str(ip_interface.ip),
+            prefixlen=ip_interface.network.prefixlen,
+        )
+        ip.link("set", ifname=name, state="up")
 
         chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), "FORWARD")
         new_rule = iptc.Rule()
-        new_rule.in_interface = request.name
+        new_rule.in_interface = name
         new_rule.out_interface = settings.INTERNET_FACING_INTERFACE
         new_rule.target = iptc.Target(new_rule, "ACCEPT")
 
@@ -54,10 +62,10 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
             e,
         )
 
-    log_dir = Path(f"{settings.DATA_STORAGE_PATH}/sites/{request.site_id}/debug")
+    log_dir = Path(f"{settings.DATA_STORAGE_PATH}/sites/{site_id}/debug")
     log_path = log_dir / "vm.log"
 
-    log_dir.mkdir(exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
     log_path.touch()
 
     session = requests_unixsocket.Session()
@@ -95,8 +103,8 @@ async def create_vm(request: VMCreateRequest) -> APIResponse:
         f"{settings.SOCKET_REQUEST_URL}/network-interfaces/{settings.INTERNET_FACING_INTERFACE}",
         {
             "iface_id": settings.INTERNET_FACING_INTERFACE,
-            "guest_mac": net.ip_to_mac("06:00", request.ip_interface),
-            "host_dev_name": request.name,
+            "guest_mac": net.ip_to_mac("06:00", ip_interface),
+            "host_dev_name": name,
         },
     )
 
