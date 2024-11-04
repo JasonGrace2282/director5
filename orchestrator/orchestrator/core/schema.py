@@ -22,7 +22,7 @@ class APIResponse(JSONResponse):
     def __init__(
         self,
         message: str | None = None,
-        data: list[str] | None = None,
+        data: dict[str, str] | None = None,
         errors: dict[str, str] | None = None,
         status_code: int = 200,
         tb: BaseException | None = None,
@@ -53,24 +53,24 @@ class APIError(APIResponse):
 class DetailedAPIError(APIResponse):
     """Probable user error occurred leading to a failure of a task.
 
-    There is also more information available (such as a :class:`subprocess.CalledProcessError` or :class:`requests.models.Response`)
+    There is also more information available (such as a :class:`subprocess.CalledProcessError` or :class:`requests.HTTPError`)
     """
 
     def __init__(
         self,
         message: str,
         exception: subprocess.CalledProcessError
-        | requests.models.Response
+        | requests.HTTPError
         | pyroute2.NetlinkError
         | iptc.IPTCError,
     ):
         if isinstance(exception, subprocess.CalledProcessError):
             errors = FirecrackerError(exception).to_dict()
             errors["subprocess-args"] = exception.cmd
-        elif isinstance(exception, requests.models.Response):
+        elif isinstance(exception, requests.HTTPError):
             errors = {
-                "stdout": exception.text,
-                "stderr": f"{exception.reason} {exception.status_code} when sending to {exception.url} with {exception.headers}",
+                "stdout": exception.response.text,
+                "stderr": f"{exception.response.reason} {exception.response.status_code} when sending to {exception.response.url} with headers {exception.response.headers}",
                 "type": "requests",
             }
         elif isinstance(exception, pyroute2.NetlinkError):
@@ -80,10 +80,17 @@ class DetailedAPIError(APIResponse):
                 "type": "pyroute2",
             }
         elif isinstance(exception, iptc.IPTCError):
-            errors = {"stdout": "", "stderr": exception.args[0], "type": "python-iptables"}
+            errors = {
+                "stdout": "",
+                "stderr": exception.args[0],
+                "type": "python-iptables",
+            }
         else:
             assert_never(exception)
 
         super().__init__(
-            message=message, errors=errors, status_code=status.HTTP_400_BAD_REQUEST, tb=exception
+            message=message,
+            errors=errors,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            tb=exception,
         )

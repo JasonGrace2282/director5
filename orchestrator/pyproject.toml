@@ -33,3 +33,6 @@ default-groups = ["lint", "test"]
 [[tool.mypy.overrides]]
 module = ["requests_unixsocket"]
 ignore_missing_imports = true
+
+[tool.ruff]
+lint.ignore = ["C901"]  # mistakenly thinks of types as arguments

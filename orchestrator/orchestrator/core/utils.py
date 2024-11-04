@@ -6,9 +6,13 @@ from pathlib import Path
 from subprocess import CompletedProcess
 
 from fastapi import HTTPException, status
+from requests import HTTPError
+from requests_unixsocket import Session
 
 
-def assert_path_exists(*paths: tuple[Path, str], status: int = status.HTTP_400_BAD_REQUEST):
+def assert_path_exists(
+    *paths: tuple[Path, str], status: int = status.HTTP_400_BAD_REQUEST
+):
     """Assert that all paths are absolute and exist.
 
     Each ``path`` must be a tuple of the :class:`pathlib.Path`
@@ -36,3 +40,13 @@ def run_commands(commands: Iterable[Sequence[str]]) -> list[CompletedProcess[str
         results.append(result)
 
     return results
+
+
+def send_request_to_socket(session: Session, url: str, json: str) -> HTTPError | None:
+    try:
+        r = session.put(url, json)
+        r.raise_for_status()
+    except HTTPError as e:
+        return e
+
+    return None

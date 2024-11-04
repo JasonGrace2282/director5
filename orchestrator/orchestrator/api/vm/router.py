@@ -1,4 +1,5 @@
 import json
+import subprocess
 from ipaddress import IPv4Interface
 from pathlib import Path
 from time import sleep
@@ -10,7 +11,9 @@ from requests_unixsocket import Session
 
 from ...core import settings
 from ...core.schema import APIError, APIResponse, DetailedAPIError
+from ...core.utils import send_request_to_socket
 from . import networking as net
+from .networking import create_firecracker_instance, get_firecracker_process_output
 
 vm_router = APIRouter()
 
@@ -23,7 +26,7 @@ async def create_vm(
 
     ## Expects
     * `site_id` must be unique
-    * `name` must be the name of a tap device that doesn't exist
+    * `name` must be the name of a tap device and socket that doesn't exist
     * `internal_ip` must not already be taken
     """
     # Create VM TAP device
@@ -34,8 +37,12 @@ async def create_vm(
     if net.ip_exists(ip_interface):
         return APIError(f"The IP {ip_interface} has already been taken")
 
+    if net.socket_exists(name):
+        return APIError(f"Socket {name} already exists")
+
     try:
         ip = IPRoute()
+        create_firecracker_instance(name)
 
         ip.link("add", ifname=name, kind="tuntap", mode="tap")
         interface_index = ip.link_lookup(ifname=name)[0]
@@ -56,7 +63,7 @@ async def create_vm(
         if not any(new_rule == rule for rule in chain.rules):
             chain.insert_rule(new_rule)
 
-    except (NetlinkError, iptc.IPTCError) as e:
+    except (NetlinkError, iptc.IPTCError, subprocess.CalledProcessError) as e:
         return DetailedAPIError(
             "An error occurred while running a command to set up networking for a tap device on "
             "the host. See the errors field for more info",
@@ -69,10 +76,13 @@ async def create_vm(
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path.touch()
 
+    socket_request_url = settings.SOCKET_BASE_REQUEST_URL + name + ".sock"
+
     session = Session()
 
-    r = session.put(
-        f"{settings.SOCKET_REQUEST_URL}/logger",
+    error = send_request_to_socket(
+        session,
+        f"{socket_request_url}/logger",
         json.dumps(
             {
                 "log_path": log_path.absolute().as_posix(),
@@ -83,21 +93,30 @@ async def create_vm(
         ),
     )
 
-    if r.status_code != 200:
-        return DetailedAPIError("An error occurred while trying to enable logging for the VM", r)
+    if error:
+        return DetailedAPIError(
+            "An error occurred while trying to enable logging for the VM", error
+        )
 
-    r = session.put(
-        f"{settings.SOCKET_REQUEST_URL}/boot-source",
+    error = send_request_to_socket(
+        session,
+        f"{socket_request_url}/boot-source",
         json.dumps(
-            {"kernel_image_path": settings.VM_IMAGE_PATH, "boot_args": settings.VM_BOOT_ARGS}
+            {
+                "kernel_image_path": settings.VM_IMAGE_PATH,
+                "boot_args": settings.VM_BOOT_ARGS,
+            }
         ),
     )
 
-    if r.status_code != 200:
-        return DetailedAPIError("An error occurred while trying to set a boot source for the VM", r)
+    if error:
+        return DetailedAPIError(
+            "An error occurred while trying to set a boot source for the VM", error
+        )
 
-    r = session.put(
-        f"{settings.SOCKET_REQUEST_URL}/drives/rootfs",
+    error = send_request_to_socket(
+        session,
+        f"{socket_request_url}/drives/rootfs",
         json.dumps(
             {
                 "drive_id": "rootfs",
@@ -108,11 +127,14 @@ async def create_vm(
         ),
     )
 
-    if r.status_code != 200:
-        return DetailedAPIError("An error occurred while trying to set a rootFS for the VM", r)
+    if error:
+        return DetailedAPIError(
+            "An error occurred while trying to set a rootFS for the VM", error
+        )
 
-    r = session.put(
-        f"{settings.SOCKET_REQUEST_URL}/network-interfaces/{settings.INTERNET_FACING_INTERFACE}",
+    error = send_request_to_socket(
+        session,
+        f"{socket_request_url}/network-interfaces/{settings.INTERNET_FACING_INTERFACE}",
         json.dumps(
             {
                 "iface_id": settings.INTERNET_FACING_INTERFACE,
@@ -122,19 +144,27 @@ async def create_vm(
         ),
     )
 
-    if r.status_code != 200:
+    if error:
         return DetailedAPIError(
-            "An error occurred while trying to set up a network error for the VM", r
+            "An error occurred while trying to set up a network interface for the VM",
+            error,
         )
 
     # Firecracker handles requests async, so we need to ensure it has had time to update networking etc
     sleep(0.015)
 
-    r = session.put(
-        f"{settings.SOCKET_REQUEST_URL}/actions", json.dumps({"action_type": "InstanceStart"})
+    error = send_request_to_socket(
+        session,
+        f"{socket_request_url}/actions",
+        json.dumps({"action_type": "InstanceStart"}),
     )
 
-    if r.status_code != 200:
-        return DetailedAPIError("An error occurred while trying to start the VM", r)
+    if error:
+        return DetailedAPIError("An error occurred while trying to start the VM", error)
 
     return APIResponse(message="VM Creation successful.")
+
+
+@vm_router.get("output/{name}")
+async def get_vm_output(name: str) -> APIResponse:
+    return get_firecracker_process_output(name)
