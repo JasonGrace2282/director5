@@ -3,6 +3,11 @@
 ARCH="$(uname -m)"
 latest=$(wget "http://spec.ccfc.min.s3.amazonaws.com/?prefix=firecracker-ci/v1.10/x86_64/vmlinux-5.10&list-type=2" -O - 2>/dev/null | grep "(?<=<Key>)(firecracker-ci/v1.10/x86_64/vmlinux-5\.10\.[0-9]{3})(?=</Key>)" -o -P)
 
+if [ -z "$latest" ]; then
+  >&2 echo "Could not find the latest kernel version - try hardcoding the version?"
+  exit 1
+fi
+
 mkdir -p /data/images/
 
 set -e
