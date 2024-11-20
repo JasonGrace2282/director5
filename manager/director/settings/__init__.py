@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "social_django",
     "django_browser_reload",
+    "django_linear_migrations",
     "director.apps.auth",
     "director.apps.users",
     "heroicons",

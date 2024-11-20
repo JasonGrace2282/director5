@@ -17,6 +17,7 @@ dependencies = [
     "requests>=2.32.3",
     "social-auth-app-django>=5.4.2",
     "typing-extensions>=4.12",
+    "django-linear-migrations>=2.16.0",
 ]
 
 [dependency-groups]

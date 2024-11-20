@@ -6,6 +6,7 @@ dependencies = [
     "celery",
     "django",
     "django-browser-reload",
+    "django-linear-migrations",
     "heroicons[django]",
     "psycopg[binary]",
     "social-auth-app-django",

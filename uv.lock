@@ -308,6 +308,7 @@ dependencies = [
     { name = "celery" },
     { name = "django" },
     { name = "django-browser-reload" },
+    { name = "django-linear-migrations" },
     { name = "fastapi", extra = ["standard"] },
     { name = "heroicons", extra = ["django"] },
     { name = "psycopg", extra = ["binary"] },
@@ -345,6 +346,7 @@ requires-dist = [
     { name = "celery", specifier = ">=5.4.0" },
     { name = "django", specifier = ">=5.1" },
     { name = "django-browser-reload", specifier = ">=1.15.0" },
+    { name = "django-linear-migrations", specifier = ">=2.16.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.0" },
     { name = "heroicons", extras = ["django"], specifier = ">=2.8.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">3.1.8" },
@@ -411,6 +413,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c9/1f/764d8733458e9bc2c438a231bb7500ddd97c2445c221524d3dbb2864afd5/django_browser_reload-1.16.0.tar.gz", hash = "sha256:2c8fc0f7e678dd5e03f78bedc96dd2efb363379a966e5de68308f3ab0fc8e61b", size = 14415 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7c/af/fc61da2eda30286ce1c18335096387b1a51c43b0e5dc4b5d5108e3a22c67/django_browser_reload-1.16.0-py3-none-any.whl", hash = "sha256:abda653c5ac958cab8505a0d67b25a6935402d35036f8f47588594487648189c", size = 12295 },
+]
+
+[[package]]
+name = "django-linear-migrations"
+version = "2.16.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ce/d1/283714818633fbef2b01ee0c967ecc3466ecabcfd666fe3ab68bf68ae423/django_linear_migrations-2.16.0.tar.gz", hash = "sha256:49219552dca0948029a4116ff2352fb1625e59a1eb26afc7dd1e168480adb673", size = 18792 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bb/f0/6f1b20b15a52b43629426f11c32c6c10d30b29a280f432b1cfa8fff0f59f/django_linear_migrations-2.16.0-py3-none-any.whl", hash = "sha256:c696b8ca2903f84359e900814fab986c9568856fb445132f5c51830dcce8d43a", size = 15530 },
 ]
 
 [[package]]
@@ -690,6 +704,7 @@ dependencies = [
     { name = "celery" },
     { name = "django" },
     { name = "django-browser-reload" },
+    { name = "django-linear-migrations" },
     { name = "heroicons", extra = ["django"] },
     { name = "psycopg", extra = ["binary"] },
     { name = "social-auth-app-django" },
@@ -713,6 +728,7 @@ requires-dist = [
     { name = "celery" },
     { name = "django" },
     { name = "django-browser-reload" },
+    { name = "django-linear-migrations" },
     { name = "heroicons", extras = ["django"] },
     { name = "psycopg", extras = ["binary"] },
     { name = "social-auth-app-django" },
