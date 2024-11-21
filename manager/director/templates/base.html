@@ -12,9 +12,7 @@
         </title>
         <link rel="icon" href="{% static "img/favicon.ico" %}" type="image/x-icon">
 
-        {% block js %}{% endblock %}
-
-        {% block css %}
+        {% block head %}
             <link rel="stylesheet" href="{% static "tailwind/build.css" %}" type="text/css">
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

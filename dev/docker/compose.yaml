@@ -18,7 +18,7 @@ services:
       - POSTGRES_USER=director
       - POSTGRES_PASSWORD=director
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - director-pgdata:/var/lib/postgresql/data
 
   celery:
     container_name: director_celery
@@ -28,7 +28,7 @@ services:
     networks:
       - director_net
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
     depends_on:
       - django
@@ -41,7 +41,7 @@ services:
     networks:
       - director_net
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
     depends_on:
       - django
@@ -52,12 +52,13 @@ services:
       context: ../../
       dockerfile: ./dev/docker/Dockerfile.main
     image: director_base
+    restart: on-failure
     networks:
       - director_net
     ports:
       - 8080:8080
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
     depends_on:
       - redis
@@ -75,11 +76,11 @@ services:
       - /dev/kvm:/dev/kvm
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 80:8080
+      - 8000:8080
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
-      - firecracker-socket:/tmp/firecracker-socket:z
+      - firecracker-socket:/tmp/firecracker-socket
     entrypoint:
       - "dev/docker/docker-entrypoint.sh"
       - "fastapi"
@@ -99,7 +100,7 @@ services:
       - /dev/kvm:/dev/kvm
       - /dev/net/tun:/dev/net/tun
     volumes:
-      - firecracker-socket:/tmp/firecracker-socket:z
+      - firecracker-socket:/tmp/firecracker-socket
       - .:/tmp/firecracker
     entrypoint:
       - "/tmp/firecracker/firecracker.sh"
@@ -112,7 +113,7 @@ services:
     networks:
       - director_net
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
     depends_on:
       - django
@@ -125,5 +126,5 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  director-pgdata:
   firecracker-socket:

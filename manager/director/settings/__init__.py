@@ -46,13 +46,23 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "social_django",
+    "debug_toolbar",
     "django_browser_reload",
     "django_linear_migrations",
+    "social_django",
     "director.apps.auth",
     "director.apps.users",
+    "director.apps.sites",
     "heroicons",
 ]
+
+# they might automatically disable themselves in production
+# but the risk is too big so we do this to be safe
+if DEBUG:
+    INSTALLED_APPS += [
+        "django_extensions",
+        "django_watchfiles",
+    ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -63,6 +73,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "director.urls"
@@ -165,6 +176,28 @@ LOGIN_REDIRECT_URL = "/"
 
 SOCIAL_AUTH_LOGIN_ERROR_URL = "/"
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+
+# Django Debug Toolbar
+_enabled_panels = {
+    "debug_toolbar.panels.history.HistoryPanel",
+    "debug_toolbar.panels.versions.VersionsPanel",
+    "debug_toolbar.panels.timer.TimerPanel",
+    "debug_toolbar.panels.settings.SettingsPanel",
+    "debug_toolbar.panels.headers.HeadersPanel",
+    "debug_toolbar.panels.request.RequestPanel",
+    "debug_toolbar.panels.sql.SQLPanel",
+    "debug_toolbar.panels.staticfiles.StaticFilesPanel",
+    "debug_toolbar.panels.templates.TemplatesPanel",
+    "debug_toolbar.panels.cache.CachePanel",
+    "debug_toolbar.panels.signals.SignalsPanel",
+    "debug_toolbar.panels.redirects.RedirectsPanel",
+    "debug_toolbar.panels.profiling.ProfilingPanel",
+}
+
+DEBUG_TOOLBAR_CONFIG = {
+    "DISABLE_PANELS": _enabled_panels,
+    "SHOW_COLLAPSED": True,
+}
 
 
 # Internationalization

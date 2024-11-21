@@ -5,19 +5,20 @@ description = "A next generation website hosting platform"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "celery>=5.4.0",
-    "django-browser-reload>=1.15.0",
-    "django>=5.1",
-    "fastapi[standard]>=0.115.0",
-    "heroicons[django]>=2.8.0",
-    "psycopg[binary]>3.1.8",
-    "pydantic-extra-types>=2.9.0",
-    "pydantic>=2.9.2",
-    "requests-unixsocket>=0.3.0",
-    "requests>=2.32.3",
-    "social-auth-app-django>=5.4.2",
-    "typing-extensions>=4.12",
-    "django-linear-migrations>=2.16.0",
+  "celery>=5.4.0",
+  "django-browser-reload>=1.15.0",
+  "django>=5.1",
+  "fastapi[standard]>=0.115.0",
+  "heroicons[django]>=2.8.0",
+  "psycopg[binary]>3.1.8",
+  "pydantic-extra-types>=2.9.0",
+  "pydantic>=2.9.2",
+  "requests-unixsocket>=0.3.0",
+  "requests>=2.32.3",
+  "social-auth-app-django>=5.4.2",
+  "typing-extensions>=4.12",
+  "django-debug-toolbar>=4.4.6",
+  "django-linear-migrations>=2.16.0",
 ]
 
 [dependency-groups]
@@ -27,14 +28,12 @@ lint = [
   "pre-commit>=3.8.0",
   "types-requests>=2.32.0.20241016",
 ]
-
 test = [
   "httpx>=0.27.2",
   "pytest-django>=4.9.0",
   "pytest-xdist>=3.6.1",
   "pytest>=8.3.3",
 ]
-
 docs = [
   "furo>=2024.8.6",
   "myst-parser>=4.0.0",
@@ -42,10 +41,17 @@ docs = [
   "sphinx>=8.1.0",
   "sphinxcontrib-django>=2.5",
 ]
+dev = [
+  "watchdog>=6.0.0",
+  "werkzeug>=3.1.3",
+  "django-fastdev>=1.12.0",
+  "django-watchfiles>=1.0.0",
+  "django-extensions>=3.2.3",
+]
 
 [tool.uv]
 package = false
-default-groups = ["lint", "test", "docs"]
+default-groups = ["lint", "test", "docs", "dev"]
 
 [tool.uv.workspace]
 members = ["manager", "orchestrator"]
