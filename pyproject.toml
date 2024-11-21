@@ -92,6 +92,8 @@ select = [
     "E",
     # Pyflakes
     "F",
+    # fastapi
+    "FAST",
     # flake8-boolean-trap
     "FBT",
     # isort
