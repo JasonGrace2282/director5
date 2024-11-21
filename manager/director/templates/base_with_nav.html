@@ -1,37 +1,32 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>
-
-            {% block title %}
-                Director
-            {% endblock title %}
-        </title>
-        <link rel="icon" href="{% static "img/favicon.ico" %}" type="image/x-icon">
-
-        <link rel="stylesheet" href="{% static "tailwind/build.css" %}" type="text/css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-              rel="stylesheet">
-
-        {% block head %}
-            <link rel="stylesheet"
-                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/fontawesome.min.css"
-                  integrity="sha512-lauN4D/0AgFUGvmMR+knQnbOADyD/XuQ8VF18I8Ll0+TLvsujshyxvU+uzogmQbSq6qJd5jnUdYtK8ShxXMlSg=="
-                  crossorigin="anonymous"
-                  referrerpolicy="no-referrer" />
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-                    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-                    crossorigin="anonymous"
-                    referrerpolicy="no-referrer"></script>
-        {% endblock %}
-
-        <script>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+      {% block title %}
+        Director
+      {% endblock title %}
+    </title>
+    <link rel="icon" href="{% static "img/favicon.ico" %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static "tailwind/build.css" %}" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+          rel="stylesheet">
+    {% block head %}
+      <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/fontawesome.min.css"
+            integrity="sha512-lauN4D/0AgFUGvmMR+knQnbOADyD/XuQ8VF18I8Ll0+TLvsujshyxvU+uzogmQbSq6qJd5jnUdYtK8ShxXMlSg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer" />
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+              integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"></script>
+    {% endblock %}
+    <script>
           const current_app = "{{ request.current_app }}";
 
           /**
@@ -50,90 +45,89 @@
           $(function() {
             setActiveNavbar();
           })
-        </script>
-    </head>
-    <body>
-        <nav class="bg-gray-800">
-            <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="flex relative justify-between items-center h-16">
-                    <div class="flex absolute inset-y-0 left-0 items-center align-middle sm:hidden">
-                        <!-- Mobile menu button-->
-                        <button type="button"
-                                class="inline-flex relative justify-center items-center p-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-white focus:outline-none"
-                                aria-controls="mobile-menu"
-                                aria-expanded="false">
-                            <span class="absolute -inset-0.5"></span>
-                            <span class="sr-only">Open main menu</span>
-                            <!--
+    </script>
+  </head>
+  <body>
+    <nav class="bg-gray-800">
+      <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="flex relative justify-between items-center h-16">
+          <div class="flex absolute inset-y-0 left-0 items-center align-middle sm:hidden">
+            <!-- Mobile menu button-->
+            <button type="button"
+                    class="inline-flex relative justify-center items-center p-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-white focus:outline-none"
+                    aria-controls="mobile-menu"
+                    aria-expanded="false">
+              <span class="absolute -inset-0.5"></span>
+              <span class="sr-only">Open main menu</span>
+              <!--
                   Icon when menu is closed.
 
                   Menu open: "hidden", Menu closed: "block"
                 -->
-                            <svg class="block size-6"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke-width="1.5"
-                                 stroke="currentColor"
-                                 aria-hidden="true"
-                                 data-slot="icon">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                            </svg>
-                            <!--
+              <svg class="block size-6"
+                   fill="none"
+                   viewBox="0 0 24 24"
+                   stroke-width="1.5"
+                   stroke="currentColor"
+                   aria-hidden="true"
+                   data-slot="icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+              <!--
                   Icon when menu is open.
 
                   Menu open: "block", Menu closed: "hidden"
                 -->
-                            <svg class="hidden size-6"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke-width="1.5"
-                                 stroke="currentColor"
-                                 aria-hidden="true"
-                                 data-slot="icon">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="flex flex-1 justify-center items-center sm:justify-start sm:items-stretch">
-                        <div class="flex items-center shrink-0">
-                            {% comment %}
+              <svg class="hidden size-6"
+                   fill="none"
+                   viewBox="0 0 24 24"
+                   stroke-width="1.5"
+                   stroke="currentColor"
+                   aria-hidden="true"
+                   data-slot="icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="flex flex-1 justify-center items-center sm:justify-start sm:items-stretch">
+            <div class="flex items-center shrink-0">
+              {% comment %}
                 FIXME: for some reason, this breaks alignment
                 <img alt="director logo" area-hidden="true" src="{% static "img/favicon.ico" %}" class="size-10">
-                            {% endcomment %}
-                            <p class="py-2 text-xl font-medium text-gray-300">Director</p>
-                        </div>
-                        <div class="hidden sm:block sm:ml-6">
-                            <div class="flex space-x-4" id="navbar-sections">
-                                <!-- Highlighting and adding some other classes is done via javascript -->
-                                <a href="{% url 'sites:index' %}"
-                                   class="py-2 px-3 text-sm font-medium rounded-md">Sites</a>
-                                {% if request.user.is_superuser %}
-                                    <a href="#" class="py-2 px-3 text-sm font-medium rounded-md">Operations</a>
-                                {% endif %}
-                                <a href="https://jasongrace2282.github.io/director5"
-                                   class="py-2 px-3 text-sm font-medium rounded-md">Docs</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0 sm:ml-6">
-                        <!-- Profile dropdown -->
-                        {% if request.user.is_authenticated %}
-                            <div class="relative ml-3">
-                                <div>
-                                    <button type="button"
-                                            data-dropdown-toggle="user-menu"
-                                            data-dropdown-trigger="hover"
-                                            class="flex relative text-sm bg-gray-800 rounded-full focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none"
-                                            id="user-menu-button"
-                                            aria-expanded="false"
-                                            aria-haspopup="true">
-                                        <span class="absolute -inset-1.5"></span>
-                                        <span class="sr-only">Open user menu</span>
-                                        <p>{{ request.user }}</p>
-                                    </button>
-                                </div>
-
-                                <!--
+              {% endcomment %}
+              <p class="py-2 text-xl font-medium text-gray-300">Director</p>
+            </div>
+            <div class="hidden sm:block sm:ml-6">
+              <div class="flex space-x-4" id="navbar-sections">
+                <!-- Highlighting and adding some other classes is done via javascript -->
+                <a href="{% url 'sites:index' %}"
+                   class="py-2 px-3 text-sm font-medium rounded-md">Sites</a>
+                {% if request.user.is_superuser %}
+                  <a href="#" class="py-2 px-3 text-sm font-medium rounded-md">Operations</a>
+                {% endif %}
+                <a href="https://jasongrace2282.github.io/director5"
+                   class="py-2 px-3 text-sm font-medium rounded-md">Docs</a>
+              </div>
+            </div>
+          </div>
+          <div class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0 sm:ml-6">
+            <!-- Profile dropdown -->
+            {% if request.user.is_authenticated %}
+              <div class="relative ml-3">
+                <div>
+                  <button type="button"
+                          data-dropdown-toggle="user-menu"
+                          data-dropdown-trigger="hover"
+                          class="flex relative text-sm bg-gray-800 rounded-full focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none"
+                          id="user-menu-button"
+                          aria-expanded="false"
+                          aria-haspopup="true">
+                    <span class="absolute -inset-1.5"></span>
+                    <span class="sr-only">Open user menu</span>
+                    <p>{{ request.user }}</p>
+                  </button>
+                </div>
+                <!--
                     Dropdown menu, show/hide based on menu state.
 
                     Entering: "transition ease-out duration-100"
@@ -143,43 +137,40 @@
                       From: "transform opacity-100 scale-100"
                       To: "transform opacity-0 scale-95"
                   -->
-                                <div id="user-menu"
-                                     class="absolute right-0 z-10 py-1 mt-2 w-48 bg-white rounded-md ring-1 shadow-lg origin-top-right focus:outline-none ring-black/5"
-                                     role="menu"
-                                     aria-orientation="vertical"
-                                     aria-labelledby="user-menu-button"
-                                     tabindex="-1">
-                                    <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
-                                    <a href="{% url 'auth:logout' %}"
-                                       class="block py-2 px-4 text-sm text-gray-700"
-                                       role="menuitem"
-                                       tabindex="-1"
-                                       id="user-menu-item-2">Sign out</a>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
+                <div id="user-menu"
+                     class="absolute right-0 z-10 py-1 mt-2 w-48 bg-white rounded-md ring-1 shadow-lg origin-top-right focus:outline-none ring-black/5"
+                     role="menu"
+                     aria-orientation="vertical"
+                     aria-labelledby="user-menu-button"
+                     tabindex="-1">
+                  <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
+                  <a href="{% url 'auth:logout' %}"
+                     class="block py-2 px-4 text-sm text-gray-700"
+                     role="menuitem"
+                     tabindex="-1"
+                     id="user-menu-item-2">Sign out</a>
                 </div>
-            </div>
-
-            <!-- Mobile menu, show/hide based on menu state. -->
-            <div class="sm:hidden" id="mobile-menu">
-                <div class="px-2 pt-2 pb-3 space-y-1">
-                    <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                    <a href="#"
-                       class="block py-2 px-3 text-base font-medium text-white bg-gray-900 rounded-md"
-                       aria-current="page">Dashboard</a>
-                    <a href="#"
-                       class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Team</a>
-                    <a href="#"
-                       class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Projects</a>
-                    <a href="#"
-                       class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Calendar</a>
-                </div>
-            </div>
-        </nav>
-
-
-        {% block main %}{% endblock %}
-    </body>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <!-- Mobile menu, show/hide based on menu state. -->
+      <div class="sm:hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+          <a href="#"
+             class="block py-2 px-3 text-base font-medium text-white bg-gray-900 rounded-md"
+             aria-current="page">Dashboard</a>
+          <a href="#"
+             class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Team</a>
+          <a href="#"
+             class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Projects</a>
+          <a href="#"
+             class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Calendar</a>
+        </div>
+      </div>
+    </nav>
+    {% block main %}{% endblock %}
+  </body>
 </html>

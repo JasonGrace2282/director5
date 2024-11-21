@@ -24,7 +24,9 @@ async def root(message: str = "pong"):
 
 
 @app.exception_handler(FirecrackerError)
-async def firecracker_exception_handler(request: Request, exc: FirecrackerError) -> APIResponse:
+async def firecracker_exception_handler(
+    request: Request, exc: FirecrackerError
+) -> APIResponse:
     error_details = exc.to_dict()
 
     return APIResponse(

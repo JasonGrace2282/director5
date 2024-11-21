@@ -1,24 +1,22 @@
 {% extends "base_with_nav.html" %}
-
 {% block title %}Director: Login{% endblock %}
-
 {% block main %}
-    <div class="login-box">
-        <div class="flex justify-center mt-[20vh]">
-            <div class="justify-center p-4 rounded-sm outline-black outline-2 outline">
-                <p>
-                    Log in with your <b>Intranet account</b> to access Director
-                </p>
-                <div class="flex justify-center mt-6">
-                    <div class="flex flex-col space-y-2.5">
-                        <a class="dt-btn" href="{% url 'social:begin' 'ion' %}">Log in with Ion</a>
-                        {% if debug %}
-                            <a href="{% url 'auth:password_login' %}{% if request.GET.next %}?next={{ request.GET.next | urlencode }}{% endif %}"
-                               class="dt-btn">Password login</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+  <div class="login-box">
+    <div class="flex justify-center mt-[20vh]">
+      <div class="justify-center p-4 rounded-sm outline-black outline-2 outline">
+        <p>
+          Log in with your <b>Intranet account</b> to access Director
+        </p>
+        <div class="flex justify-center mt-6">
+          <div class="flex flex-col space-y-2.5">
+            <a class="dt-btn" href="{% url 'social:begin' 'ion' %}">Log in with Ion</a>
+            {% if debug %}
+              <a href="{% url 'auth:password_login' %}{% if request.GET.next %}?next={{ request.GET.next | urlencode }}{% endif %}"
+                 class="dt-btn">Password login</a>
+            {% endif %}
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 {% endblock %}
