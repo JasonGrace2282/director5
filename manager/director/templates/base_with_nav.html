@@ -20,7 +20,7 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/fontawesome.min.css"
             integrity="sha512-lauN4D/0AgFUGvmMR+knQnbOADyD/XuQ8VF18I8Ll0+TLvsujshyxvU+uzogmQbSq6qJd5jnUdYtK8ShxXMlSg=="
             crossorigin="anonymous"
-            referrerpolicy="no-referrer" />
+            referrerpolicy="no-referrer">
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
               integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
               crossorigin="anonymous"
@@ -33,19 +33,23 @@
           * Populates the navbar with the appropriate active classes
           */
           function setActiveNavbar() {
-            $("#navbar-sections").children().each(function() {
+            $("#navbar-sections").children().each(function(_, el) {
               if ($(this).html().toLowerCase() === current_app) {
                 $(this).addClass("text-white");
                 $(this).attr("aria-current", "page");
               } else {
                 $(this).addClass("text-gray-300 hover:bg-gray-700 hover:text-white");
               }
+
+              const mobile_el = $(this).clone();
+              mobile_el.removeClass("text-sm").addClass("block");
+              $("#mobile-menu-dashboard").append(mobile_el);
+
             });
           }
 
           /**
           * Toggles the profile options dropdown on the user.
-          * @param {jQuery} btn The button that was clicked
           */
           function toggleProfileOptions() {
             const options = $("#user-menu");
@@ -59,10 +63,25 @@
             }
           }
 
-          $(function() {
-             setActiveNavbar();
+          /**
+          * Toggle the sidebar on mobile
+          */
+          function toggleMobileMenu() {
+            const menu = $("#mobile-menu");
+            menu.toggle(200);
+            if(menu.attr("aria-expanded") === "true") {
+              menu.attr("aria-expanded", "false");
+            } else {
+              menu.attr("aria-expanded", "true");
+            }
+          }
 
-             $("#user-menu-button").on("click", toggleProfileOptions);
+          $(function() {
+            setActiveNavbar();
+
+            $("#user-menu-button").on("click", toggleProfileOptions);
+
+            $("#mobile-menu-button").on("click", toggleMobileMenu);
           })
     </script>
   </head>
@@ -74,6 +93,7 @@
             <!-- Mobile menu button-->
             <button type="button"
                     class="inline-flex relative justify-center items-center p-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-white focus:outline-none"
+                    id="mobile-menu-button"
                     aria-controls="mobile-menu"
                     aria-expanded="false">
               <span class="absolute -inset-0.5"></span>
@@ -129,24 +149,24 @@
               </div>
             </div>
           </div>
-          <div class="flex overflow-hidden mx-auto max-w-md rounded-md border-2 border-blue-500">
-            <input type="search"
-                   placeholder="Search for site..."
-                   class="py-3 px-4 w-full text-sm text-gray-600 bg-white rounded-sm outline-none" />
-            <button type='button'
-                    class="flex justify-center items-center px-5 bg-[#007bff]">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                   viewBox="0 0 192.904 192.904"
-                   width="16px"
-                   class="fill-white">
-                <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
-                </path>
-              </svg>
-            </button>
-          </div>
-          <div class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0 sm:ml-6">
-            <!-- Profile dropdown -->
-            {% if request.user.is_authenticated %}
+          {% if request.user.is_authenticated %}
+            <div class="flex hidden overflow-hidden mx-auto max-w-md rounded-md border-2 border-blue-500 md:inline-flex">
+              <input type="search"
+                     placeholder="Search for site..."
+                     class="py-3 px-4 w-full text-sm text-gray-600 bg-white rounded-sm outline-none">
+              <button type='button'
+                      class="flex justify-center items-center px-5 bg-[#007bff]">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 192.904 192.904"
+                     width="16px"
+                     class="fill-white">
+                  <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
+                  </path>
+                </svg>
+              </button>
+            </div>
+            <div class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0 sm:ml-6">
+              <!-- Profile dropdown -->
               <div class="relative ml-3">
                 <div>
                   <button type="button"
@@ -183,26 +203,16 @@
                      id="user-menu-item-2">Sign out</a>
                 </div>
               </div>
-            {% endif %}
-          </div>
+            </div>
+          {% endif %}
         </div>
       </div>
       <!-- Mobile menu, show/hide based on menu state. -->
-      <div class="sm:hidden" id="mobile-menu">
-        <div class="px-2 pt-2 pb-3 space-y-1">
-          <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-          <a href="#"
-             class="block py-2 px-3 text-base font-medium text-white bg-gray-900 rounded-md"
-             aria-current="page">Dashboard</a>
-          <a href="#"
-             class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Team</a>
-          <a href="#"
-             class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Projects</a>
-          <a href="#"
-             class="block py-2 px-3 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700">Calendar</a>
+      <div class="hidden sm:hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1" id="mobile-menu-dashboard">
+          <!-- Populated via javascript -->
         </div>
-      </div>
-    </nav>
-    {% block main %}{% endblock %}
-  </body>
-</html>
+      </nav>
+      {% block main %}{% endblock %}
+    </body>
+  </html>
