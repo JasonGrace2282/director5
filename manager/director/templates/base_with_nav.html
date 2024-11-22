@@ -42,8 +42,27 @@
               }
             });
           }
+
+          /**
+          * Toggles the profile options dropdown on the user.
+          * @param {jQuery} btn The button that was clicked
+          */
+          function toggleProfileOptions() {
+            const options = $("#user-menu");
+            options.toggle(200);
+            // accessibility
+            options.children(":first").focus();
+            if(options.attr("aria-expanded") === "true") {
+              options.attr("aria-expanded", "false");
+            } else {
+              options.attr("aria-expanded", "true");
+            }
+          }
+
           $(function() {
-            setActiveNavbar();
+             setActiveNavbar();
+
+             $("#user-menu-button").on("click", toggleProfileOptions);
           })
     </script>
   </head>
@@ -110,21 +129,34 @@
               </div>
             </div>
           </div>
+          <div class="flex overflow-hidden mx-auto max-w-md rounded-md border-2 border-blue-500">
+            <input type="search"
+                   placeholder="Search for site..."
+                   class="py-3 px-4 w-full text-sm text-gray-600 bg-white rounded-sm outline-none" />
+            <button type='button'
+                    class="flex justify-center items-center px-5 bg-[#007bff]">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   viewBox="0 0 192.904 192.904"
+                   width="16px"
+                   class="fill-white">
+                <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
+                </path>
+              </svg>
+            </button>
+          </div>
           <div class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0 sm:ml-6">
             <!-- Profile dropdown -->
             {% if request.user.is_authenticated %}
               <div class="relative ml-3">
                 <div>
                   <button type="button"
-                          data-dropdown-toggle="user-menu"
-                          data-dropdown-trigger="hover"
                           class="flex relative text-sm bg-gray-800 rounded-full focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none"
                           id="user-menu-button"
                           aria-expanded="false"
                           aria-haspopup="true">
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">Open user menu</span>
-                    <p>{{ request.user }}</p>
+                    <p class="text-white">{{ request.user }}</p>
                   </button>
                 </div>
                 <!--
@@ -138,7 +170,7 @@
                       To: "transform opacity-0 scale-95"
                   -->
                 <div id="user-menu"
-                     class="absolute right-0 z-10 py-1 mt-2 w-48 bg-white rounded-md ring-1 shadow-lg origin-top-right focus:outline-none ring-black/5"
+                     class="hidden absolute right-0 z-10 py-1 mt-2 w-48 bg-white rounded-md ring-1 shadow-lg origin-top-right focus:outline-none ring-black/5"
                      role="menu"
                      aria-orientation="vertical"
                      aria-labelledby="user-menu-button"

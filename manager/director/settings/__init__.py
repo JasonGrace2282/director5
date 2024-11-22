@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import contextlib
 import os
+import socket
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,6 +36,11 @@ INTERNAL_IPS = [
     "127.0.0.1",
     "localhost",
 ]
+
+if DEBUG:
+    # hack for docker environments, because docker creates ip's dynamically
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
 
 
 # Application definition
