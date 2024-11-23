@@ -1,4 +1,3 @@
-import json
 import subprocess
 from ipaddress import IPv4Interface
 from pathlib import Path
@@ -13,14 +12,17 @@ from ...core import settings
 from ...core.schema import APIError, APIResponse, DetailedAPIError
 from ...core.utils import send_request_to_socket
 from . import networking as net
-from .networking import create_firecracker_instance, get_firecracker_process_output
 
 vm_router = APIRouter()
 
 
 @vm_router.post("/create")
 async def create_vm(
-    name: str, ip_interface: IPv4Interface, site_id: int, ram_mb: int, vcpu_count: int
+    name: str,
+    ip_interface: IPv4Interface,
+    site_id: int,
+    ram_mb: int,
+    vcpu_count: int,
 ) -> APIResponse:
     """Create a VM.
 
@@ -42,7 +44,7 @@ async def create_vm(
 
     try:
         ip = IPRoute()
-        create_firecracker_instance(name)
+        net.create_firecracker_instance(name)
 
         ip.link("add", ifname=name, kind="tuntap", mode="tap")
         interface_index = ip.link_lookup(ifname=name)[0]
@@ -76,21 +78,19 @@ async def create_vm(
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path.touch()
 
-    socket_request_url = settings.SOCKET_BASE_REQUEST_URL + name + ".sock"
+    socket_request_url = f"{settings.SOCKET_BASE_REQUEST_URL}{name}.sock"
 
     session = Session()
 
     error = send_request_to_socket(
         session,
         f"{socket_request_url}/logger",
-        json.dumps(
-            {
-                "log_path": log_path.absolute().as_posix(),
-                "level": "Debug",
-                "show_level": True,
-                "show_log_origin": True,
-            }
-        ),
+        {
+            "log_path": log_path.resolve().as_posix(),
+            "level": "Debug",
+            "show_level": True,
+            "show_log_origin": True,
+        },
     )
 
     if error:
@@ -101,12 +101,10 @@ async def create_vm(
     error = send_request_to_socket(
         session,
         f"{socket_request_url}/boot-source",
-        json.dumps(
-            {
-                "kernel_image_path": settings.VM_IMAGE_PATH,
-                "boot_args": settings.VM_BOOT_ARGS,
-            }
-        ),
+        {
+            "kernel_image_path": settings.VM_IMAGE_PATH,
+            "boot_args": settings.VM_BOOT_ARGS,
+        },
     )
 
     if error:
@@ -117,14 +115,12 @@ async def create_vm(
     error = send_request_to_socket(
         session,
         f"{socket_request_url}/drives/rootfs",
-        json.dumps(
-            {
-                "drive_id": "rootfs",
-                "path_on_host": settings.VM_ROOTFS_PATH,
-                "is_root_device": True,
-                "is_read_only": False,
-            }
-        ),
+        {
+            "drive_id": "rootfs",
+            "path_on_host": settings.VM_ROOTFS_PATH,
+            "is_root_device": True,
+            "is_read_only": False,
+        },
     )
 
     if error:
@@ -135,13 +131,11 @@ async def create_vm(
     error = send_request_to_socket(
         session,
         f"{socket_request_url}/network-interfaces/{settings.INTERNET_FACING_INTERFACE}",
-        json.dumps(
-            {
-                "iface_id": settings.INTERNET_FACING_INTERFACE,
-                "guest_mac": net.ip_to_mac("06:00", ip_interface),
-                "host_dev_name": name,
-            }
-        ),
+        {
+            "iface_id": settings.INTERNET_FACING_INTERFACE,
+            "guest_mac": net.ip_to_mac("06:00", ip_interface),
+            "host_dev_name": name,
+        },
     )
 
     if error:
@@ -156,7 +150,7 @@ async def create_vm(
     error = send_request_to_socket(
         session,
         f"{socket_request_url}/actions",
-        json.dumps({"action_type": "InstanceStart"}),
+        {"action_type": "InstanceStart"},
     )
 
     if error:
@@ -167,4 +161,4 @@ async def create_vm(
 
 @vm_router.get("output/{name}")
 async def get_vm_output(name: str) -> APIResponse:
-    return get_firecracker_process_output(name)
+    return net.get_firecracker_process_output(name)

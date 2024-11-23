@@ -31,8 +31,7 @@ def run_setup():
             forward_chain.insert_rule(forward_rule)
 
         # Enable IP forwarding
-        with Path("/proc/sys/net/ipv4/ip_forward").open("w") as f:
-            f.write("1")
+        Path("/proc/sys/net/ipv4/ip_forward").write_text("1")
 
     except (NetlinkError, iptc.IPTCError) as e:
         raise NetworkingError(e) from e

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import subprocess
+import json
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 from subprocess import CompletedProcess
+from typing import Any
 
 from fastapi import HTTPException, status
 from requests import HTTPError
@@ -42,9 +44,11 @@ def run_commands(commands: Iterable[Sequence[str]]) -> list[CompletedProcess[str
     return results
 
 
-def send_request_to_socket(session: Session, url: str, json: str) -> HTTPError | None:
+def send_request_to_socket(
+    session: Session, url: str, data: dict[Any, Any]
+) -> HTTPError | None:
     try:
-        r = session.put(url, json)
+        r = session.put(url, json.dumps(data))
         r.raise_for_status()
     except HTTPError as e:
         return e
