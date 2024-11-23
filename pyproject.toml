@@ -40,6 +40,8 @@ docs = [
   "sphinx-copybutton>=0.5.2",
   "sphinx>=8.1.0",
   "sphinxcontrib-django>=2.5",
+  "rust-just>=1.37.0",
+  "sphinx-autobuild>=2024.10.3",
 ]
 dev = [
   "watchdog>=6.0.0",

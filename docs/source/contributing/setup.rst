@@ -48,6 +48,17 @@ or ``uv run pre-commit run --all-files`` to run the linter/formatter.
 
    Use ``uv run --package manager`` to run something using the dependencies of the manager.
 
+Docs
+----
+To edit the docs, run::
+
+  cd docs
+  uv run just live
+
+This will start a webserver at http://127.0.0.1:8800 that will automatically rebuild
+and update as you edit the docs.
+
+
 Next Steps
 ----------
 You're almost done! Now, we need to add some plugins that will make development easier in your IDE.

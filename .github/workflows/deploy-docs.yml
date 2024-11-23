@@ -20,7 +20,7 @@ jobs:
 
       - name: Build docs
         working-directory: ./docs
-        run: uv run make html
+        run: uv run just html
 
       - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v3

@@ -76,4 +76,4 @@ jobs:
 
       - name: Build Docs
         working-directory: ./docs
-        run: uv run make html SPHINXOPTS="-W --keep-going"
+        run: uv run just html-strict

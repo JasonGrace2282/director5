@@ -8,7 +8,7 @@ The documentation is written in reStructuredText (``rst``). When making changes,
 sure to build it in strict mode, to make sure everything works::
 
   cd docs
-  uv run make html SPHINXOPTS="-W --keep-going"
+  uv run just html-strict
 
 
 Docstrings

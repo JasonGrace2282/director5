@@ -328,7 +328,9 @@ dev = [
 docs = [
     { name = "furo" },
     { name = "myst-parser" },
+    { name = "rust-just" },
     { name = "sphinx" },
+    { name = "sphinx-autobuild" },
     { name = "sphinx-copybutton" },
     { name = "sphinxcontrib-django" },
 ]
@@ -374,7 +376,9 @@ dev = [
 docs = [
     { name = "furo", specifier = ">=2024.8.6" },
     { name = "myst-parser", specifier = ">=4.0.0" },
+    { name = "rust-just", specifier = ">=1.37.0" },
     { name = "sphinx", specifier = ">=8.1.0" },
+    { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
     { name = "sphinxcontrib-django", specifier = ">=2.5" },
 ]
@@ -1417,6 +1421,28 @@ wheels = [
 ]
 
 [[package]]
+name = "rust-just"
+version = "1.37.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/99/270565a23ce16051f1e2074506e21295c5f734b10b106903904f7bca392c/rust_just-1.37.0.tar.gz", hash = "sha256:2fc3236d08dd3c6f16adaa426e09904fde7943835fb58671e7860138a03789ed", size = 1381220 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d4/1a/28c87a8fbfed3f8d1c810062e9e1e60bac16461c86e27b74a45b78aa3971/rust_just-1.37.0-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:53fc9730233fbb27ac78a8012fcdb6b0dd064a9a63fb851b887b367e716d5e31", size = 1731621 },
+    { url = "https://files.pythonhosted.org/packages/4b/2a/31ffab4ee508b9cd9980e4aff4676e4562262f79ef10b60c79b70cd85eb8/rust_just-1.37.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:2e10630bc68de9e7db89012e8a8a29d7f2311ca8f00951fd4db3b3d63cae14a1", size = 1611493 },
+    { url = "https://files.pythonhosted.org/packages/38/f8/3555de47ddcaaec87dbf6921558ab97228bc7ecf62aa39988756f063af32/rust_just-1.37.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6357fc2e25fe271cb0b9e5446ce3a417d621e56ae3805cafe96e235292dd8798", size = 1736331 },
+    { url = "https://files.pythonhosted.org/packages/78/41/83fac2fd052095a0051b5a5e2aefc7352333a6215d6db80c4979e3513fb7/rust_just-1.37.0-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:4004500d0244af3eee2736ede081b783e76787619ce6bddb265d21983c04142d", size = 1747868 },
+    { url = "https://files.pythonhosted.org/packages/bf/e9/d6acbedad4ce57664ac6090b8243910f90901f673dba83870d0a432969a2/rust_just-1.37.0-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:98692aa3feaca52ec6b56af51d123e836c1ec329a0a5f199523601059f8d85b3", size = 1867122 },
+    { url = "https://files.pythonhosted.org/packages/f2/a3/d8f814329eff5e20050e29a7ce776e3ebb79d53728f5c47c328c2d1cdbf7/rust_just-1.37.0-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:f7cba06d475654700ecbed766374a0c1648166f98b5c738262d0093200916f60", size = 1923495 },
+    { url = "https://files.pythonhosted.org/packages/a4/7f/e19caf8e006dd80f395c1156ffec48dbba8ec62b6452bf859c8af55842f8/rust_just-1.37.0-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:2ea38b99c3212784b8e074ee3dafcb83c83a6f9d5062ab519d167ff6c2e1d2cd", size = 2362260 },
+    { url = "https://files.pythonhosted.org/packages/56/63/8a3a66a2399ded683535737daf264fdf95825209764c6b9a4c32d5f92b8e/rust_just-1.37.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f0071bb78ca4f7198a8cdff8727b987b1e4c922fb15f243e546246e5250faf41", size = 1857159 },
+    { url = "https://files.pythonhosted.org/packages/7a/f5/5b27069e56e71ec944b52d16e528a8a0392c31db48980b7d2ec75b68f715/rust_just-1.37.0-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:531fb52f1d21febe7ed6bb2059a06e9bc31289596bcde0ad964ede05c7d68ea9", size = 1747765 },
+    { url = "https://files.pythonhosted.org/packages/c8/5e/7403339a91f057681042a66de759e960df11ad289dd47d8e2fd4f82348e9/rust_just-1.37.0-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:59d0ecf3523338ba9e0e286179dfde3a7458be81a7ec72265a903b7bdc9084d5", size = 1775121 },
+    { url = "https://files.pythonhosted.org/packages/48/58/f5624f31ae51db3b056d8d69cad12f7b09b35064ace1df7b093e82ecc098/rust_just-1.37.0-py3-none-musllinux_1_2_i686.whl", hash = "sha256:40b505c95e5ae98ccdcb088eeabb9641a35e6007d57e49c6e4718926af6e98cd", size = 1868402 },
+    { url = "https://files.pythonhosted.org/packages/ad/f7/2877f657c611b111b995298eda7e2310b6cb0a5b78c3fe8c55508ac3dec6/rust_just-1.37.0-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:564b1618fe5a3c5234b6f2d7ff85e4955fe9c6e16a44d981cc12499067d038e3", size = 1918847 },
+    { url = "https://files.pythonhosted.org/packages/e4/0a/06155284e6b21e56b955d7783687fd5dee0284ffdc8b719273c30287b75b/rust_just-1.37.0-py3-none-win32.whl", hash = "sha256:c4d019b206e7e440fc5e7d9258c068e22bd3df14d3040d55d953844aea8fa733", size = 1536231 },
+    { url = "https://files.pythonhosted.org/packages/36/fd/62481f076fc57bfbcd660b10a63e6f79f9e51643b3aa3cf9a8170c730bfb/rust_just-1.37.0-py3-none-win_amd64.whl", hash = "sha256:f43e66bc52c2af1cb4200d93ac514dc49668345eb823a9875bff7471f1c899da", size = 1659241 },
+]
+
+[[package]]
 name = "setuptools"
 version = "75.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1526,6 +1552,23 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/6f/6d/be0b61178fe2cdcb67e2a92fc9ebb488e3c51c4f74a36a7824c0adf23425/sphinx-8.1.3.tar.gz", hash = "sha256:43c1911eecb0d3e161ad78611bc905d1ad0e523e4ddc202a58a821773dc4c927", size = 8184611 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/26/60/1ddff83a56d33aaf6f10ec8ce84b4c007d9368b21008876fceda7e7381ef/sphinx-8.1.3-py3-none-any.whl", hash = "sha256:09719015511837b76bf6e03e42eb7595ac8c2e41eeb9c29c5b755c6b677992a2", size = 3487125 },
+]
+
+[[package]]
+name = "sphinx-autobuild"
+version = "2024.10.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama" },
+    { name = "sphinx" },
+    { name = "starlette" },
+    { name = "uvicorn" },
+    { name = "watchfiles" },
+    { name = "websockets" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a5/2c/155e1de2c1ba96a72e5dba152c509a8b41e047ee5c2def9e9f0d812f8be7/sphinx_autobuild-2024.10.3.tar.gz", hash = "sha256:248150f8f333e825107b6d4b86113ab28fa51750e5f9ae63b59dc339be951fb1", size = 14023 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/18/c0/eba125db38c84d3c74717008fd3cb5000b68cd7e2cbafd1349c6a38c3d3b/sphinx_autobuild-2024.10.3-py3-none-any.whl", hash = "sha256:158e16c36f9d633e613c9aaf81c19b0fc458ca78b112533b20dafcda430d60fa", size = 11908 },
 ]
 
 [[package]]
