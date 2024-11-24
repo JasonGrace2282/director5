@@ -27,16 +27,16 @@
               referrerpolicy="no-referrer"></script>
     {% endblock %}
     <script>
-          const current_app = "{{ request.current_app }}";
-
           /**
           * Populates the navbar with the appropriate active classes
           */
           function setActiveNavbar() {
             $("#navbar-sections").children().each(function(_, el) {
-              if ($(this).html().toLowerCase() === current_app) {
+              const section = $(this).html().toLowerCase();
+              if (window.location.href.includes(section)) {
                 $(this).addClass("text-white");
                 $(this).attr("aria-current", "page");
+                console.debug(`Currently in the ${section} app.`);
               } else {
                 $(this).addClass("text-gray-300 hover:bg-gray-700 hover:text-white");
               }
