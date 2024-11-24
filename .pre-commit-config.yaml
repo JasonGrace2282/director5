@@ -12,10 +12,6 @@ repos:
       - id: check-toml
       - id: check-yaml
       - id: detect-private-key
-  - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.4.27
-    hooks:
-      - id: uv-lock
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.0
     hooks:
