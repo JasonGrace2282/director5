@@ -1,13 +1,12 @@
 html := "build"
 docs := "source"
-port := "8800"
 
 [no-exit-message]
 [private]
 default:
   @just --choose
 
-live:
+live port="8800":
   sphinx-autobuild {{ docs }} {{ html }}/html/.live/ --port {{ port }}
 
 html:
