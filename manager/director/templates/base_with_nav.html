@@ -128,16 +128,13 @@
               </svg>
             </button>
           </div>
-          <div class="flex flex-1 justify-center items-center sm:justify-start sm:items-stretch">
+          <div class="flex flex-1 justify-center items-center sm:justify-start sm:items-center">
             <div class="flex items-center shrink-0">
-              {% comment %}
-                FIXME: for some reason, this breaks alignment
-                <img alt="director logo" area-hidden="true" src="{% static "img/favicon.ico" %}" class="size-10">
-              {% endcomment %}
+              <span class="px-3 text-cyan-600 scale-150"><i class="fa-solid fa-cubes"></i></span>
               <p class="py-2 text-xl font-medium text-gray-300">Director</p>
             </div>
             <div class="hidden sm:block sm:ml-6">
-              <div class="flex space-x-4" id="navbar-sections">
+              <div class="flex items-center space-x-4" id="navbar-sections">
                 <!-- Highlighting and adding some other classes is done via javascript -->
                 <a href="{% url 'sites:index' %}"
                    class="py-2 px-3 text-sm font-medium rounded-md">Sites</a>
