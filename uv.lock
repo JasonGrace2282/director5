@@ -321,7 +321,6 @@ dependencies = [
 dev = [
     { name = "django-extensions" },
     { name = "django-fastdev" },
-    { name = "django-watchfiles" },
     { name = "watchdog" },
     { name = "werkzeug" },
 ]
@@ -369,7 +368,6 @@ requires-dist = [
 dev = [
     { name = "django-extensions", specifier = ">=3.2.3" },
     { name = "django-fastdev", specifier = ">=1.12.0" },
-    { name = "django-watchfiles", specifier = ">=1.0.0" },
     { name = "watchdog", specifier = ">=6.0.0" },
     { name = "werkzeug", specifier = ">=3.1.3" },
 ]
@@ -509,19 +507,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ca/62/a7129909d3c94eac957c02eeb05ac57cbca81db4f3f6270a8503697f376a/django_stubs_ext-5.1.1.tar.gz", hash = "sha256:db7364e4f50ae7e5360993dbd58a3a57ea4b2e7e5bab0fbd525ccdb3e7975d1c", size = 9455 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6a/ed/f79ae5ad993bdf900d61892d2a9fc0145441a507a7579890fb8e21e4a7bc/django_stubs_ext-5.1.1-py3-none-any.whl", hash = "sha256:3907f99e178c93323e2ce908aef8352adb8c047605161f8d9e5e7b4efb5a6a9c", size = 8965 },
-]
-
-[[package]]
-name = "django-watchfiles"
-version = "1.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-    { name = "watchfiles" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/99/7783138d516d0ffa9542e1bbbbe7efd30f1c6769745b51e93f9fe456f14e/django_watchfiles-1.0.0.tar.gz", hash = "sha256:e4aa8e910bee610dae2b586771e587072fd984fad8a17e83940e707cfe2ca427", size = 5267 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/75/cb/5f478ed62be3b82a4adaaff51b209f9a72413d83449ca1baee9b8e718d59/django_watchfiles-1.0.0-py3-none-any.whl", hash = "sha256:eaee798f908864f2a0b73d0362867c7d3a284398eaca82a0583b43969a37178d", size = 4596 },
 ]
 
 [[package]]
@@ -786,7 +771,6 @@ dependencies = [
 dev = [
     { name = "django-extensions" },
     { name = "django-fastdev" },
-    { name = "django-watchfiles" },
     { name = "watchdog" },
     { name = "werkzeug" },
 ]
@@ -818,7 +802,6 @@ requires-dist = [
 dev = [
     { name = "django-extensions" },
     { name = "django-fastdev" },
-    { name = "django-watchfiles" },
     { name = "watchdog" },
     { name = "werkzeug" },
 ]

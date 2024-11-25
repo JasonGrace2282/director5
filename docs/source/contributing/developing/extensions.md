@@ -18,11 +18,6 @@ browser tab *without having to reload*!
 This plugin does a lot of boring stuff that's really helpful, like validating templates,
 improving startup time, and improving error messages for `reverse` and `QuerySet.get`.
 
-## django-watchfiles
-
-This reduces memory usage by swapping out the default django `stat`-based reloader
-for a custom one based off of `watchfiles`.
-
 ## django-extensions
 
 This package comes with a LOT of useful features: check out [their docs](https://django-extensions.readthedocs.io/en/latest/).
