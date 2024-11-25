@@ -1,0 +1,33 @@
+{% load static %}
+
+{# djlint: off #}
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Application Stuff -->
+<meta name="application-name" content="Director5">
+<meta name="description" content="A website hosting platform for the masses.">
+<meta name="keywords" content="TJ Director5, TJ Director, TJHSST, TJ Activities, TJHSST Activities, Thomas Jefferson High School for Science and Technology, TJ CSL, Computer Systems Lab">
+<meta name="author" content="The TJ Director5 Development Team">
+
+<!-- Favicon and manifest stuff -->
+<link rel="icon" type="image/png" href="{% static 'favicon/favicon-96x96.png' %}" sizes="96x96">
+<link rel="icon" type="image/svg+xml" href="{% static 'favicon/favicon.svg' %}">
+<link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+
+<!-- iOS -->
+<link rel="apple-touch-icon" sizes="80x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+<meta name="apple-mobile-web-app-title" content="Director5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<!-- Windows -->
+<meta name="msapplication-tooltip" content="TJ Intranet">
+<meta name="msapplication-TileColor" content="#0048ab">
+<meta name="msapplication-config" content="{% static 'browserconfig.xml' %}">
+<meta name="msapplication-starturl" content="/">
+
+<!-- Android -->
+<link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1F2937">
