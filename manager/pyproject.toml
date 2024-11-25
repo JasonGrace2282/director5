@@ -16,10 +16,11 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "werkzeug",
-  "watchdog",
-  "django-fastdev",
+  "colorama",
   "django-extensions",
+  "django-fastdev",
+  "watchdog",
+  "werkzeug",
 ]
 
 lint = [
