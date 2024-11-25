@@ -14,12 +14,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        uses: './.github/actions/ci-setup'
+        uses: ./.github/actions/ci-setup
         with:
           groups: "docs"
 
       - name: Build docs
-        working-directory: ./docs
+        working-directory: docs
         run: uv run just html
 
       - name: Upload docs artifact

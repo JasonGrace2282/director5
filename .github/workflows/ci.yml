@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        uses: './.github/actions/ci-setup'
+        uses: ./.github/actions/ci-setup
         with:
           groups: "lint"
 
@@ -31,7 +31,7 @@ jobs:
         run: uv run --package manager mypy director
 
       - name: Run mypy on Orchestrator
-        working-directory: ./orchestrator
+        working-directory: orchestrator
         run: uv run --package orchestrator mypy orchestrator
 
   test:
@@ -42,24 +42,24 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        uses: './.github/actions/ci-setup'
+        uses: ./.github/actions/ci-setup
         with:
           groups: "test"
 
       - name: Check migrations
-        working-directory: ./manager
+        working-directory: manager
         run: uv run --package manager python manage.py makemigrations --check --noinput
 
-      - name:
-        working-directory: ./manager
+      - name: Migrate
+        working-directory: manager
         run: uv run --package manager python manage.py migrate --noinput
 
       - name: Run Tests on Manager
-        working-directory: ./manager
+        working-directory: manager
         run: uv run --package manager pytest
 
       - name: Run Tests on Orchestrator
-        working-directory: ./orchestrator
+        working-directory: orchestrator
         run: uv run --package orchestrator pytest
 
   docs:
@@ -70,10 +70,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        uses: './.github/actions/ci-setup'
+        uses: ./.github/actions/ci-setup
         with:
           groups: "docs"
 
       - name: Build Docs
-        working-directory: ./docs
+        working-directory: docs
         run: uv run just html-strict
