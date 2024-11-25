@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
@@ -27,62 +28,62 @@
               referrerpolicy="no-referrer"></script>
     {% endblock %}
     <script>
-          /**
-          * Populates the navbar with the appropriate active classes
-          */
-          function setActiveNavbar() {
-            $("#navbar-sections").children().each(function(_, el) {
-              const section = $(this).html().toLowerCase();
-              if (window.location.href.includes(section)) {
-                $(this).addClass("text-white");
-                $(this).attr("aria-current", "page");
-                console.debug(`Currently in the ${section} app.`);
-              } else {
-                $(this).addClass("text-gray-300 hover:bg-gray-700 hover:text-white");
-              }
-
-              const mobile_el = $(this).clone();
-              mobile_el.removeClass("text-sm").addClass("block");
-              $("#mobile-menu-dashboard").append(mobile_el);
-
-            });
+      /**
+      * Populates the navbar with the appropriate active classes
+      */
+      function setActiveNavbar() {
+        $("#navbar-sections").children().each(function(_, el) {
+          const section = $(this).html().toLowerCase();
+          if (window.location.href.includes(section)) {
+            $(this).addClass("text-white");
+            $(this).attr("aria-current", "page");
+            console.debug(`Currently in the ${section} app.`);
+          } else {
+            $(this).addClass("text-gray-300 hover:bg-gray-700 hover:text-white");
           }
 
-          /**
-          * Toggles the profile options dropdown on the user.
-          */
-          function toggleProfileOptions() {
-            const options = $("#user-menu");
-            options.toggle(200);
-            // accessibility
-            options.children(":first").focus();
-            if(options.attr("aria-expanded") === "true") {
-              options.attr("aria-expanded", "false");
-            } else {
-              options.attr("aria-expanded", "true");
-            }
-          }
+          const mobile_el = $(this).clone();
+          mobile_el.removeClass("text-sm").addClass("block");
+          $("#mobile-menu-dashboard").append(mobile_el);
 
-          /**
-          * Toggle the sidebar on mobile
-          */
-          function toggleMobileMenu() {
-            const menu = $("#mobile-menu");
-            menu.toggle(200);
-            if(menu.attr("aria-expanded") === "true") {
-              menu.attr("aria-expanded", "false");
-            } else {
-              menu.attr("aria-expanded", "true");
-            }
-          }
+        });
+      }
 
-          $(function() {
-            setActiveNavbar();
+      /**
+      * Toggles the profile options dropdown on the user.
+      */
+      function toggleProfileOptions() {
+        const options = $("#user-menu");
+        options.toggle(200);
+        // accessibility
+        options.children(":first").focus();
+        if(options.attr("aria-expanded") === "true") {
+          options.attr("aria-expanded", "false");
+        } else {
+          options.attr("aria-expanded", "true");
+        }
+      }
 
-            $("#user-menu-button").on("click", toggleProfileOptions);
+      /**
+      * Toggle the sidebar on mobile
+      */
+      function toggleMobileMenu() {
+        const menu = $("#mobile-menu");
+        menu.toggle(200);
+        if(menu.attr("aria-expanded") === "true") {
+          menu.attr("aria-expanded", "false");
+        } else {
+          menu.attr("aria-expanded", "true");
+        }
+      }
 
-            $("#mobile-menu-button").on("click", toggleMobileMenu);
-          })
+      $(function() {
+        setActiveNavbar();
+
+        $("#user-menu-button").on("click", toggleProfileOptions);
+
+        $("#mobile-menu-button").on("click", toggleMobileMenu);
+      })
     </script>
   </head>
   <body>
@@ -141,6 +142,7 @@
                 {% if request.user.is_superuser %}
                   <a href="#" class="py-2 px-3 text-sm font-medium rounded-md">Operations</a>
                 {% endif %}
+                {# TODO: Change jasongrace2282 to tjcsl when ownership is transferred #}
                 <a href="https://jasongrace2282.github.io/director5"
                    class="py-2 px-3 text-sm font-medium rounded-md">Docs</a>
               </div>

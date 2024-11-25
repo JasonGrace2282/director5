@@ -54,6 +54,8 @@ django_settings_module = "director.settings"
 
 [tool.djlint]
 indent = 2
+preserve_blank_lines = true
+blank_line_after_tag="load,extends,include"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "director.settings"

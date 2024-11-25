@@ -148,8 +148,3 @@ line-ending = "lf"
 
 [tool.codespell]
 write-changes = true
-
-[tool.djlint]
-indent = 4
-blank_line_before_tag = "block"
-preserve_blank_lines=true
