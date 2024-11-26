@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:0.4-python3.12-bookworm
+FROM ghcr.io/astral-sh/uv:0.4-python3.12-bookworm-slim
 
 WORKDIR /director5
 
@@ -14,7 +14,6 @@ ENV UV_LINK_MODE=copy \
     PATH="/director5/.venv/bin:$PATH"
 
 RUN apt update && \
-    apt install -y curl grep iptables libpq-dev socat wget sudo \
-    unzip jq iproute2 iptables iputils-ping linux-headers-generic  \
+    apt install -y libpq-dev \
     && uv sync --frozen \
     && rm -rf /var/lib/apt/lists/*   # Reduce image size
