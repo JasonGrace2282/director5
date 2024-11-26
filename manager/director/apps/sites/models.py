@@ -258,5 +258,58 @@ class DockerOS(models.Model):
         help_text="The name of the OS, in all ascii lowercase.",
     )
 
+    class Meta:
+        verbose_name = "Docker OS"
+        verbose_name_plural = "Docker OS's"
+
     def __str__(self):
         return self.name
+
+
+class Domain(models.Model):
+    """Represents a custom (non-`sites.tjhsst.edu`) domain.
+
+    `sites.tjhsst.edu` domains MUST be set up by creating a site with that name.
+
+    Note: It must be ensured that *.tjhsst.edu domains can only be set up by Director admins.
+
+    """
+
+    STATUSES = [
+        # Enabled (most domains)
+        ("active", "Active"),
+        # Disabled (respected in generation of configuration, but currently no provisions for
+        # setting domains to inactive)
+        ("inactive", "Inactive"),
+        # This domain was removed from the Site it was added to. All records of it should be
+        # removed.
+        ("deleted", "Deleted"),
+        # Reserved domains we don't want people to use for legal/policy reasons (these should always
+        # have site=None)
+        ("blocked", "Blocked"),
+    ]
+
+    # Should ONLY be None for deleted or blocked domains
+    site = models.ForeignKey(Site, null=True, on_delete=models.PROTECT)
+
+    domain = models.CharField(
+        max_length=255,
+        validators=[
+            RegexValidator(
+                regex=r"^(?!(.*\.)?sites\.tjhsst\.edu$)"
+                r"[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*)+$$",
+                message="Invalid domain. (Note: You can only have one sites.tjhsst.edu domain, and "
+                "it must match the name of your site.)",
+            )
+        ],
+    )
+
+    created_time = models.DateTimeField(auto_now_add=True, null=False)
+    creating_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
+    )
+
+    status = models.CharField(max_length=8, choices=STATUSES, default="active")
+
+    def __str__(self) -> str:
+        return f"{self.domain} ({self.site})"
