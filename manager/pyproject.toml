@@ -3,29 +3,42 @@ name = "Manager"
 version = "0.1.0"
 description = "A next generation website hosting platform"
 dependencies = [
-    "celery",
-    "django",
-    "django-browser-reload",
-    "heroicons[django]",
-    "psycopg[binary]",
-    "social-auth-app-django",
-    "typing-extensions",
+  "celery",
+  "django",
+  "django-browser-reload",
+  "django-debug-toolbar",
+  "django-linear-migrations",
+  "heroicons[django]",
+  "psycopg[binary]",
+  "social-auth-app-django",
+  "typing-extensions",
 ]
+
+[dependency-groups]
+dev = [
+  "colorama",
+  "django-extensions",
+  "django-fastdev",
+  "watchdog",
+  "werkzeug",
+]
+
+lint = [
+  "django-stubs[compatible-mypy]",
+  "mypy",
+  "pre-commit",
+]
+
+test = [
+  "pytest",
+  "pytest-django",
+  "pytest-xdist",
+]
+
 
 [tool.uv]
 package = false
-dev-dependencies = [
-    "django-stubs[compatible-mypy]",
-    "furo",
-    "mypy",
-    "myst-parser",
-    "pre-commit",
-    "pytest",
-    "pytest-django",
-    "sphinx-copybutton",
-    "sphinx",
-    "pytest-xdist",
-]
+default-groups = ["lint", "test", "dev"]
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -38,6 +51,11 @@ ignore_errors = true
 
 [tool.django-stubs]
 django_settings_module = "director.settings"
+
+[tool.djlint]
+indent = 2
+preserve_blank_lines = true
+blank_line_after_tag="load,extends,include"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "director.settings"

@@ -18,7 +18,7 @@ services:
       - POSTGRES_USER=director
       - POSTGRES_PASSWORD=director
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - director-pgdata:/var/lib/postgresql/data
 
   celery:
     container_name: director_celery
@@ -28,7 +28,7 @@ services:
     networks:
       - director_net
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
     depends_on:
       - django
@@ -41,7 +41,7 @@ services:
     networks:
       - director_net
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
     depends_on:
       - django
@@ -52,23 +52,39 @@ services:
       context: ../../
       dockerfile: ./dev/docker/Dockerfile
     image: director_base
+    restart: on-failure
     networks:
       - director_net
     ports:
       - 8080:8080
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
-      - firecracker-socket:/tmp/firecracker-socket:z
     depends_on:
       - redis
       - postgres
     entrypoint:
-      [
-        "/bin/sh",
-        "-c",
-        "dev/docker/docker-entrypoint.sh django",
-      ]
+      - "dev/docker/docker-entrypoint.sh"
+      - "django"
+
+  fastapi:
+    container_name: director_orchestrator
+    image: director_base
+    networks:
+      - director_net
+    devices:
+      - /dev/kvm:/dev/kvm
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8000:8080
+    volumes:
+      - ../../:/director5
+      - /director5/.venv
+    entrypoint:
+      - "dev/docker/docker-entrypoint.sh"
+      - "fastapi"
+    cap_add:
+      - NET_ADMIN
 
   tailwind:
     container_name: director_tailwind
@@ -78,51 +94,17 @@ services:
     networks:
       - director_net
     volumes:
-      - ../../:/director5:z
+      - ../../:/director5
       - /director5/.venv
     depends_on:
       - django
     entrypoint:
-      [
-        "/bin/sh",
-        "-c",
-        "dev/docker/docker-entrypoint.sh tailwind",
-      ]
-
-  firecracker:
-    container_name: director_firecracker
-    stop_grace_period: 1s
-    build:
-      context: .
-      dockerfile: ./Dockerfile.firecracker
-    image: director_firecracker
-
-    devices:
-      - /dev/kvm
-    volumes:
-      - firecracker-socket:/tmp/firecracker-socket:z
-      - .:/tmp/firecracker
-    entrypoint: /tmp/firecracker/firecracker.sh
-
-  apiproxy:
-    container_name: director_apiproxy
-    image: director_firecracker
-    ports:
-      - "12345:12345"
-    depends_on:
-      - firecracker
-    entrypoint:
-      - socat
-      - TCP-LISTEN:12345,,reuseaddr,fork
-      - UNIX-CONNECT:/tmp/firecracker-socket/control.sock
-    volumes:
-      - firecracker-socket:/tmp/firecracker-socket
-
+      - "dev/docker/docker-entrypoint.sh"
+      - "tailwind"
 
 networks:
   director_net:
     driver: bridge
 
 volumes:
-  pgdata:
-  firecracker-socket:
+  director-pgdata:

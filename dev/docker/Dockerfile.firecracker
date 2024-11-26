@@ -1,8 +1,0 @@
-FROM alpine:latest
-
-WORKDIR /vm
-COPY install-firecracker.sh .
-
-RUN apk update && \
-  apk add curl tar socat && \
-  ./install-firecracker.sh

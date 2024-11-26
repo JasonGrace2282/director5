@@ -1,0 +1,27 @@
+[project]
+name = "Orchestrator"
+version = "0.1.0"
+description = "A next generation website hosting platform"
+dependencies = [
+  "fastapi[standard]",
+  "pydantic",
+  "pydantic-extra-types",
+  "requests",
+  "typing-extensions",
+]
+
+[dependency-groups]
+lint = [
+  "mypy",
+  "pre-commit",
+  "types-requests",
+]
+test = [
+  "httpx",
+  "pytest",
+  "pytest-xdist",
+]
+
+[tool.uv]
+package = false
+default-groups = ["lint", "test"]

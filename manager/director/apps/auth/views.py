@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 def login_view(request: HttpRequest) -> HttpResponse:
     if request.user.is_authenticated:
         return redirect("sites:index")
-    return render(request, "auth/login.html", {"prod": settings.PRODUCTION})
+    return render(request, "auth/login.html", {"debug": settings.DEBUG})
 
 
 @login_required

@@ -5,28 +5,54 @@ description = "A next generation website hosting platform"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "django>=5.1",
-    "psycopg[binary]>3.1.8",
-    "social-auth-app-django>=5.4.2",
-    "typing-extensions>=4.12",
-    "django-browser-reload>=1.15.0",
-    "heroicons[django]>=2.8.0",
-    "celery>=5.4.0",
+  "celery>=5.4.0",
+  "django-browser-reload>=1.15.0",
+  "django>=5.1",
+  "fastapi[standard]>=0.115.0",
+  "heroicons[django]>=2.8.0",
+  "psycopg[binary]>3.1.8",
+  "pydantic-extra-types>=2.9.0",
+  "pydantic>=2.9.2",
+  "requests>=2.32.3",
+  "social-auth-app-django>=5.4.2",
+  "typing-extensions>=4.12",
+  "django-debug-toolbar>=4.4.6",
+  "django-linear-migrations>=2.16.0",
+]
+
+[dependency-groups]
+lint = [
+  "django-stubs[compatible-mypy]>=5.1.0",
+  "mypy>=1.11.2",
+  "pre-commit>=3.8.0",
+  "types-requests>=2.32.0.20241016",
+]
+test = [
+  "httpx>=0.27.2",
+  "pytest-django>=4.9.0",
+  "pytest-xdist>=3.6.1",
+  "pytest>=8.3.3",
+]
+docs = [
+  "furo>=2024.8.6",
+  "myst-parser>=4.0.0",
+  "rust-just>=1.37.0",
+  "sphinx-autobuild>=2024.10.3",
+  "sphinx-copybutton>=0.5.2",
+  "sphinx>=8.1.0",
+  "sphinxcontrib-django>=2.5",
+]
+dev = [
+  "colorama>=0.4.6 ; sys_platform == 'win32'",
+  "django-extensions>=3.2.3",
+  "django-fastdev>=1.12.0",
+  "watchdog>=6.0.0",
+  "werkzeug>=3.1.3",
 ]
 
 [tool.uv]
-dev-dependencies = [
-    "django-stubs[compatible-mypy]>=5.1.0",
-    "furo>=2024.8.6",
-    "mypy>=1.11.2",
-    "myst-parser>=4.0.0",
-    "pre-commit>=3.8.0",
-    "pytest-django>=4.9.0",
-    "pytest-xdist>=3.6.1",
-    "pytest>=8.3.3",
-    "sphinx-copybutton>=0.5.2",
-    "sphinx>=8.0.2",
-]
+package = false
+default-groups = ["lint", "test", "docs", "dev"]
 
 [tool.uv.workspace]
 members = ["manager", "orchestrator"]
@@ -67,6 +93,8 @@ select = [
     "E",
     # Pyflakes
     "F",
+    # fastapi
+    "FAST",
     # flake8-boolean-trap
     "FBT",
     # isort
@@ -89,10 +117,10 @@ select = [
     "UP",
 ]
 ignore = [
+  # too many return statements
+  "PLR0911",
   # magic number comparison
   "PLR2004",
-  # pytest fixture not returning anything should have underscore
-  "PT004",
   # mutable class attrs annotated as typing.ClassVar
   "RUF012",
   # missing docstring
@@ -119,11 +147,3 @@ line-ending = "lf"
 
 [tool.codespell]
 write-changes = true
-
-[tool.djlint]
-indent = 4
-blank_line_before_tag = "block"
-preserve_blank_lines=true
-
-[tool.setuptools]
-py-modules = []

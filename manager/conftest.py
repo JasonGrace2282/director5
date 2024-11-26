@@ -13,6 +13,12 @@ def use_db_on_all_test(db):
 
 
 @pytest.fixture(autouse=True)
+def configure_settings(settings):
+    # TODO: figure out why this is necessary
+    settings.DEBUG = True
+
+
+@pytest.fixture(autouse=True)
 def new_media_root(settings, tmpdir):
     settings.MEDIA_ROOT = tmpdir
 

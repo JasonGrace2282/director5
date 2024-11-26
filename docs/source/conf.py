@@ -7,12 +7,16 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 from __future__ import annotations
 
-from datetime import datetime
+import sys
+from pathlib import Path
+
+manager_dir = Path(__file__).resolve().parents[2] / "manager"
+sys.path.insert(0, str(manager_dir))
 
 # -- Project information -----------------------------------------------------
 
 project = "Director5"
-copyright = f"{datetime.now().year}, Sysadmins at TJ CSL"
+copyright = "%Y, Sysadmins at TJ CSL"
 author = "Sysadmins at TJ CSL"
 
 # -- General configuration ---------------------------------------------------
@@ -27,7 +31,10 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
     "myst_parser",
+    "sphinxcontrib_django",
 ]
+
+django_settings = "director.settings"
 
 add_function_parentheses = False
 
@@ -49,7 +56,14 @@ napoleon_custom_sections = [
 templates_path = ["_templates"]
 exclude_patterns = []
 
-# We depend on sphinxcontrib_django for intersphinx mappings
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "django": (
+        "https://docs.djangoproject.com/en/stable/",
+        "https://docs.djangoproject.com/en/stable/_objects/",
+    ),
+}
 
 extlinks = {
     "issue": ("https://github.com/tjcsl/director5/issues/%s", "issue %s"),
