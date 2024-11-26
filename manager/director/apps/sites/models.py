@@ -34,6 +34,16 @@ class SiteQuerySet(models.QuerySet):
         return query
 
 
+def _default_docker_image() -> DockerImage:
+    os_ = DockerOS.objects.get_or_create(name="ubuntu")[0]
+    return DockerImage.objects.get_or_create(
+        name="ubuntu",
+        tag="latest",
+        language="",
+        operating_system=os_,
+    )[0]
+
+
 class Site(models.Model):
     """A representation of the information for a specific website.
 
@@ -79,6 +89,8 @@ class Site(models.Model):
     )
 
     description = models.TextField(blank=True)
+
+    docker_image = models.OneToOneField("DockerImage", on_delete=models.SET(_default_docker_image))
 
     mode = models.CharField(max_length=1, choices=TYPES)
 
@@ -175,6 +187,7 @@ class DockerImage(models.Model):
     """The docker image of a specific site."""
 
     LANGUAGES = [
+        ("", "No language"),
         ("python", "Python"),
         ("node", "Node.js"),
         ("php", "PHP"),
@@ -183,7 +196,8 @@ class DockerImage(models.Model):
     name = models.CharField(max_length=255)
     tag = models.CharField(
         max_length=255,
-        help_text="For parent images, this should always be a :latest (or :version) tag.",
+        validators=[RegexValidator(r"^[a-zA-Z0-9]+(\/[a-zA-Z0-9]+)?:[a-zA-Z0-9._-]+$")],
+        help_text="For parent images, this should always be a tag of the form 'alpine:3.20'.",
         unique=True,
     )
 
@@ -211,7 +225,7 @@ class DockerImage(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name}:{self.tag}"
+        return self.name
 
 
 class DockerActionQuerySet(models.QuerySet):
@@ -249,13 +263,20 @@ class DockerAction(models.Model):
 class DockerOS(models.Model):
     """The operating system of a Docker image.
 
-    Ex) ubuntu, alpine, debian.
+    Used mainly for filtering image actions.
     """
+
+    OPERATING_SYSTEMS = [
+        ("ubuntu", "Ubuntu"),
+        ("alpine", "Alpine"),
+        ("debian", "Debian"),
+    ]
 
     name = models.CharField(
         max_length=100,
-        validators=[RegexValidator(r"^[a-z0-9 .]+$")],
+        choices=OPERATING_SYSTEMS,
         help_text="The name of the OS, in all ascii lowercase.",
+        unique=True,
     )
 
     class Meta:
