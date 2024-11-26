@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Self
+from typing import Never, Self
 
 from django.conf import settings
 from django.core.validators import MinLengthValidator, RegexValidator
@@ -234,7 +234,7 @@ class DockerAction(models.Model):
     name = models.CharField(max_length=255)
     command = models.TextField()
 
-    operating_systems = models.ManyToManyField(
+    operating_systems: models.ManyToManyField[DockerOS, Never] = models.ManyToManyField(
         "DockerOS",
         related_name="docker_action_set",
         help_text="The operating systems this action can be run on. Mostly used for filtering.",
