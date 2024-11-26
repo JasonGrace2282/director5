@@ -4,8 +4,6 @@ WORKDIR /director5
 
 COPY pyproject.toml .
 COPY uv.lock .
-COPY /dev/docker/install-linux.sh .
-COPY /dev/docker/install-firecracker.sh .
 
 ENV TZ=America/New_York
 
@@ -18,8 +16,5 @@ ENV UV_LINK_MODE=copy \
 RUN apt update && \
     apt install -y curl grep iptables libpq-dev socat wget sudo \
     unzip jq iproute2 iptables iputils-ping linux-headers-generic  \
-    && uv sync --frozen
-
-RUN ./install-linux.sh && ./install-firecracker.sh \
-    && rm -f install-linux.sh install-firecracker.sh \
+    && uv sync --frozen \
     && rm -rf /var/lib/apt/lists/*   # Reduce image size

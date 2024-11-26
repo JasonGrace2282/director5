@@ -13,7 +13,6 @@ dependencies = [
   "psycopg[binary]>3.1.8",
   "pydantic-extra-types>=2.9.0",
   "pydantic>=2.9.2",
-  "requests-unixsocket>=0.3.0",
   "requests>=2.32.3",
   "social-auth-app-django>=5.4.2",
   "typing-extensions>=4.12",

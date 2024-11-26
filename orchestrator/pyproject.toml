@@ -3,15 +3,11 @@ name = "Orchestrator"
 version = "0.1.0"
 description = "A next generation website hosting platform"
 dependencies = [
-    "fastapi[standard]",
-    "pydantic",
-    "pydantic-extra-types",
-    "pyroute2>=0.7.12",
-    "python-iptables>=1.0.1",
-    "requests",
-    "requests-unixsocket2>=0.4.2",
-    "setuptools>=75.3.0",
-    "typing-extensions",
+  "fastapi[standard]",
+  "pydantic",
+  "pydantic-extra-types",
+  "requests",
+  "typing-extensions",
 ]
 
 [dependency-groups]
@@ -29,10 +25,3 @@ test = [
 [tool.uv]
 package = false
 default-groups = ["lint", "test"]
-
-[[tool.mypy.overrides]]
-module = ["requests_unixsocket"]
-ignore_missing_imports = true
-
-[tool.ruff]
-lint.ignore = ["C901"]  # mistakenly thinks of types as arguments
