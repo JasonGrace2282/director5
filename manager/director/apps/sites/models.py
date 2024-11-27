@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Self
 
 from django.conf import settings
-from django.core.validators import MinLengthValidator, RegexValidator
+from django.core.validators import MinLengthValidator, MinValueValidator, RegexValidator
 from django.db import models
 
 from ..users.models import User
@@ -32,16 +32,6 @@ class SiteQuerySet(models.QuerySet):
         if not user.is_superuser:
             query = query.filter(availability__in=["enabled", "not-served"])
         return query
-
-
-def _default_docker_image() -> DockerImage:
-    os_ = DockerOS.objects.get_or_create(name="ubuntu")[0]
-    return DockerImage.objects.get_or_create(
-        name="ubuntu",
-        tag="latest",
-        language="",
-        operating_system=os_,
-    )[0]
 
 
 class Site(models.Model):
@@ -89,8 +79,6 @@ class Site(models.Model):
     )
 
     description = models.TextField(blank=True)
-
-    docker_image = models.OneToOneField("DockerImage", on_delete=models.SET(_default_docker_image))
 
     mode = models.CharField(max_length=1, choices=TYPES)
 
@@ -183,57 +171,12 @@ class Database(models.Model):
         return f"{self.host.dbms}://{self.username}:***@{self.host.hostname}:{self.host.port}/{self.username}"
 
 
-class DockerImage(models.Model):
-    """The docker image of a specific site."""
-
-    LANGUAGES = [
-        ("", "No language"),
-        ("python", "Python"),
-        ("node", "Node.js"),
-        ("php", "PHP"),
-    ]
-
-    name = models.CharField(max_length=255)
-    tag = models.CharField(
-        max_length=255,
-        validators=[RegexValidator(r"^[a-zA-Z0-9]+(\/[a-zA-Z0-9]+)?:[a-zA-Z0-9._-]+$")],
-        help_text="For parent images, this should always be a tag of the form 'alpine:3.20'.",
-        unique=True,
-    )
-
-    logo = models.ImageField(upload_to="docker_image_logos", blank=True)
-    description = models.TextField(blank=True)
-
-    operating_system = models.ForeignKey(
-        "DockerOS",
-        on_delete=models.PROTECT,
-        related_name="docker_image_set",
-    )
-    language = models.CharField(
-        max_length=30,
-        blank=True,
-        choices=LANGUAGES,
-        help_text="The programming language of the image. Do not include the version.",
-    )
-
-    parent = models.ForeignKey(
-        "self",
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True,
-        help_text="The base image. Null for parent images.",
-    )
-
-    def __str__(self):
-        return self.name
-
-
 class DockerActionQuerySet(models.QuerySet):
     """Custom queryset for :class:`DockerAction`."""
 
-    def filter_for_image(self, img: DockerImage) -> Self:
+    def filter_for_image(self, os_: str, language: str) -> Self:
         """Filter actions that work on a specific operating system."""
-        return self.filter(operating_systems=img.operating_system, language=img.language)
+        return self.filter(operating_systems=os_, language=language)
 
 
 class DockerAction(models.Model):
@@ -241,12 +184,16 @@ class DockerAction(models.Model):
 
     These should NOT have any syntax-errors in them, as they will be run as::
 
-        RUN cmd one && \
-            cmd two
+        RUN cmd $args && \
+            cmd $args
     """
 
     name = models.CharField(max_length=255)
     command = models.TextField()
+    version = models.PositiveIntegerField(
+        default=1,
+        validators=[MinValueValidator(1)],
+    )
 
     operating_systems: models.ManyToManyField[DockerOS, Any] = models.ManyToManyField(
         "DockerOS",
@@ -282,6 +229,47 @@ class DockerOS(models.Model):
     class Meta:
         verbose_name = "Docker OS"
         verbose_name_plural = "Docker OS's"
+
+    def __str__(self):
+        return self.name
+
+
+class DockerImage(models.Model):
+    """The parent docker images.
+
+    This is the base image that will be used in
+    the ``FROM`` tag in a ``Dockerfile``.
+    """
+
+    LANGUAGES = [
+        ("", "No language"),
+        ("python", "Python"),
+        ("node", "Node.js"),
+        ("php", "PHP"),
+    ]
+
+    name = models.CharField(max_length=255)
+    tag = models.CharField(
+        max_length=255,
+        validators=[RegexValidator(r"^[a-zA-Z0-9]+(\/[a-zA-Z0-9]+)?:[a-zA-Z0-9._-]+$")],
+        help_text="For parent images, this should always be a tag of the form 'alpine:3.20'.",
+        unique=True,
+    )
+
+    logo = models.ImageField(upload_to="docker_image_logos", blank=True)
+    description = models.TextField(blank=True)
+
+    operating_system = models.ForeignKey(
+        "DockerOS",
+        on_delete=models.PROTECT,
+        related_name="docker_os_set",
+    )
+    language = models.CharField(
+        max_length=30,
+        blank=True,
+        choices=LANGUAGES,
+        help_text="The programming language of the image. Do not include the version.",
+    )
 
     def __str__(self):
         return self.name
