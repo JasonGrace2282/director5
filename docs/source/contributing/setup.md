@@ -44,7 +44,7 @@ or `uv run pre-commit run --all-files` to run the linter/formatter.
 Use ``uv run --package manager`` to run something using the dependencies of the manager.
 ```
 
-# Docs
+### Docs
 
 To edit the docs, run:
 
