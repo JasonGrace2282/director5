@@ -129,10 +129,12 @@
             </button>
           </div>
           <div class="flex flex-1 justify-center items-center sm:justify-start sm:items-center">
-            <div class="flex items-center shrink-0">
-              <span class="px-3 text-cyan-600 scale-150"><i class="fa-solid fa-cubes"></i></span>
-              <p class="py-2 text-xl font-medium text-gray-300">Director</p>
-            </div>
+            <a href="{% url 'sites:index' %}">
+              <div class="flex items-center shrink-0">
+                <span class="px-3 text-cyan-600 scale-150"><i class="fa-solid fa-cubes"></i></span>
+                <p class="py-2 text-xl font-medium text-gray-300">Director</p>
+              </div>
+            </a>
             <div class="hidden sm:block sm:ml-6">
               <div class="flex items-center space-x-4" id="navbar-sections">
                 <!-- Highlighting and adding some other classes is done via javascript -->
