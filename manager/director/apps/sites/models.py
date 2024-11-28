@@ -203,6 +203,14 @@ class DockerAction(models.Model):
 
     objects = DockerActionQuerySet.as_manager()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "version"],
+                name="unique_action_version",
+            )
+        ]
+
     def __str__(self):
         return self.name
 
