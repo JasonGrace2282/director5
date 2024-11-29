@@ -85,7 +85,7 @@
       })
     </script>
   </head>
-  <body>
+  <body class="flex flex-col min-h-svh bg-[#f4feff] dark:bg-[#292e42]">
     <nav class="bg-gray-800">
       <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="flex relative justify-between items-center h-16">
@@ -129,10 +129,12 @@
             </button>
           </div>
           <div class="flex flex-1 justify-center items-center sm:justify-start sm:items-center">
-            <div class="flex items-center shrink-0">
-              <span class="px-3 text-cyan-600 scale-150"><i class="fa-solid fa-cubes"></i></span>
-              <p class="py-2 text-xl font-medium text-gray-300">Director</p>
-            </div>
+            <a href="{% url 'sites:index' %}">
+              <div class="flex items-center shrink-0">
+                <span class="px-3 text-cyan-600 scale-150"><i class="fa-solid fa-cubes"></i></span>
+                <p class="py-2 text-xl font-medium text-gray-300">Director</p>
+              </div>
+            </a>
             <div class="hidden sm:block sm:ml-6">
               <div class="flex items-center space-x-4" id="navbar-sections">
                 <!-- Highlighting and adding some other classes is done via javascript -->
@@ -141,27 +143,23 @@
                 {% if request.user.is_superuser %}
                   <a href="#" class="py-2 px-3 text-sm font-medium rounded-md">Operations</a>
                 {% endif %}
-                {# TODO: Change jasongrace2282 to tjcsl when ownership is transferred #}
-                <a href="https://jasongrace2282.github.io/director5"
+                <a href="{{ DOCS_URL }}"
                    class="py-2 px-3 text-sm font-medium rounded-md">Docs</a>
               </div>
             </div>
           </div>
           {% if request.user.is_authenticated %}
-            <div class="flex hidden overflow-hidden mx-auto max-w-md rounded-md border-2 border-blue-500 md:inline-flex">
+            <div class="hidden overflow-hidden py-3 px-4 mx-auto max-w-md rounded-md md:flex font-[sans-serif]">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   viewBox="0 0 192.904 192.904"
+                   width="16px"
+                   class="mr-3 rotate-90 fill-white">
+                <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
+                </path>
+              </svg>
               <input type="search"
-                     placeholder="Search for site..."
-                     class="py-3 px-4 w-full text-sm text-gray-600 bg-white rounded-sm outline-none">
-              <button type='button'
-                      class="flex justify-center items-center px-5 bg-[#007bff]">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 192.904 192.904"
-                     width="16px"
-                     class="fill-white">
-                  <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
-                  </path>
-                </svg>
-              </button>
+                     placeholder="Search for sites"
+                     class="w-full text-sm text-white bg-transparent outline-none">
             </div>
             <div class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:pr-0 sm:ml-6">
               <!-- Profile dropdown -->
@@ -212,8 +210,29 @@
         </div>
       </div>
     </nav>
-    <main>
+    <main class="grow">
       {% block main %}{% endblock %}
     </main>
+    <footer class="m-4 bg-white rounded-lg shadow dark:bg-gray-800">
+      <div class="p-4 mx-auto w-full max-w-screen-xl md:flex md:justify-between md:items-center">
+        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+          © 2024 <a href="https://sysadmins.tjhsst.edu" class="hover:underline">TJHSST Sysadmins</a>.
+        </span>
+        <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 sm:mt-0 dark:text-gray-400">
+          <li>
+            <a href="{{ REPO_URL }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="hover:underline me-4 md:me-6">Source</a>
+          </li>
+          <li>
+            <a href="mailto:{{ CONTACT_EMAIL }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="hover:underline">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </footer>
   </body>
 </html>

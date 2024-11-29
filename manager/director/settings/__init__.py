@@ -37,6 +37,10 @@ INTERNAL_IPS = [
     "localhost",
 ]
 
+# Load secret files
+with contextlib.suppress(ImportError):
+    from .secret import *  # noqa: F403
+
 if DEBUG:
     # hack for docker environments, because docker creates ip's dynamically
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
@@ -94,6 +98,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "director.apps.context_processors.generic_info",
             ],
             "builtins": [
                 "heroicons.templatetags.heroicons",
@@ -101,7 +106,6 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = "director.wsgi.application"
 
 
@@ -232,6 +236,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Load secret files
-with contextlib.suppress(ImportError):
-    from .secret import *  # noqa: F403
+
+# Director settings
+DOCS_URL = "https://jasongrace2282.github.io/director5/"
+REPO_URL = "https://github.com/jasongrace2282/director5/"
+CONTACT_EMAIL = "director@tjhsst.edu"

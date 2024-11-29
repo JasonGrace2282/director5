@@ -9,6 +9,7 @@ dependencies = [
   "django-debug-toolbar",
   "django-linear-migrations",
   "heroicons[django]",
+  "pillow",
   "psycopg[binary]",
   "social-auth-app-django",
   "typing-extensions",
