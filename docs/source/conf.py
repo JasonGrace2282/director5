@@ -34,6 +34,11 @@ extensions = [
     "sphinxcontrib_django",
 ]
 
+myst_enable_extensions = [
+    "dollarmath",
+    "linkify",
+]
+
 django_settings = "director.settings"
 
 add_function_parentheses = False

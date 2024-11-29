@@ -13,6 +13,8 @@ docker compose up
 ```
 
 And navigate to http://127.0.0.1:8080 to see the website in action!
+To check out the documentation of the orchestrator (AKA the API docs),
+head over to http://127.0.0.1:8000.
 
 On future runs, you can simply run `docker compose up` to start the environment.
 
@@ -55,6 +57,12 @@ uv run just live
 
 This will start a webserver at http://127.0.0.1:8800 that will automatically rebuild
 and update as you edit the docs.
+
+To run the webserver on a different port, use
+
+```bash
+uv run just live 8080
+```
 
 ## Next Steps
 
