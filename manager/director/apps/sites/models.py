@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shlex
 from typing import Any, Self
 
 from django.conf import settings
@@ -240,6 +241,31 @@ class DockerAction(models.Model):
 
     def __str__(self):
         return self.name
+
+    def construct_command(self, args: list[str], *, shell: bool = False) -> list[str]:
+        """Produces a command that can be passed to ``subprocess.run``.
+
+        Args:
+            args: the arguments to pass to the command.
+            shell: whether to escape the command for the shell.
+
+        .. warning::
+
+            Do NOT call this command without checking if :attr:`allows_arguments`
+            is ``True``, as it is a security vulnerability.
+        """
+        if not self.allows_arguments:
+            raise ValueError(f"{self} does not allow arguments.")
+
+        flag = "{args}"
+        command = shlex.split(self.command)
+        if flag not in command:
+            return command
+        if shell:
+            args = [shlex.quote(arg) for arg in args]
+        pre_args = command[: command.index(flag)]
+        post_args = command[command.index(flag) + 1 :]
+        return pre_args + args + post_args
 
 
 class DockerOS(models.Model):
