@@ -14,4 +14,4 @@ async def root(message: str = "pong"):
     return {"message": message}
 
 
-app.include_router(main_router, prefix="/api", tags=["api"])
+app.include_router(main_router, prefix="/api")

@@ -9,4 +9,8 @@ Usage:
         True
 """
 
+from pathlib import Path
+
 DEBUG = True
+
+DOCKERFILE_IMAGES = Path("/data/images")
