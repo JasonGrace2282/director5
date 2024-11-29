@@ -89,6 +89,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('command', models.TextField()),
+                ('allows_arguments', models.BooleanField(default=False, help_text='Does the command expect arguments?')),
                 ('version', models.PositiveIntegerField(default=1, validators=[django.core.validators.MinValueValidator(1)])),
                 ('operating_systems', models.ManyToManyField(help_text='The operating systems this action can be run on. Mostly used for filtering.', related_name='docker_action_set', to='sites.dockeros')),
             ],

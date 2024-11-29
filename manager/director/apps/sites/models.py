@@ -180,16 +180,43 @@ class DockerActionQuerySet(models.QuerySet):
 
 
 class DockerAction(models.Model):
-    r"""An action that can be performed while setting up a Docker image.
+    """An action that can be performed while setting up a Docker image.
 
-    These should NOT have any syntax-errors in them, as they will be run as::
+    Think of a Docker action as a single shell command in a
+    docker ``RUN`` statement.
 
-        RUN cmd $args && \
-            cmd $args
+    Arguments to the command will by default be appended to the command::
+
+        command = "pip install"
+        subprocess.run(shlex.split(command) + args)
+
+    The special marker ``{args}`` can be used in the command to specify
+    where the arguments should be placed. This is roughly equivalent to::
+
+        pre_args, post_args = split_by_marker(command, "{args}")
+        escaped_args = [shlex.quote(arg) for arg in args]
+        subprocess.run(pre_args + escaped_args + post_args)
+
+    .. danger::
+
+        :func:`shlex.quote` only handles escaping the shell. The command
+        should still be wary of injection attacks. For example, just
+        setting a command as ``pip install`` would allow users to do
+        e.g. ``pip install --user django``. Instead, consider using::
+
+            pip install --
+
+        to prevent the user from passing arguments that are flags.
     """
 
     name = models.CharField(max_length=255)
     command = models.TextField()
+
+    allows_arguments = models.BooleanField(
+        default=False,
+        help_text="Does the command expect arguments?",
+    )
+
     version = models.PositiveIntegerField(
         default=1,
         validators=[MinValueValidator(1)],
