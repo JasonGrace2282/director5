@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import shlex
-from typing import Any, Self
+from typing import TYPE_CHECKING, Self
 
 from django.conf import settings
 from django.core.validators import MinLengthValidator, MinValueValidator, RegexValidator
 from django.db import models
 
-from ..users.models import User
+if TYPE_CHECKING:
+    from ..users.models import User
 
 
 class SiteQuerySet(models.QuerySet):
@@ -172,14 +173,6 @@ class Database(models.Model):
         return f"{self.host.dbms}://{self.username}:***@{self.host.hostname}:{self.host.port}/{self.username}"
 
 
-class DockerActionQuerySet(models.QuerySet):
-    """Custom queryset for :class:`DockerAction`."""
-
-    def filter_for_image(self, os_: str, language: str) -> Self:
-        """Filter actions that work on a specific operating system."""
-        return self.filter(operating_systems=os_, language=language)
-
-
 class DockerAction(models.Model):
     """An action that can be performed while setting up a Docker image.
 
@@ -223,15 +216,9 @@ class DockerAction(models.Model):
         validators=[MinValueValidator(1)],
     )
 
-    operating_systems: models.ManyToManyField[DockerOS, Any] = models.ManyToManyField(
-        "DockerOS",
-        related_name="docker_action_set",
-        help_text="The operating systems this action can be run on. Mostly used for filtering.",
-    )
-
-    objects = DockerActionQuerySet.as_manager()
-
     class Meta:
+        get_latest_by = "version"
+
         constraints = [
             models.UniqueConstraint(
                 fields=["name", "version"],
@@ -268,33 +255,6 @@ class DockerAction(models.Model):
         return pre_args + args + post_args
 
 
-class DockerOS(models.Model):
-    """The operating system of a Docker image.
-
-    Used mainly for filtering image actions.
-    """
-
-    OPERATING_SYSTEMS = [
-        ("ubuntu", "Ubuntu"),
-        ("alpine", "Alpine"),
-        ("debian", "Debian"),
-    ]
-
-    name = models.CharField(
-        max_length=100,
-        choices=OPERATING_SYSTEMS,
-        help_text="The name of the OS, in all ascii lowercase.",
-        unique=True,
-    )
-
-    class Meta:
-        verbose_name = "Docker OS"
-        verbose_name_plural = "Docker OS's"
-
-    def __str__(self):
-        return self.name
-
-
 class DockerImage(models.Model):
     """The parent docker images.
 
@@ -309,7 +269,10 @@ class DockerImage(models.Model):
         ("php", "PHP"),
     ]
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(
+        max_length=255,
+        unique=True,
+    )
     tag = models.CharField(
         max_length=255,
         validators=[RegexValidator(r"^[a-zA-Z0-9]+(\/[a-zA-Z0-9]+)?:[a-zA-Z0-9._-]+$")],
@@ -320,11 +283,6 @@ class DockerImage(models.Model):
     logo = models.ImageField(upload_to="docker_image_logos", blank=True)
     description = models.TextField(blank=True)
 
-    operating_system = models.ForeignKey(
-        "DockerOS",
-        on_delete=models.PROTECT,
-        related_name="docker_os_set",
-    )
     language = models.CharField(
         max_length=30,
         blank=True,

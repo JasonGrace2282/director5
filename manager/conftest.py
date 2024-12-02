@@ -1,4 +1,5 @@
 import pytest
+from director.apps.sites.models import DockerAction, DockerImage
 from django.utils.translation import activate
 
 
@@ -23,6 +24,7 @@ def new_media_root(settings, tmpdir):
     settings.MEDIA_ROOT = tmpdir
 
 
+@pytest.fixture
 def student(django_user_model):
     return django_user_model.objects.create_user(
         username="student",
@@ -33,6 +35,7 @@ def student(django_user_model):
     )
 
 
+@pytest.fixture
 def teacher(django_user_model):
     return django_user_model.objects.create_user(
         username="teacher",
@@ -41,3 +44,22 @@ def teacher(django_user_model):
         password="password",
         is_teacher=True,
     )
+
+
+@pytest.fixture
+def python_313():
+    return DockerImage.objects.get_or_create(
+        name="Python 3.13 (Alpine)",
+        tag="python:3.13",
+        language="python",
+    )[0]
+
+
+@pytest.fixture
+def pip_install():
+    return DockerAction.objects.get_or_create(
+        name="pip-install",
+        version=1,
+        command="pip install -- {args}",
+        allows_arguments=True,
+    )[0]
