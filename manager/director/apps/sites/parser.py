@@ -115,12 +115,12 @@ def parse_action(action_data: dict[str, Any]) -> DockerActionData:
     if version != "latest":
         action = action.filter(version=version).first()
     else:
-        action = action.latest()
+        action = action.last()
 
     if action is None:
         raise ValueError(
             f"Could not find the action `{action_name}` with version `{version}`. Valid values:\n"
-            f"{list(DockerAction.objects.values_list("name", "version"))}"
+            f"{[f"{name}@{version}" for name, version in DockerAction.objects.values_list("name", "version")]}"
         )
 
     args = action_data.get("args", [])
