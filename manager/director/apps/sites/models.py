@@ -217,8 +217,6 @@ class DockerAction(models.Model):
     )
 
     class Meta:
-        get_latest_by = "version"
-
         constraints = [
             models.UniqueConstraint(
                 fields=["name", "version"],

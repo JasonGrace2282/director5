@@ -115,7 +115,7 @@ def parse_action(action_data: dict[str, Any]) -> DockerActionData:
     if version != "latest":
         action = action.filter(version=version).first()
     else:
-        action = action.last()
+        action = action.order_by("version").last()
 
     if action is None:
         raise ValueError(
