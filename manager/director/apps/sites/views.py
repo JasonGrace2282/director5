@@ -8,8 +8,9 @@ from django.shortcuts import render
 from .models import Site
 
 if TYPE_CHECKING:
-    from director.djtypes import AuthenticatedHttpRequest
     from django.http import HttpResponse
+
+    from director.djtypes import AuthenticatedHttpRequest
 
 
 @login_required

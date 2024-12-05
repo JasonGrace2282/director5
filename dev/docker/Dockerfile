@@ -13,7 +13,7 @@ ENV UV_LINK_MODE=copy \
     UV_PYTHON=python3.12 \
     PATH="/director5/.venv/bin:$PATH"
 
-RUN apt update && \
-    apt install -y libpq-dev \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libpq-dev \
     && uv sync --frozen \
     && rm -rf /var/lib/apt/lists/*   # Reduce image size

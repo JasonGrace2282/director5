@@ -72,14 +72,12 @@ services:
     image: director_base
     networks:
       - director_net
-    devices:
-      - /dev/kvm:/dev/kvm
-      - /dev/net/tun:/dev/net/tun
     ports:
       - 8000:8080
     volumes:
       - ../../:/director5
       - /director5/.venv
+      - /var/run/docker.sock:/var/run/docker.sock
     entrypoint:
       - "dev/docker/docker-entrypoint.sh"
       - "fastapi"

@@ -19,6 +19,8 @@ dependencies = [
   "django-debug-toolbar>=4.4.6",
   "django-linear-migrations>=2.16.0",
   "pillow>=11.0.0",
+  "docker>=7.1.0",
+  "jinja2>=3.1.4",
 ]
 
 [dependency-groups]
@@ -137,6 +139,9 @@ ignore = [
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.ruff.lint.isort]
+known-third-party = ["fastapi", "django", "docker"]
 
 [tool.ruff.lint.flake8-pytest-style]
 parametrize-names-type = "tuple"

@@ -5,7 +5,6 @@ from .models import (
     DatabaseHost,
     DockerAction,
     DockerImage,
-    DockerOS,
     Site,
 )
 
@@ -30,15 +29,10 @@ class DatabaseAdmin(admin.ModelAdmin):
     search_fields = ("host__hostname", "site__name")
 
 
-@admin.register(DockerOS)
-class DockerOSAdmin(admin.ModelAdmin):
-    search_fields = ("name",)
-
-
 @admin.register(DockerImage)
 class DockerImageAdmin(admin.ModelAdmin):
     list_display = ("name", "tag", "language")
-    list_filter = ("language", "operating_system")
+    list_filter = ("language",)
     search_fields = ("name", "tag")
 
 
