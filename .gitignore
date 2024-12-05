@@ -166,5 +166,5 @@ cython_debug/
 
 pyc-autocomplete/
 
-docker/data/
+/docker/
 **/tailwind/build.css

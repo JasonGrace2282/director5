@@ -52,6 +52,7 @@ services:
       context: ../../
       dockerfile: ./dev/docker/Dockerfile
     image: director_base
+    working_dir: /director5/manager
     restart: on-failure
     networks:
       - director_net
@@ -59,27 +60,31 @@ services:
       - 8080:8080
     volumes:
       - ../../:/director5
+      - ../../docker/storage/:/data
       - /director5/.venv
     depends_on:
       - redis
       - postgres
     entrypoint:
-      - "dev/docker/docker-entrypoint.sh"
+      - "/director5/dev/docker/docker-entrypoint.sh"
       - "django"
 
   fastapi:
     container_name: director_orchestrator
     image: director_base
+    working_dir: /director5/orchestrator
+    stop_grace_period: 1s
     networks:
       - director_net
     ports:
       - 8000:8080
     volumes:
       - ../../:/director5
+      - ../../docker/storage/:/data
       - /director5/.venv
       - /var/run/docker.sock:/var/run/docker.sock
     entrypoint:
-      - "dev/docker/docker-entrypoint.sh"
+      - "/director5/dev/docker/docker-entrypoint.sh"
       - "fastapi"
     cap_add:
       - NET_ADMIN
