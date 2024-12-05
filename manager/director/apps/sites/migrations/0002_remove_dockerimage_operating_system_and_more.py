@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='dockeraction',
-            options={'get_latest_by': 'version'},
+            options={},
         ),
         migrations.AlterField(
             model_name='dockerimage',
