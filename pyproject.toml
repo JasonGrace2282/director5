@@ -140,6 +140,9 @@ ignore = [
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+[tool.ruff.lint.isort]
+known-third-party = ["fastapi", "django", "docker"]
+
 [tool.ruff.lint.flake8-pytest-style]
 parametrize-names-type = "tuple"
 parametrize-values-type = "tuple"

@@ -2,11 +2,11 @@ import contextlib
 import traceback
 from pathlib import Path
 
+import docker
+import docker.errors
 import jinja2
 from fastapi import APIRouter, HTTPException
 
-import docker
-import docker.errors
 from orchestrator.core import settings
 
 from .parsing import parse_build_response
