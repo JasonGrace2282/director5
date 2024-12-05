@@ -1,7 +1,7 @@
 """A module for parsing ``director.toml``."""
 
 from dataclasses import dataclass
-from typing import Any, TypedDict, assert_never, cast
+from typing import Any, TypedDict, cast
 
 from .models import DockerAction, DockerImage, Domain
 
@@ -45,17 +45,13 @@ def parse_director_toml(data: dict[str, Any]) -> SiteConfig:
     if not isinstance(version, int):
         raise ValueError("Expected 'version' to be an integer.")
 
-    supported_versions = (1,)
-    if version not in supported_versions:
-        raise ValueError(f"Unknown version {version}")
-
     if version == 1:
         docker_data = data.get("docker")
         if docker_data is None:
             raise KeyError("Could not find 'docker` section.")
         docker = parse_docker_v1(docker_data)
     else:
-        assert_never(version)
+        raise ValueError(f"Unknown version {version}")
 
     # TODO: parse domains
     return SiteConfig(docker=docker, domain=[])
@@ -111,11 +107,11 @@ def parse_action(action_data: dict[str, Any]) -> DockerActionData:
     action_name, version = name_data
     version = version.removeprefix("v")
 
-    action = DockerAction.objects.filter(name=action_name)
+    action_query = DockerAction.objects.filter(name=action_name)
     if version != "latest":
-        action = action.filter(version=version).first()
+        action = action_query.filter(version=version).first()
     else:
-        action = action.order_by("version").last()
+        action = action_query.order_by("version").last()
 
     if action is None:
         raise ValueError(
