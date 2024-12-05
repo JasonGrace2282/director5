@@ -1,3 +1,4 @@
+import contextlib
 import traceback
 from pathlib import Path
 
@@ -5,9 +6,11 @@ import jinja2
 from fastapi import APIRouter, HTTPException
 
 import docker
+import docker.errors
 from orchestrator.core import settings
 
-from .schema import ContainerLimits
+from .parsing import parse_build_response
+from .schema import ContainerCreationInfo, ContainerLimits, ExceptionInfo
 
 router = APIRouter()
 
@@ -27,14 +30,20 @@ def find_image_dir(site_id: int) -> Path:
     return settings.DOCKERFILE_IMAGES / f"site_{site_id}"
 
 
-@router.post("/create")
+@router.post(
+    "/create",
+    responses={
+        "400": {"model": ExceptionInfo},
+        "500": {"model": ExceptionInfo},
+    },
+)
 def create_container(
     site_id: int,
     base_image: str,
     maintainer: str,
     commands: list[str],
     resource_limits: ContainerLimits | None = None,
-):
+) -> ContainerCreationInfo:
     dockerfile = dockerfile_template.render(
         maintainer=maintainer,
         base=base_image,
@@ -55,7 +64,10 @@ def create_container(
     except OSError as e:
         raise HTTPException(
             status_code=500,
-            detail={"description": "Failed to create Dockerfile", "error": traceback.format_exc()},
+            detail={
+                "description": "Failed to create Dockerfile",
+                "traceback": traceback.format_exc(),
+            },
         ) from e
 
     # caching or storing intermediate images takes up a
@@ -72,11 +84,14 @@ def create_container(
     )
     stdout = list(stdout_generator)
 
-    for line in stdout:
-        if "errorDetail" in line:
-            raise HTTPException(
-                status_code=400,
-                detail={"description": "Failed to build image", "traceback": stdout},
-            )
+    stdout, succeeded = parse_build_response(stdout)
+    if not succeeded:
+        # clean up the failed containers
+        with contextlib.suppress(docker.errors.APIError):
+            client.images.prune({"dangling": True})
+        raise HTTPException(
+            status_code=400,
+            detail={"description": "Failed to build image", "traceback": stdout},
+        )
 
-    return {"message": "Container created", "build-stdout": stdout}
+    return {"build_stdout": stdout}

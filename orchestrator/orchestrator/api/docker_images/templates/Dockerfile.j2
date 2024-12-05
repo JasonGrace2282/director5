@@ -3,5 +3,5 @@ FROM {{ base }}
 LABEL org.opencontainers.image.authors="{{ maintainer }}"
 
 {% if commands %}
-  RUN {% for cmd in commands %} {{ cmd }} && {% endfor %} true
+  RUN {% for cmd in commands %} {{ cmd }} {% if not loop.last %}&&{% endif %}{% endfor %}
 {% endif %}

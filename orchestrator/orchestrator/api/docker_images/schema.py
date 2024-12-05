@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from pydantic import BaseModel
+
 
 class ContainerLimits(TypedDict, total=False):
     """The resource limits for building a container.
@@ -14,3 +16,12 @@ class ContainerLimits(TypedDict, total=False):
 
     memory: int
     memswap: int
+
+
+class ContainerCreationInfo(TypedDict):
+    build_stdout: list[str]
+
+
+class ExceptionInfo(BaseModel):
+    description: str
+    traceback: str
