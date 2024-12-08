@@ -1,0 +1,20 @@
+digraph {
+  // Go left to right
+  rankdir = LR;
+  graph [fontname = "Handlee"];
+  node [fontname = "Handlee"];
+  edge [fontname = "Handlee"];
+
+  Request;
+  nginx [label="Load Balancer"];
+
+  subgraph cluster_network {
+    label = "Internal Network";
+    "Django server 1";
+    "Django server 2";
+  }
+
+  Request -> nginx [dir=both];
+  nginx -> "Django server 1";
+  nginx -> "Django server 2";
+}

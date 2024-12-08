@@ -27,11 +27,13 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
+    "sphinx.ext.graphviz",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
     "myst_parser",
     "sphinxcontrib_django",
+    "sphinx_design",
 ]
 
 myst_enable_extensions = [

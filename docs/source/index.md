@@ -19,5 +19,6 @@ hidden: true
 ---
 contributing/setup
 contributing/ide-guide
+contributing/architecture
 contributing/developing
 ```
