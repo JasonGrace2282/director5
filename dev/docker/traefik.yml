@@ -1,0 +1,13 @@
+# NOTE: This is only here to make sure traefik works
+# Eventually, we should transition to HTTP based configs
+
+http:
+  routers:
+    traefik-router:
+      rule: "Host(`traefik.localhost`)"
+      service: traefik-service
+  services:
+    traefik-service:
+      loadBalancer:
+        servers:
+          - url: "http://localhost:8080"

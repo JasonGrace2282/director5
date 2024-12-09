@@ -105,9 +105,26 @@ services:
       - "dev/docker/docker-entrypoint.sh"
       - "tailwind"
 
+  director-traefik:
+    image: traefik:v2.7
+    container_name: traefik-reverse-proxy
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.file.watch=true
+      - --providers.file.directory=/traefik
+    ports:
+      - "80:80"
+      - "8081:8080"
+    volumes:
+      - .:/traefik
+    networks:
+      - director_net
+
 networks:
   director_net:
     driver: bridge
+    name: director_net
 
 volumes:
   director-pgdata:
