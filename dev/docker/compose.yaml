@@ -106,11 +106,12 @@ services:
       - "tailwind"
 
   director-traefik:
-    image: traefik:v2.7
+    image: traefik:v3.2
     container_name: traefik-reverse-proxy
     command:
       - --api.dashboard=true
       - --api.insecure=true
+      # this runs traefik.localhost
       - --providers.file.watch=true
       - --providers.file.directory=/traefik
     ports:
