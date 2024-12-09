@@ -22,9 +22,6 @@ env = jinja2.Environment(
 )
 dockerfile_template = env.get_template("Dockerfile.j2")
 
-client = docker.from_env()
-api_client = client.api
-
 
 def find_image_dir(site_id: int) -> Path:
     return settings.DOCKERFILE_IMAGES / f"site_{site_id}"
@@ -44,6 +41,8 @@ def create_container(
     commands: list[str],
     resource_limits: ContainerLimits | None = None,
 ) -> ContainerCreationInfo:
+    client = docker.from_env()
+
     dockerfile = dockerfile_template.render(
         maintainer=maintainer,
         base=base_image,
@@ -72,7 +71,7 @@ def create_container(
 
     # caching or storing intermediate images takes up a
     # ton of space.
-    stdout_generator = api_client.build(
+    stdout_generator = client.api.build(
         str(image_dir),
         nocache=True,
         rm=True,

@@ -56,7 +56,7 @@ class ResourceLimits(BaseModel):
     memory: Annotated[int, WrapValidator(convert_memory_limit_validator)]
 
 
-_db_url_validator = UrlConstraints(host_required=True, default_port=80)
+_db_url_validator = UrlConstraints(host_required=True, default_port=5432)
 
 
 class DatabaseInfo(BaseModel):
