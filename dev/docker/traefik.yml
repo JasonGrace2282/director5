@@ -5,9 +5,4 @@ http:
   routers:
     traefik-router:
       rule: "Host(`traefik.localhost`)"
-      service: traefik-service
-  services:
-    traefik-service:
-      loadBalancer:
-        servers:
-          - url: "http://localhost:8080"
+      service: api@internal
