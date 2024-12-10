@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException
 
 from orchestrator.core import settings
 
+from . import services
 from .parsing import parse_build_response
 from .schema import ContainerCreationInfo, ContainerLimits, ExceptionInfo, SiteInfo
 
@@ -98,4 +99,6 @@ def create_container(
 
 @router.post("/update-docker-service")
 def update_docker_service(site_info: SiteInfo):
+    client = docker.from_env()
+    services.create_service_params(client, site_info)
     return site_info

@@ -7,9 +7,9 @@
 date +'DIRECTOR: Starting server at %Y-%m-%d %H:%M:%S %Z'
 
 # This is filled in by the orchestrator
-paths="{paths}"
+declare -a paths=($SEARCH_PATH)
 
-for path in $paths; do
+for path in "${path[@]}"; do
     if [ -x "$path" ]; then
         term() {
             date +'DIRECTOR: Stopping server at %Y-%m-%d %H:%M:%S %Z'

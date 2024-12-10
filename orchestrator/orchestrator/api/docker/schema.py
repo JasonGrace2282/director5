@@ -104,6 +104,7 @@ class SiteInfo(BaseModel):
     pk: int
     is_served: bool
     resource_limits: ResourceLimits
+    runfile: str | None = None
     db: DatabaseInfo | None = None
 
     def container_env(self) -> dict[str, Any]:
