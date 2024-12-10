@@ -17,7 +17,7 @@ And navigate to http://127.0.0.1:8080 to see the website in action!
 To check out the documentation of the orchestrator (AKA the API docs),
 head over to http://127.0.0.1:8000.
 
-To exit, simply Ctrl+C on the terminal running `docker compose up`, and run `docker swarm off`.
+On future runs, you can simply run `docker compose up` to start the environment.
 
 ````{tip}
 To run a set of commands in the docker containers, simply do:
