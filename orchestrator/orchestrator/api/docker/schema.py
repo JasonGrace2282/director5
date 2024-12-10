@@ -86,11 +86,9 @@ class DatabaseInfo(BaseModel):
         assert host is not None
         return host
 
-    @field_validator("url")
+    @field_validator("url", mode="after")
     @classmethod
-    def check_db_url(cls, v: PostgresDsn | MySQLDsn | None) -> PostgresDsn | MySQLDsn | None:
-        if v is None:
-            return v
+    def check_db_url(cls, v: PostgresDsn | MySQLDsn) -> PostgresDsn | MySQLDsn:
         if isinstance(v, PostgresDsn):
             assert len(v.hosts()) == 1, "Only one host is allowed"
             assert v.hosts()[0]["port"] is not None, "Port is required"
