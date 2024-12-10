@@ -31,12 +31,14 @@ def filter_by[M: models.Model](cls: type[M], field: str) -> Callable[[Any], M]:
             raise ValueError(
                 "An internal error occurred - please contact a director admin"
             ) from None
+        # let django figure out the typeerrors
+        except TypeError:
+            raise
 
     return wrapper
 
 
 def filter_for_action(data: str) -> DockerAction:
-    # search for ``name`` key, not action
     if len(data.split("@")) != 2:
         raise ValueError("Docker action must be in the format 'action@version'.")
 
