@@ -11,6 +11,7 @@ dependencies = [
   "heroicons[django]",
   "pillow",
   "psycopg[binary]",
+  "pydantic",
   "social-auth-app-django",
   "typing-extensions",
 ]

@@ -1,14 +1,15 @@
 import tomllib
 
 import pytest
+from pydantic import ValidationError
 
-from . import parser
+from .parser import SiteConfig
 
 
 def test_parse_valid_toml_v1(python_313, pip_install) -> None:
     toml = """
     [project]
-    version = 1
+    domain = "example.com"
 
     [docker]
     base = "Python 3.13 (Alpine)"
@@ -18,20 +19,18 @@ def test_parse_valid_toml_v1(python_313, pip_install) -> None:
     args = ["django"]
     """
     data = tomllib.loads(toml)
-    site_config = parser.parse_director_toml(data)
-    assert site_config.domain == []
-    docker = site_config.docker
-    assert docker.base == python_313
-    assert len(docker.actions) == 1
-    action = docker.actions[0]
-    assert action["action"] == pip_install
-    assert action["args"] == ["django"]
+    config = SiteConfig.model_validate(data)
+    assert config.project is not None
+    assert config.project.domain == "example.com"
+    assert config.docker.base.name == "Python 3.13 (Alpine)"
+    action_data = config.docker.actions[0]
+    assert action_data.action.name == "pip-install"
+    assert action_data.action.version == 1
+    assert action_data.args == ["django"]
 
 
-def test_missing_keys():
+def test_missing_keys(python_313):
     toml = """
-    [project]
-
     [docker]
     base = "Python 3.13 (Alpine)"
 
@@ -40,33 +39,32 @@ def test_missing_keys():
     args = ["django"]
     """
     data = tomllib.loads(toml)
-    with pytest.raises(KeyError, match=".*version.*"):
-        parser.parse_director_toml(data)
 
-    del data["project"]
+    # rename the action so it doesn't exist by this name
+    python_313.name = "BOB"
+    python_313.save()
 
-    with pytest.raises(KeyError, match=".*project.*"):
-        parser.parse_director_toml(data)
+    # no docker image with this name exists
+    with pytest.raises(ValidationError):
+        SiteConfig.model_validate(data)
+
+    python_313.name = "Python 3.13 (Alpine)"
+    python_313.save()
 
     # missing [docker]
-    data["project"] = {"version": 1}
     del data["docker"]
-
-    with pytest.raises(KeyError, match="Could not find .*docker.*"):
-        parser.parse_director_toml(data)
+    with pytest.raises(ValidationError):
+        SiteConfig.model_validate(data)
 
     # missing docker.base
     data["docker"] = {}
 
-    with pytest.raises(KeyError, match=".*base.*"):
-        parser.parse_director_toml(data)
+    with pytest.raises(ValidationError):
+        SiteConfig.model_validate(data)
 
 
 def test_invalid_keys(python_313, pip_install) -> None:
     toml = """
-    [project]
-    version = 1
-
     [docker]
     base = "Python 3.13"
 
@@ -76,19 +74,19 @@ def test_invalid_keys(python_313, pip_install) -> None:
     """
     data = tomllib.loads(toml)
 
-    with pytest.raises(ValueError, match="Could not find the base image.*"):
-        parser.parse_director_toml(data)
+    with pytest.raises(ValidationError):
+        SiteConfig.model_validate(data)
 
     # invalid format for pip install
     data["docker"]["base"] = "Python 3.13 (Alpine)"
     data["docker"]["actions"][0]["name"] = "pip-install"  # missing version
 
     # should show the correct name format
-    with pytest.raises(ValueError, match=".*name@version.*"):
-        parser.parse_director_toml(data)
+    with pytest.raises(ValidationError):
+        SiteConfig.model_validate(data)
 
     # try invalid version name with @latest
     data["docker"]["actions"][0]["name"] = "abcdef@latest"
 
-    with pytest.raises(ValueError, match="Could not find the action.*"):
-        parser.parse_director_toml(data)
+    with pytest.raises(ValidationError):
+        SiteConfig.model_validate(data)

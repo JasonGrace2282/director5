@@ -313,7 +313,6 @@ dependencies = [
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pydantic" },
-    { name = "pydantic-extra-types" },
     { name = "requests" },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
@@ -363,7 +362,6 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.0.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">3.1.8" },
     { name = "pydantic", specifier = ">=2.9.2" },
-    { name = "pydantic-extra-types", specifier = ">=2.9.0" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "social-auth-app-django", specifier = ">=5.4.2" },
     { name = "typing-extensions", specifier = ">=4.12" },
@@ -796,6 +794,7 @@ dependencies = [
     { name = "heroicons", extra = ["django"] },
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
+    { name = "pydantic" },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
 ]
@@ -829,6 +828,7 @@ requires-dist = [
     { name = "heroicons", extras = ["django"] },
     { name = "pillow" },
     { name = "psycopg", extras = ["binary"] },
+    { name = "pydantic" },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
 ]
