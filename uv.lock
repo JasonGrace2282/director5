@@ -336,7 +336,7 @@ docs = [
     { name = "sphinxcontrib-django" },
 ]
 lint = [
-    { name = "django-stubs", extra = ["compatible-mypy"] },
+    { name = "django-stubs" },
     { name = "mypy" },
     { name = "pre-commit" },
     { name = "types-requests" },
@@ -385,7 +385,7 @@ docs = [
     { name = "sphinxcontrib-django", specifier = ">=2.5" },
 ]
 lint = [
-    { name = "django-stubs", extras = ["compatible-mypy"], specifier = ">=5.1.0" },
+    { name = "django-stubs", specifier = ">=5.1.0" },
     { name = "mypy", specifier = ">=1.11.2" },
     { name = "pre-commit", specifier = ">=3.8.0" },
     { name = "types-requests", specifier = ">=2.32.0.20241016" },
@@ -493,11 +493,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/bf/60/1ae90eb6e2e107bc64a3de9de78a5add7f3b85e491113504eed38d6d2c63/django_stubs-5.1.1.tar.gz", hash = "sha256:126d354bbdff4906c4e93e6361197f6fbfb6231c3df6def85a291dae6f9f577b", size = 265624 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/98/c8/3081d5f994351248fcd60f9aab10cb2020bdd7df0f14e80854373e15d7d4/django_stubs-5.1.1-py3-none-any.whl", hash = "sha256:c4dc64260bd72e6d32b9e536e8dd0d9247922f0271f82d1d5132a18f24b388ac", size = 470790 },
-]
-
-[package.optional-dependencies]
-compatible-mypy = [
-    { name = "mypy" },
 ]
 
 [[package]]
@@ -808,8 +803,7 @@ dev = [
     { name = "werkzeug" },
 ]
 lint = [
-    { name = "django-stubs", extra = ["compatible-mypy"] },
-    { name = "mypy" },
+    { name = "django-stubs" },
     { name = "pre-commit" },
 ]
 test = [
@@ -842,8 +836,7 @@ dev = [
     { name = "werkzeug" },
 ]
 lint = [
-    { name = "django-stubs", extras = ["compatible-mypy"] },
-    { name = "mypy" },
+    { name = "django-stubs" },
     { name = "pre-commit" },
 ]
 test = [

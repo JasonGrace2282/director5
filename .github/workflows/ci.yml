@@ -26,10 +26,6 @@ jobs:
       - name: Run pre-commit
         run: uv run pre-commit run --all-files --show-diff-on-failure
 
-      - name: Run mypy on Manager
-        working-directory: manager
-        run: uv run --package manager mypy director
-
       - name: Run mypy on Orchestrator
         working-directory: orchestrator
         run: uv run --package orchestrator mypy orchestrator

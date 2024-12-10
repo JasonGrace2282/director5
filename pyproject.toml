@@ -24,7 +24,7 @@ dependencies = [
 
 [dependency-groups]
 lint = [
-  "django-stubs[compatible-mypy]>=5.1.0",
+  "django-stubs>=5.1.0",
   "mypy>=1.11.2",
   "pre-commit>=3.8.0",
   "types-requests>=2.32.0.20241016",
