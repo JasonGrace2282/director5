@@ -18,6 +18,16 @@ head over to http://127.0.0.1:8000.
 
 On future runs, you can simply run `docker compose up` to start the environment.
 
+````{tip}
+To run a set of commands in the docker containers, simply do:
+
+```bash
+cd dev/docker
+# replace director_django with the service to run it in
+docker exec -it director_django /bin/bash
+```
+````
+
 ## Local Development
 
 Some things are just easier to debug locally than on docker. We use [uv](https://docs.astral.sh/uv/)
@@ -25,7 +35,7 @@ to manage our dependencies. Check out [their docs](https://docs.astral.sh/uv/get
 for how to install it.
 
 ````{admonition} Installing uv
-Some linux distributions already package ``uv``, such as Arch Linux.
+Some linux distributions already package `uv`, such as Arch Linux.
 As such, it may be better to install it with your linux distributions package manager.
 
 Alternatively, if you don't want to install it system-wide, you can install it
@@ -48,7 +58,8 @@ Use ``uv run --package manager`` to run something using the dependencies of the 
 
 ### Docs
 
-To edit the docs, run:
+First, install [Graphviz](https://graphviz.org/download/) if you don't have `dot` installed. Then,
+to edit the docs, run:
 
 ```bash
 cd docs

@@ -1,0 +1,30 @@
+digraph {
+  // Go left to right
+  rankdir = LR;
+  graph [fontname = "Handlee"];
+  node [fontname = "Handlee"];
+  edge [fontname = "Handlee"];
+
+  Request;
+  nginx [label="Director Balancer"];
+
+  Request -> nginx [dir=both];
+
+  subgraph cluster_network {
+    label = "Internal Network";
+    Django;
+
+    subgraph cluster_appservers {
+      label = "";
+      peripheries = 0;
+      Traefik [label="Traefik Proxy"];
+      app1 [label="Appserver"];
+      app2 [label="Appserver"];
+    }
+  }
+
+  nginx -> Django [label="director.tjhsst.edu"];
+  nginx -> Traefik [label="*.sites.tjhsst.edu"];
+  Traefik -> app1;
+  Traefik -> app2;
+}

@@ -70,6 +70,9 @@ jobs:
         with:
           groups: "docs"
 
+      - name: Install graphviz
+        run: sudo apt install graphviz
+
       - name: Build Docs
         working-directory: docs
         run: uv run just html-strict
