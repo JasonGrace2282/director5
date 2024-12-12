@@ -114,8 +114,8 @@ services:
       # this runs traefik.localhost
       - --providers.file.watch=true
       - --providers.file.directory=/traefik
+      # this runs the actual sites
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
-      - --log.level=DEBUG
     ports:
       - "80:80"
     volumes:
