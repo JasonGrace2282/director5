@@ -6,7 +6,7 @@ def cpu_to_nano_cpus(cpu: float) -> float:
 
     Docker expects the CPU value to be in nano-CPUs.
     """
-    return cpu * 1e9
+    return int(cpu * 1e9)
 
 
 def convert_memory_limit(memory: int | str) -> int:

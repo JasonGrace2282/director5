@@ -2,8 +2,8 @@
 
 # docker service create --name nginx-test --replicas 1 \
 # -l traefik.http.routers.nginx-test.rule="Host(\`example.localhost\`)"
-# -l traefik.http.services.nginx-test.loadbalancer.server.port=80 nginx
-# -l traefik.swarm.network=director-sites
+# -l traefik.http.services.nginx-test.loadbalancer.server.port=80
+# -l traefik.swarm.network=director-sites nginx
 
 http:
   routers:

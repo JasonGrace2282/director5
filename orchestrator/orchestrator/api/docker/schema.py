@@ -1,7 +1,9 @@
+from pathlib import Path
 from typing import Annotated, Any, Literal, TypedDict, cast
 
 from pydantic import (
     BaseModel,
+    Field,
     MySQLDsn,
     PostgresDsn,
     UrlConstraints,
@@ -98,10 +100,23 @@ class DatabaseInfo(BaseModel):
         return f"{type(self).__name__}({self.url}, {self.name})"
 
 
+class DockerConfig(BaseModel):
+    base: str
+    """The base image for the container."""
+
+
+# We're not too strict, the Manager should have a more
+# conservative regex. We just want to double check to
+# prevent injections into the Host traefik label.
+DOMAIN_REGEX = r"^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$"
+
+
 class SiteInfo(BaseModel):
     pk: int
+    hosts: list[Annotated[str, Field(pattern=DOMAIN_REGEX)]]
     is_served: bool
     resource_limits: ResourceLimits
+    docker: DockerConfig
     runfile: str | None = None
     db: DatabaseInfo | None = None
 
@@ -121,3 +136,22 @@ class SiteInfo(BaseModel):
                 "DIRECTOR_DATABASE_PASSWORD": self.db.password,
             }
         return env
+
+    def directory_path(self, *, on_host: bool = False) -> Path:
+        """Returns the directory path on the local host where the site files are.
+
+        Args:
+            on_host: whether return it relative to ``SITES_DIR`` on the host machine.
+                Should ONLY be used for the local development environment.
+        """
+        sites_dir = settings.HOST_SITES_DIR if on_host else settings.SITES_DIR
+        # the specific path is a relic from Director4
+        path = sites_dir / f"{self.pk // 100:02d}" / f"{self.pk % 100:02d}"
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
+    def __str__(self) -> str:
+        return f"site_{self.pk:04d}"
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}({self.pk}, {self.is_served})"

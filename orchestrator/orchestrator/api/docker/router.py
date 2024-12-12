@@ -99,6 +99,20 @@ def create_container(
 
 @router.post("/update-docker-service")
 def update_docker_service(site_info: SiteInfo):
+    params = services.create_service_params(site_info)
     client = docker.from_env()
-    services.create_service_params(client, site_info)
-    return site_info
+    service = services.find_service_by_name(client, str(site_info))
+    try:
+        if service is None:
+            client.services.create(**params)
+        else:
+            service.update(**params)
+    except docker.errors.APIError as e:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "description": "Failed to update service",
+                "traceback": traceback.format_exc(),
+            },
+        ) from e
+    return {}

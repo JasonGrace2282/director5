@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # This is the script used to run a site.
 # We look for a run.sh file in this script to avoid
 # rebuilding the docker image if it changes.
@@ -7,9 +5,11 @@
 date +'DIRECTOR: Starting server at %Y-%m-%d %H:%M:%S %Z'
 
 # This is filled in by the orchestrator
-declare -a paths=($SEARCH_PATH)
+declare -a paths=("/site/run.sh")
+echo "Paths: ${paths[@]}"
 
 for path in "${path[@]}"; do
+    echo "Checking $path..."
     if [ -x "$path" ]; then
         term() {
             date +'DIRECTOR: Stopping server at %Y-%m-%d %H:%M:%S %Z'

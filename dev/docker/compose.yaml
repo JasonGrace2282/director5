@@ -86,8 +86,8 @@ services:
     entrypoint:
       - "/director5/dev/docker/docker-entrypoint.sh"
       - "fastapi"
-    cap_add:
-      - NET_ADMIN
+    environment:
+      PWD_HOST: "${PWD}"
 
   tailwind:
     container_name: director_tailwind
