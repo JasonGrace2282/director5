@@ -112,8 +112,7 @@ services:
       - --api.dashboard=true
       - --api.insecure=true
       # this runs traefik.localhost
-      - --providers.file.watch=true
-      - --providers.file.directory=/traefik
+      - --providers.file.filename=/traefik/traefik.yml
       # this runs the actual sites
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
     ports:
