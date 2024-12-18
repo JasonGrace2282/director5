@@ -20,7 +20,9 @@ TIMEZONE = "America/New_York"
 
 SITES_DIR = Path("/data/sites")
 
-if DEBUG:
+CI = "CI" in os.environ
+
+if DEBUG and not CI:
     compose_on_host = Path(os.environ["PWD_HOST"])
     repo_root_host = compose_on_host.parent.parent
     # note that this matches the bind mount in compose.yaml
