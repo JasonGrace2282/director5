@@ -11,6 +11,8 @@ Check out the following documents to help get used to the development
 environment:
 
 ```{toctree}
+developing/setup
+developing/ide-guide
 developing/extensions
 developing/tips
 developing/guidelines
