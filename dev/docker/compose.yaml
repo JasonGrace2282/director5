@@ -52,6 +52,7 @@ services:
       context: ../../
       dockerfile: ./dev/docker/Dockerfile
     image: director_base
+    working_dir: /director5/manager
     restart: on-failure
     networks:
       - director_net
@@ -59,30 +60,34 @@ services:
       - 8080:8080
     volumes:
       - ../../:/director5
+      - ../../docker/storage/:/data
       - /director5/.venv
     depends_on:
       - redis
       - postgres
     entrypoint:
-      - "dev/docker/docker-entrypoint.sh"
+      - "/director5/dev/docker/docker-entrypoint.sh"
       - "django"
 
   fastapi:
     container_name: director_orchestrator
     image: director_base
+    working_dir: /director5/orchestrator
+    stop_grace_period: 1s
     networks:
       - director_net
     ports:
       - 8000:8080
     volumes:
       - ../../:/director5
+      - ../../docker/storage/:/data
       - /director5/.venv
       - /var/run/docker.sock:/var/run/docker.sock
     entrypoint:
-      - "dev/docker/docker-entrypoint.sh"
+      - "/director5/dev/docker/docker-entrypoint.sh"
       - "fastapi"
-    cap_add:
-      - NET_ADMIN
+    environment:
+      PWD_HOST: "${PWD}"
 
   tailwind:
     container_name: director_tailwind
@@ -100,9 +105,34 @@ services:
       - "dev/docker/docker-entrypoint.sh"
       - "tailwind"
 
+  director-traefik:
+    image: traefik:v3.2
+    container_name: traefik-reverse-proxy
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      # this runs traefik.localhost
+      - --providers.file.filename=/traefik/traefik.yml
+      # this runs the actual sites
+      - --providers.swarm.endpoint=unix:///var/run/docker.sock
+    ports:
+      - "80:80"
+    volumes:
+      - .:/traefik
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - director-sites
+
 networks:
   director_net:
     driver: bridge
+    name: director_net
+
+  # the network the hosted sites run on
+  director-sites:
+    name: director-sites
+    driver: overlay
+    attachable: true
 
 volumes:
   director-pgdata:

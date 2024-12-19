@@ -8,6 +8,7 @@ After that, to start the development environment, simply run the following:
 
 ```bash
 cd dev/docker
+docker swarm init
 docker compose build
 docker compose up
 ```

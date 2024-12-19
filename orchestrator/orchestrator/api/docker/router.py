@@ -9,8 +9,9 @@ from fastapi import APIRouter, HTTPException
 
 from orchestrator.core import settings
 
+from . import services
 from .parsing import parse_build_response
-from .schema import ContainerCreationInfo, ContainerLimits, ExceptionInfo
+from .schema import ContainerCreationInfo, ContainerLimits, ExceptionInfo, SiteInfo
 
 router = APIRouter()
 
@@ -21,9 +22,6 @@ env = jinja2.Environment(
     autoescape=False,
 )
 dockerfile_template = env.get_template("Dockerfile.j2")
-
-client = docker.from_env()
-api_client = client.api
 
 
 def find_image_dir(site_id: int) -> Path:
@@ -44,6 +42,8 @@ def create_container(
     commands: list[str],
     resource_limits: ContainerLimits | None = None,
 ) -> ContainerCreationInfo:
+    client = docker.from_env()
+
     dockerfile = dockerfile_template.render(
         maintainer=maintainer,
         base=base_image,
@@ -72,7 +72,7 @@ def create_container(
 
     # caching or storing intermediate images takes up a
     # ton of space.
-    stdout_generator = api_client.build(
+    stdout_generator = client.api.build(
         str(image_dir),
         nocache=True,
         rm=True,
@@ -95,3 +95,24 @@ def create_container(
         )
 
     return {"build_stdout": stdout}
+
+
+@router.post("/update-docker-service")
+def update_docker_service(site_info: SiteInfo):
+    params = services.create_service_params(site_info)
+    client = docker.from_env()
+    service = services.find_service_by_name(client, str(site_info))
+    try:
+        if service is None:
+            client.services.create(**params)
+        else:
+            service.update(**params)
+    except docker.errors.APIError as e:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "description": "Failed to update service",
+                "traceback": traceback.format_exc(),
+            },
+        ) from e
+    return {}
