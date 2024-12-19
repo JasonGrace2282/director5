@@ -74,8 +74,10 @@ class Site(models.Model):
             MinLengthValidator(2),
             RegexValidator(
                 regex=r"^[a-z0-9]+(-[a-z0-9]+)*$",
-                message="Site names must consist of lowercase letters, numbers, and dashes. Dashes "
-                "must go between two non-dash characters.",
+                message=(
+                    "Site names must consist of lowercase letters, numbers, and dashes. "
+                    "Dashes must go between two non-dash characters."
+                ),
             ),
         ],
     )

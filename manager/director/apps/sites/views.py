@@ -25,7 +25,8 @@ def create_site(request: AuthenticatedHttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = CreateSiteForm(request.POST)
         if form.is_valid():
-            form.save()
+            site = form.save()
+            site.users.add(request.user)
             return redirect("sites:index")
     else:
         form = CreateSiteForm()
