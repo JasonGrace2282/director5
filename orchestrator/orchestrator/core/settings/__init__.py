@@ -18,12 +18,19 @@ DOCKERFILE_IMAGES = Path("/data/images")
 
 TIMEZONE = "America/New_York"
 
-SITES_DIR = Path("/data/sites")
-
 CI = "CI" in os.environ
 
+SITES_DIR = Path("/data/sites")
+
+if CI:
+    SITES_DIR = Path("/tmp/sites")
+    DOCKERFILE_IMAGES = Path("/tmp/images")
+
 if DEBUG and not CI:
-    compose_on_host = Path(os.environ["PWD_HOST"])
+    pwd = os.environ.get("PWD_HOST")
+    if pwd is None:
+        raise RuntimeError("Run scripts in the docker compose container!")
+    compose_on_host = Path(pwd)
     repo_root_host = compose_on_host.parent.parent
     # note that this matches the bind mount in compose.yaml
     # we do this so that containers spawned on the host
