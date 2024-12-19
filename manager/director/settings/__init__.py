@@ -237,6 +237,10 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# Celery
+CELERY_BROKER_URL = "redis://redis:6379/0"
+
+
 # Director settings
 DOCS_URL = "https://jasongrace2282.github.io/director5/"
 REPO_URL = "https://github.com/jasongrace2282/director5/"

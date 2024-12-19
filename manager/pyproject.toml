@@ -12,6 +12,7 @@ dependencies = [
   "pillow",
   "psycopg[binary]",
   "pydantic",
+  "redis",
   "social-auth-app-django",
   "typing-extensions",
 ]
