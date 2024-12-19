@@ -50,6 +50,10 @@ jobs:
         working-directory: manager
         run: uv run --package manager python manage.py migrate --noinput
 
+      # for some reason doing this in python fails
+      - name: Make /data directory
+        run: mkdir -p /data/sites /data/images
+
       - name: Run Tests on Manager
         working-directory: manager
         run: uv run --package manager pytest
