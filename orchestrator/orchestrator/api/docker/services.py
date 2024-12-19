@@ -1,6 +1,5 @@
 """A module for working with Docker services to run on nodes."""
 
-import shlex
 import string
 from pathlib import Path
 from typing import Any
@@ -87,12 +86,13 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
     """Parameters for creating/updating a Docker Swarm service."""
     # default to looking through /site for a run.sh, for backwards compatibility
     if site_info.runfile is None:
-        runfiles = ["/site/run.sh", "/site/private/run.sh", "/site/public/run.sh"]
-    else:
-        runfiles = [site_info.runfile]
+        site_info.runfile = " ".join(
+            ("/site/run.sh", "/site/private/run.sh", "/site/public/run.sh")
+        )
+
     shell_cmd_template = string.Template((TEMPLATE_DIR / "run-site.sh").read_text())
-    # the shlex.join function helps prevent shell injection
-    shell_cmd = shell_cmd_template.safe_substitute(SEARCH_PATH=shlex.join(runfiles))
+    # note that the regex on the runfile should prevent injections
+    shell_cmd = shell_cmd_template.safe_substitute(SEARCH_PATH=site_info.runfile)
 
     port = 80
     extra_envs = {"PORT": f"{port}", "HOST": "0.0.0.0"}
@@ -109,7 +109,7 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
     params |= {
         "name": str(site_info),
         "read_only": True,
-        "command": ["bash", "-c", shell_cmd],
+        "command": ["sh", "-c", shell_cmd],
         "workdir": "/site/public",
         # add to the docker swarm network, so traefik can find it
         "networks": ["director-sites"],

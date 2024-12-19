@@ -117,7 +117,7 @@ class SiteInfo(BaseModel):
     is_served: bool
     resource_limits: ResourceLimits
     docker: DockerConfig
-    runfile: str | None = None
+    runfile: Annotated[str, Field(pattern=r"[/\-.a-zA-Z0-9]+")] | None = None
     db: DatabaseInfo | None = None
 
     def container_env(self) -> dict[str, Any]:

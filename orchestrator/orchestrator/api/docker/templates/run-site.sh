@@ -5,10 +5,7 @@
 date +'DIRECTOR: Starting server at %Y-%m-%d %H:%M:%S %Z'
 
 # This is filled in by the orchestrator
-declare -a paths=("/site/run.sh")
-echo "Paths: ${paths[@]}"
-
-for path in "${path[@]}"; do
+for path in $SEARCH_PATH; do
     echo "Checking $path..."
     if [ -x "$path" ]; then
         term() {
