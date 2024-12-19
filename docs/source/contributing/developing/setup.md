@@ -27,6 +27,10 @@ cd dev/docker
 # replace director_django with the service to run it in
 docker exec -it director_django /bin/bash
 ```
+For example, to create some basic users for development, run
+```bash
+docker exec -it director_django ./manage.py create_debug_users
+```
 ````
 
 ## Local Development
