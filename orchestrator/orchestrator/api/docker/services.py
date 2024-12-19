@@ -40,7 +40,7 @@ def shared_swarm_params(site: SiteInfo) -> dict[str, Any]:
     # host machine, so we can't use host_site_dir
     # TODO: this is hacky, our dev environment should not leak into production code
     root = site.directory_path() / ".home"
-    root.mkdir(exist_ok=True)
+    root.mkdir(exist_ok=True, parents=True)
 
     return {
         "image": site.docker.base,
