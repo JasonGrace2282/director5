@@ -23,7 +23,16 @@ services:
   celery:
     container_name: director_celery
     image: director_base
-    entrypoint: uv run celery -A director worker --loglevel=INFO
+    user: celery
+    entrypoint:
+      - uv
+      - run
+      - -m
+      - watchfiles
+      - --filter
+      - python
+      - "celery -A director worker"
+      - /director5/manager/director
     working_dir: /director5/manager
     networks:
       - director_net
@@ -36,7 +45,7 @@ services:
   celerybeat:
     container_name: director_celerybeat
     image: director_base
-    entrypoint: uv run celery -A director beat --loglevel=INFO
+    entrypoint: uv run celery -A director beat
     working_dir: /director5/manager
     networks:
       - director_net

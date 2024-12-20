@@ -16,4 +16,4 @@ app.autodiscover_tasks()
 def setup_logger(logger, **kwargs):
     from django.conf import settings
 
-    logger.level = getattr(logging, settings.LOG_LEVEL)
+    logger.level = getattr(logging, settings.CELERY_LOG_LEVEL)

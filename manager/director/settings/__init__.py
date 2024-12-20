@@ -239,6 +239,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Celery
 CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_LOG_LEVEL = "WARNING"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 
 # Director settings
