@@ -247,3 +247,5 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 DOCS_URL = "https://jasongrace2282.github.io/director5/"
 REPO_URL = "https://github.com/jasongrace2282/director5/"
 CONTACT_EMAIL = "director@tjhsst.edu"
+
+DIRECTOR_APPSERVER_HOSTS: list[str] = ["fastapi:8000"]
