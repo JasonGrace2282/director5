@@ -8,10 +8,6 @@ import requests
 from django.conf import settings
 
 
-class AppserverRequestError(ValueError):
-    pass
-
-
 class Appserver:
     """An abstraction over a server running the orchestrator.
 
