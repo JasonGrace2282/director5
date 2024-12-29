@@ -258,10 +258,9 @@ CONTACT_EMAIL = "director@tjhsst.edu"
 # URL is used for user sites). The "None" key indicates the default format if there is not an
 # explicit entry for a given site's "purpose" (and it MUST be specified).
 SITE_URL_FORMATS = {
-    "user": "user.tjhsst.edu/{}/",
-    "activity": "activities.tjhsst.edu/{}/",
-    "legacy": "www.tjhsst.edu/~{}/",
-    None: "{}.sites.tjhsst.edu",
+    "user": "user.localhost/{}/",
+    "activity": "activities.localhost/{}/",
+    None: "{}.sites.localhost",
 }
 
 
