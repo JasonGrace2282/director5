@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Self
 from django.conf import settings
 from django.core.validators import MinLengthValidator, MinValueValidator, RegexValidator
 from django.db import models
+from django.utils import timezone
 
 if TYPE_CHECKING:
     from ..users.models import User
@@ -341,3 +342,112 @@ class Domain(models.Model):
 
     def __str__(self) -> str:
         return f"{self.domain} ({self.site})"
+
+
+class Operation(models.Model):
+    """A series of actions being performed on a site.
+
+    Examples:
+        * The initial site creation process
+        * Renaming a site
+        * Changing a site type
+
+    .. note::
+
+        All state for an :class:`Operation` is in the Celery task. The database entries are only for easier inspection
+        of running/failed tasks, so restarting/continuing a failed Operation is not possible. Instead, one
+        should try running the "Fix site" task, which does its best to ensure that the site is set up properly.
+    """
+
+    OPERATION_TYPES = [
+        # Create a site (no database)
+        ("create_site", "Creating site"),
+        # Rename the site. Changes the site name and the default domain name.
+        ("rename_site", "Renaming site"),
+        # Change the site name and domain names
+        ("edit_site_names", "Changing site name/domains"),
+        # Change the site type (example: static -> dynamic)
+        ("change_site_type", "Changing site type"),
+        # Create a database for the site
+        ("create_site_database", "Creating site database"),
+        # Delete a database for the site
+        ("delete_site_database", "Deleting site database"),
+        # Regenerate the database password.
+        ("regen_site_secrets", "Regenerating site secrets"),
+        # Updating the site's resource limits
+        ("update_resource_limits", "Updating site resource limits"),
+        # Updating something about the site's Docker image
+        ("update_docker_image", "Updating site Docker image"),
+        # Delete a site, its files, its database, its Docker image, etc.
+        ("delete_site", "Deleting site"),
+        # Restart a site's swarm service
+        ("restart_site", "Restarting site"),
+        # Tries to ensure everything is correct. Builds the Docker image, and updates the Docker service.
+        ("fix_site", "Attempting to fix site"),
+    ]
+
+    site = models.OneToOneField(Site, null=False, on_delete=models.PROTECT)
+    ty = models.CharField(max_length=24, choices=OPERATION_TYPES, verbose_name="type")
+    created_time = models.DateTimeField(auto_now_add=True, null=False)
+    started_time = models.DateTimeField(null=True)
+
+    def __str__(self) -> str:
+        return f"{type(self).__name__}: {self.ty}"
+
+    @property
+    def has_started(self) -> bool:
+        return self.started_time is not None
+
+
+class Action(models.Model):
+    """An individual task in an operation.
+
+    A representation of the state of a single action in an operation. For
+    example, if the operation is fixing docker, the actions might be
+
+    * "rebuild_docker_image"
+    * "restart_docker_service"
+    """
+
+    operation = models.ForeignKey(Operation, null=False, on_delete=models.PROTECT)
+
+    # Example: "update_nginx_config"
+    slug = models.CharField(
+        max_length=40,
+        null=False,
+        blank=False,
+        validators=[MinLengthValidator(4), RegexValidator(regex=r"^[a-z]+(_[a-z]+)+$")],
+    )
+    # May be displayed to the user for progress updates. Example: "Updating Nginx config"
+    name = models.CharField(max_length=80, null=False, blank=False)
+    # Time this action was started. Only None if it hasn't been started yet.
+    started_time = models.DateTimeField(null=True)
+
+    # None=Not finished, True=Successful, False=Failed
+    result = models.BooleanField(null=True, default=None)
+
+    message = models.TextField(
+        null=False,
+        blank=True,
+        help_text=(
+            "Message describing the actions taken (and/or what failed). "
+            "Should always be set to allow for easier debugging.\n"
+            "Only visible to superusers."
+        ),
+    )
+
+    # Operations that fail because of failures in Actions with this field set to True will not
+    # be exported in the Prometheus metrics, and they will have a special note on the operations
+    # page.
+    # The main practical use of this is for building the Docker image, which will fail if the user
+    # enters an incorrect package name.
+    user_recoverable = models.BooleanField(
+        null=False, default=False, help_text="Can the user recover from this failure?"
+    )
+
+    def __str__(self) -> str:
+        return f"{type(self).__name__}: {self.name}"
+
+    def start_action(self) -> None:
+        self.started_time = timezone.localtime()
+        self.save(update_fields=["started_time"])
