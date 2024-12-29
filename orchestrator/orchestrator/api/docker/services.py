@@ -103,6 +103,8 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
     # match any hosts given
     hosts = " || ".join(f"Host(`{host}`)" for host in site_info.hosts)
 
+    max_request_body_size = str(site_info.resource_limits.max_request_body_size)
+
     # Docker by default runs with a small set of capacities,
     # so we don't need to modify them here.
     # TODO: we may want to "cap_drop" some capabilities we don't need
@@ -116,7 +118,9 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
         # these labels dictate how traefik actually proxies the requests into the service
         "labels": {
             f"traefik.http.routers.{site_info}.rule": hosts,
+            f"traefik.http.routers.{site_info}.middlewares": f"{site_info}@swarm",
             f"traefik.http.services.{site_info}.loadbalancer.server.port": str(port),
+            f"traefik.http.middlewares.{site_info}.buffering.maxRequestBodyBytes": max_request_body_size,
             "traefik.swarm.network": "director-sites",
         },
         "resources": Resources(

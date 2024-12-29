@@ -56,6 +56,7 @@ def convert_memory_limit_validator(
 class ResourceLimits(BaseModel):
     cpus: Annotated[float, AfterValidator(cpu_to_nano_cpus)]
     memory: Annotated[int, WrapValidator(convert_memory_limit_validator)]
+    max_request_body_size: int
 
 
 _db_url_validator = UrlConstraints(host_required=True, default_port=5432)

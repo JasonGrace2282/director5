@@ -5,7 +5,7 @@ from typing import Any, overload
 
 from .models import Action, Operation, Site
 
-type ActionCallback = Callable[[Site], Iterator[str]]
+type ActionCallback = Callable[[Site, dict[str, Any]], Iterator[str]]
 
 
 class OperationWrapper:

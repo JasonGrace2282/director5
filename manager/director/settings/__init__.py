@@ -13,6 +13,7 @@ import contextlib
 import os
 import socket
 from pathlib import Path
+from typing import Final
 
 from . import types
 
@@ -249,6 +250,27 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 DOCS_URL = "https://jasongrace2282.github.io/director5/"
 REPO_URL = "https://github.com/jasongrace2282/director5/"
 CONTACT_EMAIL = "director@tjhsst.edu"
+
+# The URL that will be used for various site types.
+# The site name is interpolated into this using str.format(). It is guaranteed to be
+# URL/domain-safe.
+# The key indicates that this format should be used for a given site "purpose" (e.g. the "user"
+# URL is used for user sites). The "None" key indicates the default format if there is not an
+# explicit entry for a given site's "purpose" (and it MUST be specified).
+SITE_URL_FORMATS = {
+    "user": "https://user.tjhsst.edu/{}/",
+    "activity": "https://activities.tjhsst.edu/{}/",
+    "legacy": "https://www.tjhsst.edu/~{}/",
+    None: "https://{}.sites.tjhsst.edu",
+}
+
+
+# Fractions of a CPU
+DIRECTOR_RESOURCES_DEFAULT_CPUS: Final = 0.6
+# Memory in bytes
+DIRECTOR_RESOURCES_DEFAULT_MEMORY_LIMIT: Final = 100 * 1000 * 1000
+# Client body (aka file upload) size limit
+DIRECTOR_RESOURCES_MAX_REQUEST_BODY: Final = 2 * 1024 * 1024
 
 # Appservers
 DIRECTOR_APPSERVER_HOSTS: list[str] = ["fastapi:8080"]

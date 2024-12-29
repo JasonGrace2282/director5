@@ -121,6 +121,22 @@ class Site(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def is_served(self) -> bool:
+        return self.availability == "enabled"
+
+    @property
+    def sites_url(self) -> str:
+        """Return the default URL where the site is served."""
+        default = settings.SITE_URL_FORMATS[None]
+        return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
+
+    def list_domains(self) -> list[str]:
+        """Returns all the domains for a site."""
+        return [
+            ("https://" + domain) for domain in self.domain_set.values_list("domain", flat=True)
+        ] + [self.sites_url]
+
 
 class DatabaseHost(models.Model):
     """The different types of databases offered to users.
