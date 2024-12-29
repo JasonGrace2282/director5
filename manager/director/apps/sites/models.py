@@ -10,6 +10,7 @@ from django.utils import timezone
 
 if TYPE_CHECKING:
     from ..users.models import User
+    from .parser import SiteConfig
 
 
 class SiteQuerySet(models.QuerySet):
@@ -136,6 +137,23 @@ class Site(models.Model):
         return [
             ("https://" + domain) for domain in self.domain_set.values_list("domain", flat=True)
         ] + [self.sites_url]
+
+    def docker_image(self, config: SiteConfig | None = None) -> str:
+        """Return the Docker image for the site."""
+        if self.mode == "S":
+            return "nginx:latest"
+        if config is not None and config.docker is not None:
+            return config.docker.base
+        return settings.DIRECTOR_DEFAULT_DOCKER_IMAGE
+
+    def serialize_resource_limits(self) -> dict[str, float]:
+        """Serialize the resource limits for the appservers."""
+        # TODO: implement custom resource limits
+        return {
+            "cpus": settings.DIRECTOR_RESOURCES_DEFAULT_CPUS,
+            "memory": settings.DIRECTOR_RESOURCES_DEFAULT_MEMORY_LIMIT,
+            "max_request_body_size": settings.DIRECTOR_RESOURCES_MAX_REQUEST_BODY,
+        }
 
 
 class DatabaseHost(models.Model):

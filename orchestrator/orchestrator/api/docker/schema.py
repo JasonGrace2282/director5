@@ -109,7 +109,7 @@ class DockerConfig(BaseModel):
 # We're not too strict, the Manager should have a more
 # conservative regex. We just want to double check to
 # prevent injections into the Host traefik label.
-DOMAIN_REGEX = r"^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$"
+DOMAIN_REGEX = r"^[a-zA-Z0-9][a-zA-Z0-9~.-]*[a-zA-Z0-9]$"
 
 
 class SiteInfo(BaseModel):

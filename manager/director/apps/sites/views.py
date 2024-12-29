@@ -5,8 +5,10 @@ from typing import TYPE_CHECKING
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
+from . import tasks
 from .forms import CreateSiteForm
-from .models import Site
+from .models import Operation, Site
+from .operations import send_operation_updated_message
 
 if TYPE_CHECKING:
     from django.http import HttpResponse
@@ -27,6 +29,9 @@ def create_site(request: AuthenticatedHttpRequest) -> HttpResponse:
         if form.is_valid():
             site = form.save()
             site.users.add(request.user)
+            op = Operation.objects.create(site=site, ty="create_site")
+            tasks.create_site.delay(op.id)
+            send_operation_updated_message(site)
             return redirect("sites:index")
     else:
         form = CreateSiteForm()

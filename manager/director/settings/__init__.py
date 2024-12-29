@@ -258,10 +258,10 @@ CONTACT_EMAIL = "director@tjhsst.edu"
 # URL is used for user sites). The "None" key indicates the default format if there is not an
 # explicit entry for a given site's "purpose" (and it MUST be specified).
 SITE_URL_FORMATS = {
-    "user": "https://user.tjhsst.edu/{}/",
-    "activity": "https://activities.tjhsst.edu/{}/",
-    "legacy": "https://www.tjhsst.edu/~{}/",
-    None: "https://{}.sites.tjhsst.edu",
+    "user": "user.tjhsst.edu/{}/",
+    "activity": "activities.tjhsst.edu/{}/",
+    "legacy": "www.tjhsst.edu/~{}/",
+    None: "{}.sites.tjhsst.edu",
 }
 
 
@@ -269,8 +269,14 @@ SITE_URL_FORMATS = {
 DIRECTOR_RESOURCES_DEFAULT_CPUS: Final = 0.6
 # Memory in bytes
 DIRECTOR_RESOURCES_DEFAULT_MEMORY_LIMIT: Final = 100 * 1000 * 1000
-# Client body (aka file upload) size limit
+# Client body (aka file upload) size limit in bytes
 DIRECTOR_RESOURCES_MAX_REQUEST_BODY: Final = 2 * 1024 * 1024
+
+# All new sites will be assigned this Docker image. It should be
+# "docker pull"-able from each appserver somehow
+# This should almost always be a ":latest" image.
+# WARNING: Do not try to delete the DockerImage specified here! Weird things may happen.
+DIRECTOR_DEFAULT_DOCKER_IMAGE = "alpine:latest"
 
 # Appservers
 DIRECTOR_APPSERVER_HOSTS: list[str] = ["fastapi:8080"]

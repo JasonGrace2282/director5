@@ -15,30 +15,30 @@ class OperationWrapper:
         self.actions: list[tuple[Action, ActionCallback]] = []
 
     @overload
-    def register_action[C: ActionCallback](
+    def register_action(
         self,
         name: str,
         callback: None = None,
         *,
-        user_recoverable: bool,
-    ) -> Callable[[C], C]: ...
+        user_recoverable: bool = ...,
+    ) -> Callable[[ActionCallback], ActionCallback]: ...
 
     @overload
-    def register_action[C: ActionCallback](
+    def register_action(
         self,
         name: str,
-        callback: C,
+        callback: ActionCallback,
         *,
-        user_recoverable: bool,
-    ) -> C: ...
+        user_recoverable: bool = ...,
+    ) -> ActionCallback: ...
 
-    def register_action[C: ActionCallback](
+    def register_action(
         self,
         name: str,
-        callback: C | None = None,
+        callback: ActionCallback | None = None,
         *,
-        user_recoverable: bool,
-    ) -> C | Callable[[C], C]:
+        user_recoverable: bool = False,
+    ) -> ActionCallback | Callable[[ActionCallback], ActionCallback]:
         """Schedules an action on the operation.
 
         Args:
@@ -51,7 +51,7 @@ class OperationWrapper:
         """
         created = False
 
-        def decorator(callback: C) -> C:
+        def decorator(callback: ActionCallback) -> ActionCallback:
             nonlocal created
             assert not created, "Cannot decorate multiple actions"
             created = True
@@ -69,6 +69,7 @@ class OperationWrapper:
             return decorator
         return decorator(callback)
 
+    # TODO: if/once PEP 728 is accepted, use a TypedDict instead of dict[str, Any] for scope
     def execute_operation(
         self,
         scope: dict[str, Any] | None = None,
@@ -93,6 +94,7 @@ class OperationWrapper:
                 action.message += f"{traceback.format_exc()}\n"
                 action.result = False
                 action.save()
+                print(e)
                 return False
         return True
 
@@ -145,9 +147,9 @@ def auto_run_operation_wrapper(
     send_operation_updated_message(operation.site)
 
 
-def send_operation_updated_message(site: Site) -> None:
+def send_operation_updated_message(_site: Site) -> None:
     pass
 
 
-def send_site_updated_message(site: Site) -> None:
+def send_site_updated_message(_site: Site) -> None:
     pass
