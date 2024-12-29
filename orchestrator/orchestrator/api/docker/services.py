@@ -94,8 +94,8 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
     # note that the regex on the runfile should prevent injections
     shell_cmd = shell_cmd_template.safe_substitute(SEARCH_PATH=site_info.runfile)
 
-    port = 80
-    extra_envs = {"PORT": f"{port}", "HOST": "0.0.0.0"}
+    port = "80"
+    extra_envs = {"PORT": port, "HOST": "0.0.0.0"}
     params = shared_swarm_params(site_info)
     params.setdefault("env", [])
     params["env"].extend(f"{name}={val}" for name, val in extra_envs.items())
@@ -118,9 +118,9 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
         # these labels dictate how traefik actually proxies the requests into the service
         "labels": {
             f"traefik.http.routers.{site_info}.rule": hosts,
-            f"traefik.http.routers.{site_info}.middlewares": f"{site_info}@swarm",
-            f"traefik.http.services.{site_info}.loadbalancer.server.port": str(port),
-            f"traefik.http.middlewares.{site_info}.buffering.maxRequestBodyBytes": max_request_body_size,
+            f"traefik.http.routers.{site_info}.middlewares": f"max-request-{max_request_body_size}@swarm",
+            f"traefik.http.services.{site_info}.loadbalancer.server.port": port,
+            f"traefik.http.middlewares.max-request-{max_request_body_size}.buffering.maxRequestBodyBytes": max_request_body_size,
             "traefik.swarm.network": "director-sites",
         },
         "resources": Resources(
