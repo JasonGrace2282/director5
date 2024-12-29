@@ -14,6 +14,8 @@ import os
 import socket
 from pathlib import Path
 
+from . import types
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -248,4 +250,12 @@ DOCS_URL = "https://jasongrace2282.github.io/director5/"
 REPO_URL = "https://github.com/jasongrace2282/director5/"
 CONTACT_EMAIL = "director@tjhsst.edu"
 
-DIRECTOR_APPSERVER_HOSTS: list[str] = ["fastapi:8000"]
+# Appservers
+DIRECTOR_APPSERVER_HOSTS: list[str] = ["fastapi:8080"]
+
+DIRECTOR_APPSERVER_SSL: types.SSLSettings | None = None
+"""Whether to use HTTP or HTTPS.
+
+Uses HTTP if is ``None``. Note that the SSL settings must be the same
+for all appservers (by design).
+"""
