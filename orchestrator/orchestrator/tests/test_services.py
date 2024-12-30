@@ -41,9 +41,10 @@ def test_shared_params(site_info: SiteInfo):
 
 def test_update_service_params(site_info: SiteInfo):
     site_info.runfile = "runfile.sh"
+    site_info.type_ = "dynamic"
     params = services.create_service_params(site_info)
     assert params["name"] == f"site_{site_info.pk:04d}"
-    assert any("runfile.sh" in cmd for cmd in params["command"])
+    assert any("runfile.sh" in cmd for cmd in params["entrypoint"])
     assert params["workdir"] == "/site/public"
     assert "director-sites" in params["networks"]
     traefik_labels = {

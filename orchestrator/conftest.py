@@ -16,6 +16,7 @@ def site_info() -> SiteInfo:
         pk=0,
         hosts=["example.localhost.com"],
         is_served=True,
+        type_="static",
         resource_limits={"cpus": 1, "memory": "1MiB", "max_request_body_size": 2 * 1024 * 1024},
         docker={"base": "python:3.12-alpine"},
     )
@@ -27,6 +28,7 @@ def db_site_info() -> SiteInfo:
         pk=0,
         hosts=["example.localhost.com"],
         is_served=True,
+        type_="static",
         resource_limits={"cpus": 1, "memory": "1MiB", "max_request_body_size": 2 * 1024 * 1024},
         docker={"base": "python:3.12-alpine"},
         db={
