@@ -52,7 +52,7 @@ class Site(models.Model):
     dynamic -> static.
     """
 
-    TYPES = (("S", "Static"), ("D", "Dynamic"))
+    TYPES = (("static", "Static"), ("dynamic", "Dynamic"))
 
     PURPOSES = (
         ("legacy", "Legacy"),
@@ -86,7 +86,7 @@ class Site(models.Model):
 
     description = models.TextField(blank=True)
 
-    mode = models.CharField(max_length=1, choices=TYPES)
+    mode = models.CharField(max_length=10, choices=TYPES)
 
     purpose = models.CharField(
         max_length=10,
@@ -140,7 +140,7 @@ class Site(models.Model):
 
     def docker_image(self, config: SiteConfig | None = None) -> str:
         """Return the Docker image for the site."""
-        if self.mode == "S":
+        if self.mode == "static":
             return "nginx:latest"
         if config is not None and config.docker is not None:
             return config.docker.base

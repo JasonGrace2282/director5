@@ -116,6 +116,7 @@ class SiteInfo(BaseModel):
     pk: int
     hosts: list[Annotated[str, Field(pattern=DOMAIN_REGEX)]]
     is_served: bool
+    type_: Literal["static", "dynamic"]
     resource_limits: ResourceLimits
     docker: DockerConfig
     runfile: Annotated[str, Field(pattern=r"[/\-.a-zA-Z0-9]+")] | None = None

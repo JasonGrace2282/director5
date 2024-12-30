@@ -105,13 +105,15 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
 
     max_request_body_size = str(site_info.resource_limits.max_request_body_size)
 
+    if site_info.type_ != "static":
+        params["entrypoint"] = ["sh", "-c", shell_cmd]
+
     # Docker by default runs with a small set of capacities,
     # so we don't need to modify them here.
     # TODO: we may want to "cap_drop" some capabilities we don't need
     params |= {
         "name": str(site_info),
         "read_only": True,
-        "command": ["sh", "-c", shell_cmd],
         "workdir": "/site/public",
         # add to the docker swarm network, so traefik can find it
         "networks": ["director-sites"],

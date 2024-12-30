@@ -30,6 +30,7 @@ def update_docker_service(site: Site, scope: dict[str, Any]) -> Iterator[str]:
         "pk": site.pk,
         "hosts": site.list_domains(),
         "is_served": site.is_served,
+        "type_": site.mode,
         "resource_limits": site.serialize_resource_limits(),
         "docker": {"base": site.docker_image(director_config)},
     }
