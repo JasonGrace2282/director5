@@ -113,7 +113,10 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
     # TODO: we may want to "cap_drop" some capabilities we don't need
     params |= {
         "name": str(site_info),
-        "read_only": True,
+        # nginx requires a writable file system
+        # This is safe because for static sites, the user doesn't have
+        # access to the nginx container
+        "read_only": site_info.type_ == "static",
         "workdir": "/site/public",
         # add to the docker swarm network, so traefik can find it
         "networks": ["director-sites"],
