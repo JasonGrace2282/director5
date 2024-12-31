@@ -1,0 +1,51 @@
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    server {
+        index index.html index.htm;
+        disable_symlinks on;
+
+        location / {
+            {% if not site_info.is_served %}
+                default_type text/html;
+
+                return 403 '<!doctype html>
+                <html><head>
+                    <meta charset="utf8">
+                    <title>Site disabled</title>
+                </head><body>
+                    <h1>Site disabled</h1>
+                    <p>This site has been disabled by a Director administrator.</p>
+                </body></html>';
+            {% else %}
+              root {{ site_dir }}/public;
+            {% endif %}
+        }
+    }
+}
