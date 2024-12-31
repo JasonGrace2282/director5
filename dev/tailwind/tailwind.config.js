@@ -33,16 +33,16 @@ module.exports = {
 		 * and make sure the pattern below matches your project structure.
 		 */
 		// '../../**/*.py'
+		"./manager/director/apps/**/*.py",
 	],
 	theme: {
 		extend: {
 			colors: {
-				"dt-blue": "#0067c0",
-				"dt-lightblue": "#0b76d8",
+				"dt-blue": "#087cfc",
 			},
 		},
 		fontFamily: {
-			sans: ["Open Sans", "sans-serif"],
+			sans: ["Inter", "sans-serif"],
 		},
 	},
 	plugins: [

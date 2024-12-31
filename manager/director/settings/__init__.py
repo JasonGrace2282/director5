@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "director.apps.users",
     "director.apps.sites",
     "heroicons",
+    "django_htmx",
 ]
 
 # they might automatically disable themselves in production
@@ -86,6 +87,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "director.urls"

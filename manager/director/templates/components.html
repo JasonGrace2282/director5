@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main %}
+  <main class="mt-4 ml-4">
+    <h1 class="p-4 text-2xl">Components</h1>
+    <!-- Input box -->
+    <p>input.html with elem_id="input-box" and guide_text="[Enter]"</p>
+    {% include "components/input.html" with elem_id="input-box" guide_text="[Enter]" %}
+
+    <p>textarea with class dt-input</p>
+    <textarea class="dt-input"></textarea>
+    <p>tailwind class dt-btn-primary</p>
+    <button class="dt-btn-primary">Button Text</button>
+    <p>
+      Table of divs (div with class dt-div-table with child divs with class dt-div-row that has child divs of class dt-div-cell)
+    </p>
+    <div class="dt-div-table w-[40%]">
+      <div class="dt-div-row">
+        <div class="dt-div-cell">
+          {% heroicon_solid "user" size="40" class="p-2" %}
+          <p class="ml-2">Row text</p>
+        </div>
+        <div class="dt-div-cell">
+          <img src="{% static "sites/ram.svg" %}" alt="ram" class="mr-2">
+          <p class="text-sm text-[#999]">256 MB</p>
+          <!-- Dot svg -->
+          <svg xmlns="http://www.w3.org/2000/svg"
+               width="48"
+               height="48"
+               viewBox="0 0 40 62"
+               fill="none">
+            <path d="M24.18 31C24.18 32.8088 24.8985 34.5435 26.1775 35.8225C27.4565 37.1015 29.1912 37.82 31 37.82C32.8088 37.82 34.5435 37.1015 35.8225 35.8225C37.1015 34.5435 37.82 32.8088 37.82 31C37.82 29.1912 37.1015 27.4565 35.8225 26.1775C34.5435 24.8985 32.8088 24.18 31 24.18C29.1912 24.18 27.4565 24.8985 26.1775 26.1775C24.8985 27.4565 24.18 29.1912 24.18 31Z" fill="#949494" />
+          </svg>
+          <p class="mr-2 text-sm">Offline</p>
+          {% heroicon_outline "arrow-right-end-on-rectangle" size="30" %}
+
+        </div>
+      </div>
+      <div class="dt-div-row">
+        <div class="dt-div-cell">
+          {% heroicon_solid "user" size="40" class="p-2" %}
+          <p class="ml-2">Row text</p>
+        </div>
+        <div class="dt-div-cell">
+          <img src="{% static "sites/ram.svg" %}" alt="ram" class="mr-2">
+          <p class="text-sm text-[#999]">256 MB</p>
+          <!-- Dot svg -->
+          <svg xmlns="http://www.w3.org/2000/svg"
+               width="48"
+               height="48"
+               viewBox="0 0 40 62"
+               fill="none">
+            <path d="M24.18 31C24.18 32.8088 24.8985 34.5435 26.1775 35.8225C27.4565 37.1015 29.1912 37.82 31 37.82C32.8088 37.82 34.5435 37.1015 35.8225 35.8225C37.1015 34.5435 37.82 32.8088 37.82 31C37.82 29.1912 37.1015 27.4565 35.8225 26.1775C34.5435 24.8985 32.8088 24.18 31 24.18C29.1912 24.18 27.4565 24.8985 26.1775 26.1775C24.8985 27.4565 24.18 29.1912 24.18 31Z" fill="#949494" />
+          </svg>
+          <p class="mr-2 text-sm">Offline</p>
+          {% heroicon_outline "arrow-right-end-on-rectangle" size="30" %}
+
+        </div>
+      </div>
+
+    </div>
+    <p>dropdown.html with extra_div_classes="w-56" and choices=[("d", "Django"), ("n", "Nodejs")]</p>
+    {% include "components/dropdown.html" with extra_div_classes="w-56" items="12345" %}
+
+
+  </main>
+{% endblock main %}

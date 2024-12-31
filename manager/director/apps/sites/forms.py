@@ -1,10 +1,28 @@
 from django import forms
+from django.forms.widgets import Textarea, TextInput
+from django.template.loader import render_to_string
 
 from .models import Site
 
-# todo: maybe move into tailwind theme?
-input_css = "block mt-1 w-full bg-gray-100 rounded-md border-transparent focus:bg-white focus:border-gray-500 focus:ring-0"
-select_css = "block bg-gray-100 w-full mt-0 px-2 border-0 border-b-2 border-gray-200 focus:bg-white dark:focus:ring-0 focus:border-black rounded-md"
+
+class DirectorSelect(forms.Select):
+    def __init__(self, attrs=None, choices=None):
+        super().__init__(attrs=attrs, choices=choices)
+        if choices is None:
+            choices = [("")]
+
+    def render(self, name, value, attrs=None, renderer=None):
+        return render_to_string(
+            "components/dropdown.html",
+            {
+                "extra_div_classes": self.attrs.get("extra_div_classes", ""),
+                "extra_input_classes": self.attrs.get("extra_input_classes", ""),
+                "extra_li_classes": self.attrs.get("extra_li_classes", ""),
+                "elem_name": name,
+                "elem_id": self.attrs.get("id", "id_" + name),
+                "choices": self.choices,
+            },
+        )
 
 
 class CreateSiteForm(forms.ModelForm):
@@ -23,8 +41,8 @@ class CreateSiteForm(forms.ModelForm):
         model = Site
         fields = ["name", "description", "mode", "purpose"]
         widgets = {
-            "name": forms.TextInput(attrs={"class": input_css}),
-            "description": forms.TextInput(attrs={"class": input_css}),
-            "purpose": forms.Select(attrs={"class": select_css}, choices=[("")]),
-            "mode": forms.Select(attrs={"class": select_css}),
+            "name": TextInput(attrs={"class": "dt-input block"}),
+            "description": Textarea(attrs={"class": "dt-input block lg:max-h-44 sm:max-h-16"}),
+            "purpose": DirectorSelect(),
+            "mode": forms.HiddenInput(),
         }

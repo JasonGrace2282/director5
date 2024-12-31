@@ -1,10 +1,20 @@
 {
+	"linter": {
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				"noStaticOnlyClass": "off"
+			}
+		}
+	},
 	"javascript": {
 		"formatter": {
+			"enabled": true,
 			"lineWidth": 100
 		}
 	},
 	"files": {
-		"ignore": ["build.css"]
+		"ignore": ["build.css", "dist/*.js"],
+		"ignoreUnknown": true
 	}
 }

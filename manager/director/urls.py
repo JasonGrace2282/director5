@@ -19,6 +19,7 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("", include("director.apps.sites.urls", namespace="sites")),
@@ -29,4 +30,14 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    urlpatterns += (
+        path(
+            "components.html",
+            TemplateView.as_view(
+                template_name="components.html",
+                extra_context={"choices": [("d", "Django"), ("n", "Nodejs")]},
+            ),
+            name="components",
+        ),
+    )
     urlpatterns += debug_toolbar_urls()

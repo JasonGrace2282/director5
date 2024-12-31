@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-.dt-btn {
-	@apply text-white bg-dt-blue rounded-md py-2.5 px-5 shadow-inner focus:ring-2 focus:ring-blue-300 dark:bg-blue-700 hover:bg-dt-lightblue dark:hover:bg-blue-600;
+.dt-btn-primary {
+	@apply bg-dt-blue text-white text-[0.875rem] font-bold px-5 py-3 min-w-fit rounded-[0.25rem] focus:border-[#38B6FF] focus:border-2 active:bg-blue-600 hover:bg-blue-500;
+}
+
+.dt-div-table {
+	@apply flex-col items-center;
+}
+
+.dt-div-row {
+	@apply flex justify-between border-2 border-l-0 border-r-0 border-b-0 border-[#E5E5E5] items-center p-1;
+}
+
+.dt-div-cell {
+	@apply flex items-center;
+}
+
+.dt-input {
+	@apply justify-end rounded-[0.4375rem] border-[1.5px] border-[#8B8B8B] focus:border-[#38B6FF];
+}
+
+/* This fixes an Alpine.js limitation where elements with x-cloak are shown for a split second while the page is loading */
+[x-cloak] {
+	@apply hidden;
 }

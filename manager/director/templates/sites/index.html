@@ -1,28 +1,70 @@
 {% extends "base_with_nav.html" %}
 
+{% load static %}
+
 {% block main %}
-  <div class="flex justify-center py-10">
-    <div class="flex flex-col w-full md:w-10/12 align-center">
-      <div class="flex justify-between px-5 md:px-0">
-        <h1 class="text-2xl font-bold dark:text-white">Your Sites</h1>
-        <div>
-          <a href="{% url 'sites:create' %}" class="dt-btn">Add Site</a>
+  <div class="py-8 px-10">
+    <h1 class="mb-2 font-medium text-[2.2rem]">Feed</h1>
+    <div id="feed-navigator" class="flex gap-20 overflow-clip">
+      <div class="bg-[#EAEAEA] w-[25rem] h-[12rem] rounded-[0.625rem]">
+        <div class="p-4">
+          <h1 class="w-40 text-2xl">Finish the tutorial</h1>
+          {% heroicon_outline "arrow-right-circle" stroke_width="0.8" size="44" class="mt-2" %}
         </div>
       </div>
-      <div role="rowgroup"
-           class="self-center py-10 w-10/12 sm:w-11/12 md:w-full">
-        {% for site in sites %}
-          <a href="#">
-            <div class="flex justify-between items-center mb-4 rounded-lg border border-solid border-slate-400 dark:hover:bg-[#737aa2] hover:bg-[#e1ddff]"
-                 role="row">
-              <div class="py-3 px-3 dark:text-white">{{ site.name }}</div>
-              <i class="mr-10 dark:text-white fa-solid fa-greater-than"></i>
-            </div>
-          </a>
-        {% empty %}
-          <p class="dark:text-white">No sites created.</p>
-        {% endfor %}
-      </div>
+    </div>
+    <div class="flex justify-between items-center">
+      <h1 class="mt-4 font-medium text-[1.7rem]">My Sites</h1>
+      <a class="dt-btn-primary" href="{% url "sites:create" %}">+ New Site</a>
+    </div>
+    <div class="mt-4 dt-div-table">
+      {% for site in sites %}
+        <div class="dt-div-row">
+          <div class="dt-div-cell">
+            <!-- Globe placeholder svg -->
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke-width="1.5"
+                 stroke="{{ site.placeholder_color }}"
+                 width="40"
+                 height="40">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418">
+              </path>
+            </svg>
+
+            <p class="ml-2">{{ site.name }}</p>
+          </div>
+          <div class="dt-div-cell">
+            {% heroicon_outline "tag" stroke="#999" size="18" class="mr-2" %}
+            <p class="mr-5 text-sm text-[#999]"
+               x-text="`———`"
+               :class="text === '———' ? 'animate-pulse' : ''"></p>
+
+            {% heroicon_outline "cpu-chip" stroke="#999" size="18" class="mr-2" %}
+            <p class="mr-5 text-sm text-[#999]"
+               x-text="`———`"
+               :class="text === '———' ? 'animate-pulse' : ''"></p>
+
+            <img src="{% static "sites/ram.svg" %}" alt="ram" class="mr-2">
+            <p class="mr-5 text-sm text-[#999]"
+               x-text="`———`"
+               :class="text === '———' ? 'animate-pulse' : ''"></p>
+
+            <!-- Dot svg -->
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="48"
+                 height="48"
+                 viewBox="0 0 40 62"
+                 fill="none">
+              <path d="M24.18 31C24.18 32.8088 24.8985 34.5435 26.1775 35.8225C27.4565 37.1015 29.1912 37.82 31 37.82C32.8088 37.82 34.5435 37.1015 35.8225 35.8225C37.1015 34.5435 37.82 32.8088 37.82 31C37.82 29.1912 37.1015 27.4565 35.8225 26.1775C34.5435 24.8985 32.8088 24.18 31 24.18C29.1912 24.18 27.4565 24.8985 26.1775 26.1775C24.8985 27.4565 24.18 29.1912 24.18 31Z" fill="#949494" />
+            </svg>
+            <p class="mr-2 text-sm">———</p>
+
+            {% heroicon_outline "arrow-right-end-on-rectangle" size="30" class="ml-2" %}
+          </div>
+        </div>
+      {% endfor %}
     </div>
   </div>
 {% endblock %}

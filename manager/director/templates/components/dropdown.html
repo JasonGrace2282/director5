@@ -1,0 +1,25 @@
+<div class="{{ extra_div_classes }}"
+     x-data="{ open: false, value: null, readable_text: null }"
+     @click.away="open = false">
+  <div class="flex items-center">
+    <input type="text"
+           name="{{ elem_name }}"
+           id="{{ elem_id }}"
+           class="dt-input w-full text-transparent {{ extra_input_classes }}"
+           @click="open = !open"
+           x-model="value"
+           readonly
+           placeholder="Select an option" />
+    <span x-text="readable_text" class="absolute ml-3"></span>
+    {% heroicon_outline "chevron-down" class="relative right-9" %}
+  </div>
+
+  <div class="mt-1 w-40" x-cloak x-show="open" x-transition>
+    <ul class="overflow-y-auto z-10 w-full max-h-60 bg-white rounded-lg border shadow-lg border-[#949494]">
+      {% for choice in choices %}
+        <li class="block p-2 hover:bg-gray-100 cursor-pointer border-b {{ extra_li_classes }}"
+            @click="value = '{{ choice.0 }}'; readable_text=$el.textContent; open = false;">{{ choice.1 }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

@@ -205,7 +205,7 @@ name = "click"
 version = "8.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/96/d3/f04c7bfcf5c1862a2a5b845c6b2b360488cf47af55dfa79c98f6a6bf98b5/click-8.1.7.tar.gz", hash = "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de", size = 336121 }
 wheels = [
@@ -305,6 +305,7 @@ dependencies = [
     { name = "django" },
     { name = "django-browser-reload" },
     { name = "django-debug-toolbar" },
+    { name = "django-htmx" },
     { name = "django-linear-migrations" },
     { name = "docker" },
     { name = "fastapi", extra = ["standard"] },
@@ -356,6 +357,7 @@ requires-dist = [
     { name = "django", specifier = ">=5.1" },
     { name = "django-browser-reload", specifier = ">=1.15.0" },
     { name = "django-debug-toolbar", specifier = ">=4.4.6" },
+    { name = "django-htmx", specifier = ">=1.21.0" },
     { name = "django-linear-migrations", specifier = ">=2.16.0" },
     { name = "docker", specifier = ">=7.1.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.0" },
@@ -470,6 +472,19 @@ dependencies = [
     { name = "django" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c4/ce/4df4b564c1f890463f5b7c4b1d81976d08dbafdb0e23c23faedda770a297/django_fastdev-1.12.0.tar.gz", hash = "sha256:83a44d5cc1e8f72afb361caf9f6dbb0617587653837c213f32f4fab13f90acdb", size = 15363 }
+
+[[package]]
+name = "django-htmx"
+version = "1.21.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c7/5c/f6b7e9102a86c69b018142c5e3255b7f983b4f6545fe8e9bbb326e903be1/django_htmx-1.21.0.tar.gz", hash = "sha256:6ed3b42effd5980f22e68f36cd14ee4311bff3b6cb8435a89e27f45995691572", size = 9611 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/ec/0d68c022dac4a539cdd2cf8b2e23a034da9d6ef864e4bc324a5fe2b50c28/django_htmx-1.21.0-py3-none-any.whl", hash = "sha256:64bc31463017a80552b767bc216ee5700248fa72e7ccd2963495e69afbdb6abe", size = 6901 },
+]
 
 [[package]]
 name = "django-linear-migrations"
@@ -789,6 +804,7 @@ dependencies = [
     { name = "django" },
     { name = "django-browser-reload" },
     { name = "django-debug-toolbar" },
+    { name = "django-htmx" },
     { name = "django-linear-migrations" },
     { name = "heroicons", extra = ["django"] },
     { name = "pillow" },
@@ -824,6 +840,7 @@ requires-dist = [
     { name = "django" },
     { name = "django-browser-reload" },
     { name = "django-debug-toolbar" },
+    { name = "django-htmx", specifier = ">=1.21.0" },
     { name = "django-linear-migrations" },
     { name = "heroicons", extras = ["django"] },
     { name = "pillow" },
