@@ -23,6 +23,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path("", include("director.apps.sites.urls", namespace="sites")),
+    path("", include("director.apps.marketplace.urls", namespace="marketplace")),
     path("admin/", admin.site.urls),
     path("accounts/", include("director.apps.auth.urls", namespace="auth")),
     path("social-auth/", include("social_django.urls", namespace="social")),

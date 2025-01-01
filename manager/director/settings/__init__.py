@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "director.apps.auth",
     "director.apps.users",
     "director.apps.sites",
+    "director.apps.marketplace",
     "heroicons",
     "django_htmx",
 ]

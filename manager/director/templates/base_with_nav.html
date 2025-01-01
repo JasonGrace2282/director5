@@ -2,8 +2,8 @@
 
 {% load static %}
 
-{% block outside_main %}
-  <div class="flex justify-between items-center w-full h-16 bg-dt-blue">
+{% block before_content %}
+  <header class="flex justify-between items-center w-full h-16 bg-dt-blue">
     <div class="flex">
       <a href="{% url "sites:index" %}">
         <img src="{% static "favicon/favicon.svg" %}"
@@ -18,5 +18,5 @@
       <p class="pr-2 pl-2 text-white">{{ user.username }}</p>
       {% heroicon_solid "chevron-down" fill="white" size="22" class="mr-4" %}
     </div>
-  </div>
+  </header>
 {% endblock %}

@@ -15,7 +15,10 @@
     </div>
     <div class="flex justify-between items-center">
       <h1 class="mt-4 font-medium text-[1.7rem]">My Sites</h1>
-      <a class="dt-btn-primary" href="{% url "sites:create" %}">+ New Site</a>
+      <a class="dt-btn-primary"
+         href="{% url "sites:create" %}"
+         hx-target="closest main"
+         hx-boost="true">+ New Site</a>
     </div>
     <div class="mt-4 dt-div-table">
       {% for site in sites %}

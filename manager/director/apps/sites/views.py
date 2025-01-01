@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django_htmx.http import HttpResponseLocation
 
 from . import tasks
 from .forms import CreateSiteForm
@@ -38,10 +39,9 @@ def create_site(request: AuthenticatedHttpRequest) -> HttpResponse:
             send_operation_updated_message(site)
 
             if site.mode == "static":
-                return HttpResponse(headers={"HX-Redirect": reverse("sites:index")})
-            return HttpResponse(
-                headers={"HX-Redirect": reverse("sites:index")}
-            )  # todo: redirect to marketplace
+                return HttpResponseLocation(reverse("sites:index"))
+
+            return HttpResponseLocation(reverse("marketplace:store"))
 
         if request.htmx:
             return render(request, "sites/partials/create_form.html", {"form": form})
