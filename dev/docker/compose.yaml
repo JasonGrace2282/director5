@@ -31,7 +31,7 @@ services:
       - watchfiles
       - --filter
       - python
-      - "celery -A director worker"
+      - "uv run celery -A director worker"
       - /director5/manager/director
     working_dir: /director5/manager
     networks:
@@ -128,7 +128,7 @@ services:
       - "80:80"
     volumes:
       - .:/traefik
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - director-sites
 

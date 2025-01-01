@@ -19,8 +19,15 @@
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
             rel="stylesheet">
-      <script defer src="{% static "general/dist/alpine.min.js" %}"></script>
-      <script src="{% static "general/dist/htmx.min.js" %}"></script>
+      <script defer
+              src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.8/cdn.js"
+              integrity="sha512-9pBoQWH5nbYAzoNQy3KkxHn6UDIEfuz7VGPb++0kkcPHaYbe/Obfbd1F2dNbJ1lfuAPQ52Y3Lw1QFO3za2Bxug=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js"
+              integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"></script>
       <script src="{% static "general/directorlib.js" %}"></script>
       {% django_htmx_script %}
     {% endblock %}

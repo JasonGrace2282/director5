@@ -37,7 +37,7 @@ def create_site(request: AuthenticatedHttpRequest) -> HttpResponse:
             tasks.create_site.delay(op.id)
             send_operation_updated_message(site)
 
-            if site.mode == "S":
+            if site.mode == "static":
                 return HttpResponse(headers={"HX-Redirect": reverse("sites:index")})
             return HttpResponse(
                 headers={"HX-Redirect": reverse("sites:index")}
