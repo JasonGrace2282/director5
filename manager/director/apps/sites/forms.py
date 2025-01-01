@@ -1,5 +1,4 @@
 from django import forms
-from django.forms.widgets import Textarea, TextInput
 from django.template.loader import render_to_string
 
 from .models import Site
@@ -41,8 +40,10 @@ class CreateSiteForm(forms.ModelForm):
         model = Site
         fields = ["name", "description", "mode", "purpose"]
         widgets = {
-            "name": TextInput(attrs={"class": "dt-input block"}),
-            "description": Textarea(attrs={"class": "dt-input block lg:max-h-44 sm:max-h-16"}),
+            "name": forms.TextInput(attrs={"class": "dt-input block"}),
+            "description": forms.Textarea(
+                attrs={"class": "dt-input block lg:max-h-44 sm:max-h-16"}
+            ),
             "purpose": DirectorSelect(),
             "mode": forms.HiddenInput(),
         }
