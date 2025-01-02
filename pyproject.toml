@@ -141,6 +141,9 @@ ignore = [
   "D300",
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"**/management/commands/*.py" = ["T20"]
+
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
