@@ -1,0 +1,72 @@
+{% extends "base_with_nav.html" %}
+
+{% load static %}
+
+{% block main %}
+  <div x-data="{ selectedPanel: null, showForm: false }"
+       class="flex gap-20 justify-center items-center py-8 px-20 h-[90vh]"
+       id="divHolder">
+    <div class="w-[30%] h-full flex flex-col bg-[#F5F5F5] rounded-[0.5rem] gap-2 drop-shadow-xl transition-all duration-200 overflow-clip"
+         @click="selectedPanel = 'dynamic'"
+         x-show="showForm === false || selectedPanel === 'dynamic'"
+         x-transition:leave="ease-in duration-700 delay-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0 max-w-0"
+         :class="{ 'border-4 border-[#38B6FF]': selectedPanel === 'dynamic', 'border-2 border-[#9E9E9E]': selectedPanel !== 'dynamic' }">
+      <div x-show="showForm === false || selectedPanel === 'dynamic'">
+        <div class="flex flex-col items-center">
+          <h1 class="mt-4 font-bold text-[2rem]">Dynamic Site</h1>
+          <div class="my-2 w-4/5 border border-black"></div>
+        </div>
+        <div class="flex items-center">
+          {% heroicon_solid "check-badge" size="50" class="mr-4 ml-[9%]" %}
+          <p class="text-[1.3rem]">Host a docker container</p>
+        </div>
+      </div>
+    </div>
+    <div class="w-[30%] h-full flex flex-col bg-[#F5F5F5] border-2 rounded-[0.5rem] gap-2 drop-shadow-xl transition-all duration-200  overflow-clip"
+         @click="selectedPanel = 'static'"
+         x-show="showForm === false || selectedPanel === 'static'"
+         x-transition:leave="ease-in duration-700 delay-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0 max-w-0"
+         :class="{ 'border-4 border-[#38B6FF]': selectedPanel === 'static', 'border-2 border-[#9E9E9E]': selectedPanel !== 'static' }">
+      <div x-show="showForm === false || selectedPanel === 'static'">
+        <div class="flex flex-col items-center">
+          <h1 class="mt-4 font-bold text-[2rem]">Static Site</h1>
+          <div class="my-2 w-4/5 border border-black"></div>
+        </div>
+        <div class="flex items-center">
+          {% heroicon_solid "check-badge" size="50" class="mr-4 ml-[9%]" %}
+          <p class="text-[1.3rem]">Host HTML/CSS</p>
+        </div>
+      </div>
+    </div>
+    <!-- Next circle -->
+    <svg xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 24 24"
+         id="nextCircle"
+         x-show="!showForm"
+         :fill="selectedPanel ? '#000000' : '#949494'"
+         :class="selectedPanel ? 'cursor-pointer' : 'disabled'"
+         @click="if (selectedPanel !== null) { document.getElementById('divHolder').classList.remove('gap-20'); showForm = true; }"
+         x-transition:leave="transition-all ease-out duration-700"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0 w-0"
+         width="120"
+         height="120">
+      <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clip-rule="evenodd" />
+    </svg>
+    <div class="flex flex-col">
+      <h1 class="mb-4 ml-16 text-xl font-bold md:text-2xl lg:mb-10 lg:text-[2rem]"
+          x-text="`Create a new ${selectedPanel} site`"
+          x-show="showForm"
+          x-transition:enter="transition-opacity ease-in duration-1000 delay-1000"
+          x-transition:enter-start="opacity-0 max-w-0"
+          x-transition:leave-start="opacity-100 max-w-full"></h1>
+      {% include "sites/partials/create_form.html" with form=form %}
+
+    </div>
+  </div>
+
+{% endblock main %}

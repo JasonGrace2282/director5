@@ -22,6 +22,7 @@ def test_parse_valid_toml_v1(python_313, pip_install) -> None:
     config = SiteConfig.model_validate(data)
     assert config.project is not None
     assert config.project.domain == "example.com"
+    assert config.docker is not None
     assert config.docker.base.name == "Python 3.13 (Alpine)"
     action_data = config.docker.actions[0]
     assert action_data.action.name == "pip-install"

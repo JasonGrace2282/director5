@@ -305,6 +305,7 @@ dependencies = [
     { name = "django" },
     { name = "django-browser-reload" },
     { name = "django-debug-toolbar" },
+    { name = "django-htmx" },
     { name = "django-linear-migrations" },
     { name = "docker" },
     { name = "fastapi", extra = ["standard"] },
@@ -313,6 +314,7 @@ dependencies = [
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pydantic" },
+    { name = "redis" },
     { name = "requests" },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
@@ -355,6 +357,7 @@ requires-dist = [
     { name = "django", specifier = ">=5.1" },
     { name = "django-browser-reload", specifier = ">=1.15.0" },
     { name = "django-debug-toolbar", specifier = ">=4.4.6" },
+    { name = "django-htmx", specifier = ">=1.21.0" },
     { name = "django-linear-migrations", specifier = ">=2.16.0" },
     { name = "docker", specifier = ">=7.1.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.0" },
@@ -363,6 +366,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.0.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">3.1.8" },
     { name = "pydantic", specifier = ">=2.9.2" },
+    { name = "redis", specifier = ">=5.2.1" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "social-auth-app-django", specifier = ">=5.4.2" },
     { name = "typing-extensions", specifier = ">=4.12" },
@@ -468,6 +472,19 @@ dependencies = [
     { name = "django" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c4/ce/4df4b564c1f890463f5b7c4b1d81976d08dbafdb0e23c23faedda770a297/django_fastdev-1.12.0.tar.gz", hash = "sha256:83a44d5cc1e8f72afb361caf9f6dbb0617587653837c213f32f4fab13f90acdb", size = 15363 }
+
+[[package]]
+name = "django-htmx"
+version = "1.21.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c7/5c/f6b7e9102a86c69b018142c5e3255b7f983b4f6545fe8e9bbb326e903be1/django_htmx-1.21.0.tar.gz", hash = "sha256:6ed3b42effd5980f22e68f36cd14ee4311bff3b6cb8435a89e27f45995691572", size = 9611 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/ec/0d68c022dac4a539cdd2cf8b2e23a034da9d6ef864e4bc324a5fe2b50c28/django_htmx-1.21.0-py3-none-any.whl", hash = "sha256:64bc31463017a80552b767bc216ee5700248fa72e7ccd2963495e69afbdb6abe", size = 6901 },
+]
 
 [[package]]
 name = "django-linear-migrations"
@@ -787,11 +804,14 @@ dependencies = [
     { name = "django" },
     { name = "django-browser-reload" },
     { name = "django-debug-toolbar" },
+    { name = "django-htmx" },
     { name = "django-linear-migrations" },
     { name = "heroicons", extra = ["django"] },
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pydantic" },
+    { name = "redis" },
+    { name = "requests" },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
 ]
@@ -820,11 +840,14 @@ requires-dist = [
     { name = "django" },
     { name = "django-browser-reload" },
     { name = "django-debug-toolbar" },
+    { name = "django-htmx", specifier = ">=1.21.0" },
     { name = "django-linear-migrations" },
     { name = "heroicons", extras = ["django"] },
     { name = "pillow" },
     { name = "psycopg", extras = ["binary"] },
     { name = "pydantic" },
+    { name = "redis" },
+    { name = "requests" },
     { name = "social-auth-app-django" },
     { name = "typing-extensions" },
 ]
@@ -1400,6 +1423,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/0f/25911a9f080464c59fab9027482f822b86bf0608957a5fcc6eaac85aa515/PyYAML-6.0.2-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:68ccc6023a3400877818152ad9a1033e3db8625d899c72eacb5a668902e4d652", size = 751597 },
     { url = "https://files.pythonhosted.org/packages/14/0d/e2c3b43bbce3cf6bd97c840b46088a3031085179e596d4929729d8d68270/PyYAML-6.0.2-cp313-cp313-win32.whl", hash = "sha256:bc2fa7c6b47d6bc618dd7fb02ef6fdedb1090ec036abab80d4681424b84c1183", size = 140527 },
     { url = "https://files.pythonhosted.org/packages/fa/de/02b54f42487e3d3c6efb3f89428677074ca7bf43aae402517bc7cca949f3/PyYAML-6.0.2-cp313-cp313-win_amd64.whl", hash = "sha256:8388ee1976c416731879ac16da0aff3f63b286ffdd57cdeb95f3f2e085687563", size = 156446 },
+]
+
+[[package]]
+name = "redis"
+version = "5.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/da/d283a37303a995cd36f8b92db85135153dc4f7a8e4441aa827721b442cfb/redis-5.2.1.tar.gz", hash = "sha256:16f2e22dff21d5125e8481515e386711a34cbec50f0e44413dd7d9c060a54e0f", size = 4608355 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3c/5f/fa26b9b2672cbe30e07d9a5bdf39cf16e3b80b42916757c5f92bca88e4ba/redis-5.2.1-py3-none-any.whl", hash = "sha256:ee7e1056b9aea0f04c6c2ed59452947f34c4940ee025f5dd83e6a6418b6989e4", size = 261502 },
 ]
 
 [[package]]

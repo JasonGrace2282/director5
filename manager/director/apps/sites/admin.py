@@ -1,10 +1,12 @@
 from django.contrib import admin
 
 from .models import (
+    Action,
     Database,
     DatabaseHost,
     DockerAction,
     DockerImage,
+    Operation,
     Site,
 )
 
@@ -41,3 +43,7 @@ class DockerActionAdmin(admin.ModelAdmin):
     list_display = ("name", "command")
     list_filter = ("command",)
     search_fields = ("name",)
+
+
+admin.site.register(Operation)
+admin.site.register(Action)

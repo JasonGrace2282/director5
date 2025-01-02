@@ -6,9 +6,11 @@ from typing import TYPE_CHECKING, Self
 from django.conf import settings
 from django.core.validators import MinLengthValidator, MinValueValidator, RegexValidator
 from django.db import models
+from django.utils import timezone
 
 if TYPE_CHECKING:
     from ..users.models import User
+    from .parser import SiteConfig
 
 
 class SiteQuerySet(models.QuerySet):
@@ -50,7 +52,7 @@ class Site(models.Model):
     dynamic -> static.
     """
 
-    TYPES = (("S", "Static"), ("D", "Dynamic"))
+    TYPES = (("static", "Static"), ("dynamic", "Dynamic"))
 
     PURPOSES = (
         ("legacy", "Legacy"),
@@ -74,15 +76,17 @@ class Site(models.Model):
             MinLengthValidator(2),
             RegexValidator(
                 regex=r"^[a-z0-9]+(-[a-z0-9]+)*$",
-                message="Site names must consist of lowercase letters, numbers, and dashes. Dashes "
-                "must go between two non-dash characters.",
+                message=(
+                    "Site names must consist of lowercase letters, numbers, and dashes. "
+                    "Dashes must go between two non-dash characters."
+                ),
             ),
         ],
     )
 
     description = models.TextField(blank=True)
 
-    mode = models.CharField(max_length=1, choices=TYPES)
+    mode = models.CharField(max_length=10, choices=TYPES)
 
     purpose = models.CharField(
         max_length=10,
@@ -117,6 +121,39 @@ class Site(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_served(self) -> bool:
+        return self.availability == "enabled"
+
+    @property
+    def sites_url(self) -> str:
+        """Return the default URL where the site is served."""
+        default = settings.SITE_URL_FORMATS[None]
+        return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
+
+    def list_domains(self) -> list[str]:
+        """Returns all the domains for a site."""
+        return [
+            ("https://" + domain) for domain in self.domain_set.values_list("domain", flat=True)
+        ] + [self.sites_url]
+
+    def docker_image(self, config: SiteConfig | None = None) -> str:
+        """Return the Docker image for the site."""
+        if self.mode == "static":
+            return "nginx:latest"
+        if config is not None and config.docker is not None:
+            return config.docker.base
+        return settings.DIRECTOR_DEFAULT_DOCKER_IMAGE
+
+    def serialize_resource_limits(self) -> dict[str, float]:
+        """Serialize the resource limits for the appservers."""
+        # TODO: implement custom resource limits
+        return {
+            "cpus": settings.DIRECTOR_RESOURCES_DEFAULT_CPUS,
+            "memory": settings.DIRECTOR_RESOURCES_DEFAULT_MEMORY_LIMIT,
+            "max_request_body_size": settings.DIRECTOR_RESOURCES_MAX_REQUEST_BODY,
+        }
 
 
 class DatabaseHost(models.Model):
@@ -339,3 +376,112 @@ class Domain(models.Model):
 
     def __str__(self) -> str:
         return f"{self.domain} ({self.site})"
+
+
+class Operation(models.Model):
+    """A series of actions being performed on a site.
+
+    Examples:
+        * The initial site creation process
+        * Renaming a site
+        * Changing a site type
+
+    .. note::
+
+        All state for an :class:`Operation` is in the Celery task. The database entries are only for easier inspection
+        of running/failed tasks, so restarting/continuing a failed Operation is not possible. Instead, one
+        should try running the "Fix site" task, which does its best to ensure that the site is set up properly.
+    """
+
+    OPERATION_TYPES = [
+        # Create a site (no database)
+        ("create_site", "Creating site"),
+        # Rename the site. Changes the site name and the default domain name.
+        ("rename_site", "Renaming site"),
+        # Change the site name and domain names
+        ("edit_site_names", "Changing site name/domains"),
+        # Change the site type (example: static -> dynamic)
+        ("change_site_type", "Changing site type"),
+        # Create a database for the site
+        ("create_site_database", "Creating site database"),
+        # Delete a database for the site
+        ("delete_site_database", "Deleting site database"),
+        # Regenerate the database password.
+        ("regen_site_secrets", "Regenerating site secrets"),
+        # Updating the site's resource limits
+        ("update_resource_limits", "Updating site resource limits"),
+        # Updating something about the site's Docker image
+        ("update_docker_image", "Updating site Docker image"),
+        # Delete a site, its files, its database, its Docker image, etc.
+        ("delete_site", "Deleting site"),
+        # Restart a site's swarm service
+        ("restart_site", "Restarting site"),
+        # Tries to ensure everything is correct. Builds the Docker image, and updates the Docker service.
+        ("fix_site", "Attempting to fix site"),
+    ]
+
+    site = models.OneToOneField(Site, null=False, on_delete=models.PROTECT)
+    ty = models.CharField(max_length=24, choices=OPERATION_TYPES, verbose_name="type")
+    created_time = models.DateTimeField(auto_now_add=True, null=False)
+    started_time = models.DateTimeField(null=True)
+
+    def __str__(self) -> str:
+        return f"{type(self).__name__}: {self.ty}"
+
+    @property
+    def has_started(self) -> bool:
+        return self.started_time is not None
+
+
+class Action(models.Model):
+    """An individual task in an operation.
+
+    A representation of the state of a single action in an operation. For
+    example, if the operation is fixing docker, the actions might be
+
+    * "rebuild_docker_image"
+    * "restart_docker_service"
+    """
+
+    operation = models.ForeignKey(Operation, null=False, on_delete=models.PROTECT)
+
+    # Example: "update_nginx_config"
+    slug = models.CharField(
+        max_length=40,
+        null=False,
+        blank=False,
+        validators=[MinLengthValidator(4), RegexValidator(regex=r"^[a-z]+(_[a-z]+)+$")],
+    )
+    # May be displayed to the user for progress updates. Example: "Updating Nginx config"
+    name = models.CharField(max_length=80, null=False, blank=False)
+    # Time this action was started. Only None if it hasn't been started yet.
+    started_time = models.DateTimeField(null=True)
+
+    # None=Not finished, True=Successful, False=Failed
+    result = models.BooleanField(null=True, default=None)
+
+    message = models.TextField(
+        null=False,
+        blank=True,
+        help_text=(
+            "Message describing the actions taken (and/or what failed). "
+            "Should always be set to allow for easier debugging.\n"
+            "Only visible to superusers."
+        ),
+    )
+
+    # Operations that fail because of failures in Actions with this field set to True will not
+    # be exported in the Prometheus metrics, and they will have a special note on the operations
+    # page.
+    # The main practical use of this is for building the Docker image, which will fail if the user
+    # enters an incorrect package name.
+    user_recoverable = models.BooleanField(
+        null=False, default=False, help_text="Can the user recover from this failure?"
+    )
+
+    def __str__(self) -> str:
+        return f"{type(self).__name__}: {self.name}"
+
+    def start_action(self) -> None:
+        self.started_time = timezone.localtime()
+        self.save(update_fields=["started_time"])

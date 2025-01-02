@@ -39,13 +39,12 @@ class Command(BaseCommand):
             old_user, created = User.objects.get_or_create(username=username)
             user = cast(User, old_user)
 
-            if not created:
+            if not created and not options["force"]:
                 if verbose:
-                    print(f"User {username} already exists, skipping...")
+                    self.stdout.write(
+                        self.style.WARNING(f"User {username} already exists, skipping...")
+                    )
                 continue
-
-            if verbose:
-                print(f"Creating user {username}...")
 
             name = username.capitalize()
             user.first_name = name
@@ -57,3 +56,6 @@ class Command(BaseCommand):
             user.is_superuser = is_superuser
             user.set_password(pwd)
             user.save()
+
+            if verbose:
+                self.stdout.write(self.style.SUCCESS(f"Created user {username}..."))

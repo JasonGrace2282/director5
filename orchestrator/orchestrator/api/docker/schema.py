@@ -56,6 +56,7 @@ def convert_memory_limit_validator(
 class ResourceLimits(BaseModel):
     cpus: Annotated[float, AfterValidator(cpu_to_nano_cpus)]
     memory: Annotated[int, WrapValidator(convert_memory_limit_validator)]
+    max_request_body_size: int
 
 
 _db_url_validator = UrlConstraints(host_required=True, default_port=5432)
@@ -108,13 +109,14 @@ class DockerConfig(BaseModel):
 # We're not too strict, the Manager should have a more
 # conservative regex. We just want to double check to
 # prevent injections into the Host traefik label.
-DOMAIN_REGEX = r"^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$"
+DOMAIN_REGEX = r"^[a-zA-Z0-9][a-zA-Z0-9~.-]*[a-zA-Z0-9]$"
 
 
 class SiteInfo(BaseModel):
     pk: int
     hosts: list[Annotated[str, Field(pattern=DOMAIN_REGEX)]]
     is_served: bool
+    type_: Literal["static", "dynamic"]
     resource_limits: ResourceLimits
     docker: DockerConfig
     runfile: Annotated[str, Field(pattern=r"[/\-.a-zA-Z0-9]+")] | None = None

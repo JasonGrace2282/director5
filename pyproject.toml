@@ -20,6 +20,8 @@ dependencies = [
   "pillow>=11.0.0",
   "docker>=7.1.0",
   "jinja2>=3.1.4",
+  "redis>=5.2.1",
+  "django-htmx>=1.21.0",
 ]
 
 [dependency-groups]
@@ -116,6 +118,8 @@ select = [
     "RET",
     # ruff
     "RUF",
+    # flake8-print
+    "T20",
     # pyupgrade
     "UP",
 ]
@@ -136,6 +140,9 @@ ignore = [
   "D206",
   "D300",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"**/management/commands/*.py" = ["T20"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

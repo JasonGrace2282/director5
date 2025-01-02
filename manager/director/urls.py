@@ -19,9 +19,11 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("", include("director.apps.sites.urls", namespace="sites")),
+    path("", include("director.apps.marketplace.urls", namespace="marketplace")),
     path("admin/", admin.site.urls),
     path("accounts/", include("director.apps.auth.urls", namespace="auth")),
     path("social-auth/", include("social_django.urls", namespace="social")),
@@ -29,4 +31,14 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    urlpatterns += (
+        path(
+            "components.html",
+            TemplateView.as_view(
+                template_name="components.html",
+                extra_context={"choices": [("d", "Django"), ("n", "Nodejs")]},
+            ),
+            name="components",
+        ),
+    )
     urlpatterns += debug_toolbar_urls()

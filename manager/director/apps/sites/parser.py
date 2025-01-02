@@ -81,4 +81,4 @@ class DockerConfig(BaseModel):
 
 class SiteConfig(BaseModel):
     project: ProjectConfig | None = None
-    docker: DockerConfig
+    docker: DockerConfig | None

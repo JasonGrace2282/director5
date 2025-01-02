@@ -13,6 +13,9 @@ import contextlib
 import os
 import socket
 from pathlib import Path
+from typing import Final
+
+from . import types
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -63,7 +66,9 @@ INSTALLED_APPS = [
     "director.apps.auth",
     "director.apps.users",
     "director.apps.sites",
+    "director.apps.marketplace",
     "heroicons",
+    "django_htmx",
 ]
 
 # they might automatically disable themselves in production
@@ -83,6 +88,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "director.urls"
@@ -237,7 +243,49 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# Celery
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_LOG_LEVEL = "WARNING"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+
 # Director settings
 DOCS_URL = "https://jasongrace2282.github.io/director5/"
 REPO_URL = "https://github.com/jasongrace2282/director5/"
 CONTACT_EMAIL = "director@tjhsst.edu"
+
+# The URL that will be used for various site types.
+# The site name is interpolated into this using str.format(). It is guaranteed to be
+# URL/domain-safe.
+# The key indicates that this format should be used for a given site "purpose" (e.g. the "user"
+# URL is used for user sites). The "None" key indicates the default format if there is not an
+# explicit entry for a given site's "purpose" (and it MUST be specified).
+SITE_URL_FORMATS = {
+    "user": "user.localhost/{}/",
+    "activity": "activities.localhost/{}/",
+    None: "{}.sites.localhost",
+}
+
+
+# Fractions of a CPU
+DIRECTOR_RESOURCES_DEFAULT_CPUS: Final = 0.6
+# Memory in bytes
+DIRECTOR_RESOURCES_DEFAULT_MEMORY_LIMIT: Final = 100 * 1000 * 1000
+# Client body (aka file upload) size limit in bytes
+DIRECTOR_RESOURCES_MAX_REQUEST_BODY: Final = 2 * 1024 * 1024
+
+# All new sites will be assigned this Docker image. It should be
+# "docker pull"-able from each appserver somehow
+# This should almost always be a ":latest" image.
+# WARNING: Do not try to delete the DockerImage specified here! Weird things may happen.
+DIRECTOR_DEFAULT_DOCKER_IMAGE = "alpine:latest"
+
+# Appservers
+DIRECTOR_APPSERVER_HOSTS: list[str] = ["fastapi:8080"]
+
+DIRECTOR_APPSERVER_SSL: types.SSLSettings | None = None
+"""Whether to use HTTP or HTTPS.
+
+Uses HTTP if is ``None``. Note that the SSL settings must be the same
+for all appservers (by design).
+"""
