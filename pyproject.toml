@@ -118,6 +118,8 @@ select = [
     "RET",
     # ruff
     "RUF",
+    # flake8-print
+    "T20",
     # pyupgrade
     "UP",
 ]

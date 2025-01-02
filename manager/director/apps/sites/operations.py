@@ -9,6 +9,12 @@ type ActionCallback = Callable[[Site, dict[str, Any]], Iterator[str]]
 
 
 class OperationWrapper:
+    """A wrapper around an :class:`.Operation` for registering actions to execute.
+
+    Given an instance, register a specific action with :meth:`register_action`.
+    Then, execute the actions sequentially by running :meth:`execute_operation`.
+    """
+
     def __init__(self, operation: Operation) -> None:
         self.operation = operation
         self.site = operation.site
@@ -41,9 +47,12 @@ class OperationWrapper:
     ) -> ActionCallback | Callable[[ActionCallback], ActionCallback]:
         """Schedules an action on the operation.
 
+        Can be used as a method, or as a decorator on a function.
+
         Args:
             name: The name of the action.
             callback: The function to call when the action is executed.
+                It can yield messages to update the status of the action.
             user_recoverable: Whether the action is recoverable by the user.
 
         Returns:
@@ -94,7 +103,6 @@ class OperationWrapper:
                 action.message += f"{traceback.format_exc()}\n"
                 action.result = False
                 action.save()
-                print(e)
                 return False
         return True
 
@@ -122,7 +130,7 @@ def auto_run_operation_wrapper(
 
     It does the following:
 
-    #. Gets an :class:`.Operation` from the database (with .get(), so raises DoesNotExist if absent).
+    #. Gets an :class:`.Operation` from the database (with ``.get()``, so raises ``DoesNotExist`` if absent).
     #. Creates an :class:`OperationWrapper` around the :class:`.Operation`.
     #. Passes the :class:`OperationWrapper` to the with statement.
     #. Runs the :class:`OperationWrapper` with the given scope when the with statement has finished.
