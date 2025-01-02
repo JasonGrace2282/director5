@@ -88,17 +88,6 @@ class Site(models.Model):
 
     mode = models.CharField(max_length=10, choices=TYPES)
 
-    placeholder_color = models.CharField(
-        max_length=7,
-        validators=[
-            RegexValidator(
-                regex=r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message="Enter a valid hex color code"
-            )
-        ],
-        help_text="Enter a hex color code",
-        blank=True,
-    )
-
     purpose = models.CharField(
         max_length=10,
         choices=PURPOSES,
