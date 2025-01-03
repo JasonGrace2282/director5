@@ -8,4 +8,5 @@ documents should help you get oriented.
 maxdepth: 1
 ---
 architecture/prereqs
+architecture/orchestrator
 ```

@@ -70,6 +70,8 @@ and other urls to [Traefik](https://traefik.io/traefik/), which then sends the r
 a docker image running on the appservers. We'll talk more about the last part when
 we talk about the Orchestrator.
 
+(docker-swarm)=
+
 ## Docker Swarm
 
 Director is able to handle different dependencies per site by using Docker containers

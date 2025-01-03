@@ -123,6 +123,7 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
         # these labels dictate how traefik actually proxies the requests into the service
         "labels": {
             f"traefik.http.routers.{site_info}.rule": hosts,
+            f"traefik.http.routers.{site_info}.service": str(site_info),
             f"traefik.http.routers.{site_info}.middlewares": f"max-request-{max_request_body_size}@swarm",
             f"traefik.http.services.{site_info}.loadbalancer.server.port": port,
             f"traefik.http.middlewares.max-request-{max_request_body_size}.buffering.maxRequestBodyBytes": max_request_body_size,
