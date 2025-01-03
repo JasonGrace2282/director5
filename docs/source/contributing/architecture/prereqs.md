@@ -7,7 +7,6 @@ how the Internet works. If you're looking for a comprehensive guide,
 If you know any of the content below, feel free to skim. It's still
 recommended to skim, because some applications to Director itself
 will be discussed.
-00
 
 ## The Life of a Request
 
