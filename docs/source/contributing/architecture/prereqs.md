@@ -7,6 +7,7 @@ how the Internet works. If you're looking for a comprehensive guide,
 If you know any of the content below, feel free to skim. It's still
 recommended to skim, because some applications to Director itself
 will be discussed.
+00
 
 ## The Life of a Request
 
@@ -90,7 +91,22 @@ Docker Swarm allows you to orchestrate multiple Docker containers. It does this 
 It's also important to note that Manager nodes can perform tasks as well (this is how our development setup works),
 but worker nodes are the main ones designated for running services.
 
+The point of a Docker Swarm is to run *services*. A service is something that has a docker image (such as `nginx:latest`)
+and an entrypoint. These services are then (semi-)evenly distributed by the manager amongst the manager/worker nodes.
+This means that if one worker node goes down, the manager can just redistribute the services on that worker node.
+
 ```{admonition} Preview
 Director runs each site as a service on a swarm node! We'll talk
 more about this when we talk about Traefik and the Orchestrator.
 ```
+
+When debugging swarm related stuff, the following commands are useful to know:
+
+- `docker swarm init` - starts a swarm as the manager.
+- `docker service ls` - lists all services on the docker swarm.
+- `docker service inspect <service> --pretty` - see details about a specific service.
+- `docker service update <service> <flags to update>` - update attributes about a service.
+- `docker service logs <service>` - see the logs for a service.
+- `docker service ps <service> --no-trunc` - see the process status on a specific service.
+- `docker node ls` - see all of the manager/worker nodes on a swarm.
+- `docker container ls` - see all running containers.
