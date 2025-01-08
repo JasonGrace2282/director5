@@ -4,10 +4,11 @@ version = "0.1.0"
 description = "A next generation website hosting platform"
 dependencies = [
   "celery",
+  "channels[daphne]",
   "django",
   "django-browser-reload",
   "django-debug-toolbar",
-  "django-htmx>=1.21.0",
+  "django-htmx",
   "django-linear-migrations",
   "heroicons[django]",
   "pillow",
@@ -25,7 +26,6 @@ dev = [
   "django-extensions",
   "django-fastdev",
   "watchdog",
-  "werkzeug",
 ]
 
 lint = [

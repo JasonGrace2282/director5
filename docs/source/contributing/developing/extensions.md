@@ -22,13 +22,6 @@ improving startup time, and improving error messages for `reverse` and `QuerySet
 
 This package comes with a LOT of useful features: check out [their docs](https://django-extensions.readthedocs.io/en/latest/).
 
-### Better Error Page
-
-When using `manage.py runserver_plus` (the default in the docker container), the error page
-is swapped out to use Werkzeug. This gives us a [lot more](https://django-extensions.readthedocs.io/en/latest/runserver_plus.html#usage)
-debugging possibilities. For example, we can view the source code that raised an
-error, and even run an interactive debugging console!
-
 ### Better shell
 
 `django-extensions` has a replacement for `manage.py shell`: `manage.py shell_plus`!

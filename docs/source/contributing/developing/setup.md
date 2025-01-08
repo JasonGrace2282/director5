@@ -54,8 +54,7 @@ pip install uv
 After that, you can install the dependencies with `uv sync`.
 
 It will install `python` for you if you don't have it installed yet.
-Then you can do e.g. `uv run manager/manage.py runserver_plus` to start the Manager,
-or `uv run pre-commit run --all-files` to run the linter/formatter.
+Then you can do e.g. `uv run pre-commit run --all-files` to run the linter/formatter.
 
 ```{tip}
 Use ``uv run --package manager`` to run something using the dependencies of the manager.
