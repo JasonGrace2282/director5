@@ -70,7 +70,7 @@ cd docs
 uv run just live
 ```
 
-This will start a webserver at http://127.0.0.1:8800 that will automatically rebuild
+This will start a webserver at http://127.0.0.1:8888 that will automatically rebuild
 and update as you edit the docs.
 
 To run the webserver on a different port, use

@@ -6,7 +6,7 @@ docs := "source"
 default:
   @just --choose
 
-live port="8800":
+live port="8888":
   sphinx-autobuild {{ docs }} {{ html }}/html/.live/ --port {{ port }}
 
 html:
