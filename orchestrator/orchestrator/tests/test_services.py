@@ -31,6 +31,7 @@ def test_site_info_db_env(db_site_info: SiteInfo):
 
 
 def test_shared_params(site_info: SiteInfo):
+    site_info.type_ = "dynamic"
     params = services.shared_swarm_params(site_info)
     assert params["image"] == site_info.docker.base
     assert site_info.directory_path().exists()
