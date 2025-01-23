@@ -13,8 +13,6 @@ ENV UV_LINK_MODE=copy \
     UV_PYTHON=python3.12 \
     PATH="/director5/.venv/bin:$PATH"
 
-RUN useradd -ms /bin/bash celery
-
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libpq-dev \
     && uv sync --frozen \

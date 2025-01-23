@@ -39,12 +39,14 @@ def shared_swarm_params(site: SiteInfo) -> dict[str, Any]:
     # DEV ENV: We have to use our bind mount to create the dir on the
     # host machine, so we can't use host_site_dir
     # TODO: this is hacky, our dev environment should not leak into production code
-    root = site.directory_path() / ".home"
+    site_dir = site.directory_path()
+    root = site_dir / ".home"
     root.mkdir(exist_ok=True, parents=True)
 
-    return {
-        "image": site.docker.base,
-        "mounts": [
+    (site_dir / "public").mkdir(exist_ok=True, parents=True)
+
+    if site.type_ == "dynamic":
+        mounts = [
             Mount(
                 type="bind",
                 source=str(host_site_dir),
@@ -57,6 +59,21 @@ def shared_swarm_params(site: SiteInfo) -> dict[str, Any]:
                 target="/root",
                 read_only=False,
             ),
+        ]
+    else:
+        mounts = [
+            Mount(
+                type="bind",
+                source=str(host_site_dir / "public"),
+                target="/usr/share/nginx/html",
+                read_only=False,
+            )
+        ]
+
+    return {
+        "image": site.docker.base,
+        "mounts": [
+            *mounts,
             Mount(
                 type="tmpfs",
                 source=None,
@@ -116,7 +133,7 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
         # nginx requires a writable file system
         # This is safe because for static sites, the user doesn't have
         # access to the nginx container
-        "read_only": site_info.type_ == "static",
+        "read_only": site_info.type_ != "static",
         "workdir": "/site/public",
         # add to the docker swarm network, so traefik can find it
         "networks": ["director-sites"],

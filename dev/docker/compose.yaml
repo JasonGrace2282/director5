@@ -23,7 +23,6 @@ services:
   celery:
     container_name: director_celery
     image: director_base
-    user: celery
     entrypoint:
       - uv
       - run
@@ -40,20 +39,7 @@ services:
       - ../../:/director5
       - /director5/.venv
     depends_on:
-      - django
-
-  celerybeat:
-    container_name: director_celerybeat
-    image: director_base
-    entrypoint: uv run celery -A director beat
-    working_dir: /director5/manager
-    networks:
-      - director_net
-    volumes:
-      - ../../:/director5
-      - /director5/.venv
-    depends_on:
-      - django
+      - redis
 
   django:
     container_name: director_django
@@ -72,7 +58,6 @@ services:
       - ../../docker/storage/:/data
       - /director5/.venv
     depends_on:
-      - redis
       - postgres
     entrypoint:
       - "/director5/dev/docker/docker-entrypoint.sh"
