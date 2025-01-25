@@ -66,7 +66,7 @@ def shared_swarm_params(site: SiteInfo) -> dict[str, Any]:
                 type="bind",
                 source=str(host_site_dir / "public"),
                 target="/usr/share/nginx/html",
-                read_only=False,
+                read_only=True,
             )
         ]
 
