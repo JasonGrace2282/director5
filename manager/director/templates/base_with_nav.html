@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block before_content %}
+  {{ block.super }}
   <header class="flex justify-between items-center w-full h-16 bg-dt-blue">
     <div class="flex">
       <a href="{% url "sites:index" %}">
@@ -14,9 +15,13 @@
 
     </div>
     <div class="flex items-center">
-      {% heroicon_solid "book-open" fill="white" size="40" %}
-      <p class="pr-2 pl-2 text-white">{{ user.username }}</p>
-      {% heroicon_solid "chevron-down" fill="white" size="22" class="mr-4" %}
+      {% if user.username %}
+        {% heroicon_solid "book-open" fill="white" size="40" %}
+        <p class="pr-2 pl-2 text-white">{{ user.username }}</p>
+        {% heroicon_solid "chevron-down" fill="white" size="22" class="mr-4" %}
+      {% else %}
+        {% heroicon_solid "book-open" fill="white" size="40" class="mr-4" %}
+      {% endif %}
     </div>
   </header>
 {% endblock %}

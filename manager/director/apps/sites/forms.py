@@ -5,11 +5,6 @@ from .models import Site
 
 
 class DirectorSelect(forms.Select):
-    def __init__(self, attrs=None, choices=None):
-        super().__init__(attrs=attrs, choices=choices)
-        if choices is None:
-            choices = [("")]
-
     def render(self, name, value, attrs=None, renderer=None):
         return render_to_string(
             "components/dropdown.html",
@@ -25,6 +20,12 @@ class DirectorSelect(forms.Select):
 
 
 class CreateSiteForm(forms.ModelForm):
+    """The :class:`forms.ModelForm` for creating a website (static/dynamic).
+
+    Please note that there is logic in create_form.html that relies directly on the form names and model values.
+    If you change anything here, please ensure that creating a site using the form still works.
+    """
+
     PURPOSES = (
         ("project", "Project"),
         ("user", "User"),
