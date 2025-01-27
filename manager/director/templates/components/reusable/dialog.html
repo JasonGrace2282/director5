@@ -1,0 +1,16 @@
+<div class="flex fixed inset-0 justify-center items-center w-full h-full opacity-0 transition transition-opacity duration-200 bg-black/30 nc-dialog">
+  {# The native dialog tag has limitations, such as making transitions difficult, so we don't use it #}
+  <div class="bg-[#f5f5f5] md:w-[calc(27vh*2.2)] w-[36vh] h-fit drop-shadow-2xl outline outline-[#949494] rounded-md">
+    <div class="flex justify-between items-center">
+      <p class="m-2 text-2xl font-bold lg:m-4 nc-title-text"></p>
+      <button class="mr-2 dt-btn-image nc-close-button">{% heroicon_solid "x-mark" size="25" fill="gray" %}</button>
+    </div>
+    <div class="outline outline-[1px] outline-[#e3e3e3]">
+      <div class="p-4 nc-body-text"></div>
+    </div>
+    <div class="flex gap-4 m-2 lg:m-4">
+      <button class="dt-btn-primary nc-accept-button">Continue</button>
+      <button class="dt-btn-outline nc-close-button">Nevermind</button>
+    </div>
+  </div>
+</div>
