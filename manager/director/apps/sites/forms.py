@@ -8,7 +8,7 @@ class DirectorSelect(forms.Select):
     def __init__(self, attrs=None, choices=None):
         super().__init__(attrs=attrs, choices=choices)
         if choices is None:
-            choices = [("")]
+            choices = [""]
 
     def render(self, name, value, attrs=None, renderer=None):
         return render_to_string(
@@ -25,6 +25,10 @@ class DirectorSelect(forms.Select):
 
 
 class CreateSiteForm(forms.ModelForm):
+    """
+        Please note that there is logic in create_form.html that relies directly on the form names and model values
+        If you change anything here, ensures that creating a form still works
+    """
     PURPOSES = (
         ("project", "Project"),
         ("user", "User"),

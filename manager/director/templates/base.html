@@ -13,9 +13,7 @@
     {% include "meta.html" %}
 
     {% block head %}
-      <link rel="stylesheet"
-            href="{% static "tailwind/build.css" %}"
-            type="text/css">
+      <link rel="stylesheet" href="{% static "tailwind/build.css" %}" type="text/css">
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
@@ -29,13 +27,26 @@
               integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ=="
               crossorigin="anonymous"
               referrerpolicy="no-referrer"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
+              integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"></script>
       <script src="{% static "general/directorlib.js" %}"></script>
       {% django_htmx_script %}
     {% endblock %}
   </head>
   <body>
     <main>
-      {% block before_content %}{% endblock %}
+      {% block before_content %}
+        <template id="component-templates">
+          {% include "components/reusable/tooltip.html" %}
+          {% include "components/reusable/dialog.html" %}
+          {% include "components/reusable/snackbar.html" %}
+
+        </template>
+        <div class="fixed md:right-4 md:top-auto md:bottom-4 px-2 md:top-auto top-4 md:inset-auto inset-0 flex flex-col h-fit md:gap-4"
+             id="tooltip-holder"></div>
+      {% endblock %}
       {% block main %}{% endblock %}
     </main>
   </body>
