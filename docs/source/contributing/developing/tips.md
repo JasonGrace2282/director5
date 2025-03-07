@@ -2,14 +2,6 @@
 
 ## PostgreSQL cannot authenticate as user
 
-Postgres is really weird, and sometimes after a
-change in it's configuration it just won't authenticate.
-In this case, you might also need to remove the volumes and restart:
-
-```bash
-docker compose down -v
-docker compose up
-```
-
-should fix the issue. If not, you might have a problem with
-the postgres configuration in Django.
+There is a chance that there is another application running that is
+using the same volume that we use for Director. Try giving the volume
+of the other application a non-conflicting name.

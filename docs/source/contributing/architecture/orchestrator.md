@@ -44,11 +44,10 @@ used in deployment.
 
 The steps for static site deployments include:
 
-- Create a custom `nginx.conf` for the site that serves from `/site/public`.
-- Start a service using the `nginx:latest` docker image with the custom `nginx.conf`
+- Start a service using the `nginx:latest` docker image
 - Give the service labels so that traefik can route requests into the service.
 
 There is significantly less configurability with static sites (by design).
 Additionally, if a user wants to open a web terminal, they *do NOT* get access
-to the `nginx:latest` container (for security reasons), but rather a default base image or a customized
+to the `nginx:latest` container, but rather a default base image or a customized
 base image for the site.
