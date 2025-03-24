@@ -14,8 +14,6 @@ from pathlib import Path
 
 DEBUG = True
 
-DOCKERFILE_IMAGES = Path("/data/images")
-
 TIMEZONE = "America/New_York"
 
 CI = "CI" in os.environ

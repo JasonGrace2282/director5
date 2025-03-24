@@ -33,13 +33,10 @@ class ContainerLimits(TypedDict, total=False):
     memswap: int
 
 
-class ContainerCreationInfo(TypedDict):
-    build_stdout: list[str]
-
-
 class ExceptionInfo(BaseModel):
     description: str
-    traceback: str
+    explanation: str
+    user_error: bool
 
 
 def convert_memory_limit_validator(
