@@ -13,7 +13,6 @@ dependencies = [
   "heroicons[django]",
   "pillow",
   "psycopg[binary]",
-  "pydantic",
   "redis",
   "requests",
   "social-auth-app-django",

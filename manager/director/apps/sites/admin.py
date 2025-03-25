@@ -4,8 +4,6 @@ from .models import (
     Action,
     Database,
     DatabaseHost,
-    DockerAction,
-    DockerImage,
     Operation,
     Site,
 )
@@ -29,20 +27,6 @@ class DatabaseHostAdmin(admin.ModelAdmin):
 class DatabaseAdmin(admin.ModelAdmin):
     list_display = ("redacted_db_url", "site", "host__dbms")
     search_fields = ("host__hostname", "site__name")
-
-
-@admin.register(DockerImage)
-class DockerImageAdmin(admin.ModelAdmin):
-    list_display = ("name", "tag", "language")
-    list_filter = ("language",)
-    search_fields = ("name", "tag")
-
-
-@admin.register(DockerAction)
-class DockerActionAdmin(admin.ModelAdmin):
-    list_display = ("name", "command")
-    list_filter = ("command",)
-    search_fields = ("name",)
 
 
 admin.site.register(Operation)

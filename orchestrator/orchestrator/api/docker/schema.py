@@ -13,7 +13,7 @@ from pydantic import (
 )
 from pydantic.functional_validators import AfterValidator, WrapValidator
 
-from orchestrator.core import settings
+from orchestrator import settings
 
 from .conversions import convert_memory_limit, cpu_to_nano_cpus
 
@@ -33,13 +33,10 @@ class ContainerLimits(TypedDict, total=False):
     memswap: int
 
 
-class ContainerCreationInfo(TypedDict):
-    build_stdout: list[str]
-
-
 class ExceptionInfo(BaseModel):
     description: str
-    traceback: str
+    explanation: str
+    user_error: bool
 
 
 def convert_memory_limit_validator(
@@ -101,11 +98,6 @@ class DatabaseInfo(BaseModel):
         return f"{type(self).__name__}({self.url}, {self.name})"
 
 
-class DockerConfig(BaseModel):
-    base: str
-    """The base image for the container."""
-
-
 # We're not too strict, the Manager should have a more
 # conservative regex. We just want to double check to
 # prevent injections into the Host traefik label.
@@ -118,7 +110,6 @@ class SiteInfo(BaseModel):
     is_served: bool
     type_: Literal["static", "dynamic"]
     resource_limits: ResourceLimits
-    docker: DockerConfig
     runfile: Annotated[str, Field(pattern=r"[/\-.a-zA-Z0-9]+")] | None = None
     db: DatabaseInfo | None = None
 

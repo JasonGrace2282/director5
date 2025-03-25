@@ -12,4 +12,9 @@ def create_site(operation_id: int) -> None:
 
     with auto_run_operation_wrapper(operation_id, scope) as wrapper:
         wrapper.register_action("Pinging appservers", actions.find_pingable_appservers)
+        wrapper.register_action(
+            "Building Docker image",
+            actions.build_docker_image,
+            user_recoverable=True,
+        )
         wrapper.register_action("Creating Docker service", actions.update_docker_service)

@@ -88,12 +88,7 @@ class Appserver:
             e.add_note(f"Failed to connect to {path} ({method=}) on {self}: {data=}")
             raise
 
-        if response.status_code != 200:
-            raise ValueError(
-                "Bad response code from appserver",
-                response,
-                f"content={pcall(response.json)}",
-            )
+        return response
 
 
 def pcall[**P, T](f: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -> T | None:

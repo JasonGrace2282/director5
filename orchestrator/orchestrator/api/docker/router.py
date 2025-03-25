@@ -1,104 +1,78 @@
-import contextlib
+import shutil
 import traceback
 from pathlib import Path
+from typing import Any
 
 import docker
 import docker.errors
-import jinja2
 from fastapi import APIRouter, HTTPException
 
-from orchestrator.core import settings
-
 from . import services
-from .parsing import parse_build_response
-from .schema import ContainerCreationInfo, ContainerLimits, ExceptionInfo, SiteInfo
+from .schema import ContainerLimits, ExceptionInfo, SiteInfo
 
 router = APIRouter()
 
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 
-env = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(TEMPLATE_DIR),
-    autoescape=False,
-)
-dockerfile_template = env.get_template("Dockerfile.j2")
-
-
-def find_image_dir(site_id: int) -> Path:
-    return settings.DOCKERFILE_IMAGES / f"site_{site_id}"
-
 
 @router.post(
-    "/create",
+    "/image/build",
     responses={
-        "400": {"model": ExceptionInfo},
         "500": {"model": ExceptionInfo},
     },
 )
-def create_container(
-    site_id: int,
-    base_image: str,
-    maintainer: str,
-    commands: list[str],
+def build_image(
+    site: SiteInfo,
     resource_limits: ContainerLimits | None = None,
-) -> ContainerCreationInfo:
+) -> dict[str, Any]:
     client = docker.from_env()
 
-    dockerfile = dockerfile_template.render(
-        maintainer=maintainer,
-        base=base_image,
-        commands=commands,
-    )
-    image_dir = find_image_dir(site_id)
-
-    # In Director3, this path was the dockerfile.
-    # To handle the transition, we remove it if it exists.
-    if image_dir.is_file():
-        image_dir.unlink()
-
-    image_dir.mkdir(parents=True, exist_ok=True, mode=0o755)
-    dockerfile_path = image_dir / "Dockerfile"
-
-    try:
-        dockerfile_path.write_text(dockerfile)
-    except OSError as e:
-        raise HTTPException(
-            status_code=500,
-            detail={
-                "description": "Failed to create Dockerfile",
-                "traceback": traceback.format_exc(),
-            },
-        ) from e
+    site_dir = site.directory_path()
+    dockerfile_path = site_dir / "Dockerfile"
+    # make sure a valid dockerfile always exists
+    if not dockerfile_path.exists():
+        default_dockerfile = TEMPLATE_DIR / "Dockerfile"
+        shutil.copy(default_dockerfile, dockerfile_path)
 
     # caching or storing intermediate images takes up a
     # ton of space.
-    stdout_generator = client.api.build(
-        str(image_dir),
-        nocache=True,
-        rm=True,
-        forcerm=True,
-        pull=False,
-        decode=True,
-        container_limits=resource_limits,  # type: ignore[assignment]
-        tag=f"site_{site_id}",
-    )
-    stdout = list(stdout_generator)
-
-    stdout, succeeded = parse_build_response(stdout)
-    if not succeeded:
-        # clean up the failed containers
-        with contextlib.suppress(docker.errors.APIError):
-            client.images.prune({"dangling": True})
-        raise HTTPException(
-            status_code=400,
-            detail={"description": "Failed to build image", "traceback": stdout},
+    try:
+        _image, log = client.images.build(
+            path=str(site_dir),
+            dockerfile=str(dockerfile_path),
+            rm=True,
+            container_limits=resource_limits,  # type: ignore[assignment]
+            tag=str(site),
         )
+    except docker.errors.BuildError as e:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "user_error": True,
+                "description": "Failed to build image",
+                "explanation": e.msg,
+                "traceback": tuple(e.build_log),
+            },
+        ) from e
+    except docker.errors.APIError as e:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "user_error": True,
+                "description": "Failed to build image",
+                "explanation": e.explanation,
+            },
+        ) from e
 
-    return {"build_stdout": stdout}
+    return {"build_stdout": tuple(log)}
 
 
 @router.post("/update-docker-service")
 def update_docker_service(site_info: SiteInfo):
+    """Creates, or updates the Docker service running the site.
+
+    Note that this expects that a docker image exists with the correct tag.
+    """
     params = services.create_service_params(site_info)
     client = docker.from_env()
     service = services.find_service_by_name(client, str(site_info))
@@ -109,7 +83,7 @@ def update_docker_service(site_info: SiteInfo):
             service.update(**params)
     except docker.errors.APIError as e:
         raise HTTPException(
-            status_code=400,
+            status_code=500,
             detail={
                 "description": "Failed to update service",
                 "traceback": traceback.format_exc(),

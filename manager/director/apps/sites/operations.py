@@ -1,6 +1,7 @@
 import contextlib
 import traceback
 from collections.abc import Callable, Iterator
+from functools import wraps
 from typing import Any, overload
 
 from .models import Action, Operation, Site
@@ -76,6 +77,7 @@ class OperationWrapper:
 
         if callback is None:
             return decorator
+        decorator = wraps(callback)(decorator)
         return decorator(callback)
 
     # TODO: if/once PEP 728 is accepted, use a TypedDict instead of dict[str, Any] for scope

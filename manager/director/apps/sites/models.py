@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-import shlex
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Any, Self
 
 from django.conf import settings
-from django.core.validators import MinLengthValidator, MinValueValidator, RegexValidator
+from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.utils import timezone
 
 if TYPE_CHECKING:
     from ..users.models import User
-    from .parser import SiteConfig
 
 
 class SiteQuerySet(models.QuerySet):
@@ -118,6 +116,7 @@ class Site(models.Model):
     objects = SiteQuerySet.as_manager()
 
     id: int
+    domain_set: models.QuerySet[Domain]
 
     def __str__(self):
         return self.name
@@ -138,14 +137,6 @@ class Site(models.Model):
             ("https://" + domain) for domain in self.domain_set.values_list("domain", flat=True)
         ] + [self.sites_url]
 
-    def docker_image(self, config: SiteConfig | None = None) -> str:
-        """Return the Docker image for the site."""
-        if self.mode == "static":
-            return "nginx:latest"
-        if config is not None and config.docker is not None:
-            return config.docker.base
-        return settings.DIRECTOR_DEFAULT_DOCKER_IMAGE
-
     def serialize_resource_limits(self) -> dict[str, float]:
         """Serialize the resource limits for the appservers."""
         # TODO: implement custom resource limits
@@ -154,6 +145,18 @@ class Site(models.Model):
             "memory": settings.DIRECTOR_RESOURCES_DEFAULT_MEMORY_LIMIT,
             "max_request_body_size": settings.DIRECTOR_RESOURCES_MAX_REQUEST_BODY,
         }
+
+    def serialize_for_appserver(self) -> dict[str, Any]:
+        data = {
+            "pk": self.id,
+            "hosts": self.list_domains(),
+            "is_served": self.is_served,
+            "type_": self.mode,
+            "resource_limits": self.serialize_resource_limits(),
+        }
+        if self.database is not None:
+            data["db"] = self.database.serialize_for_appserver()
+        return data
 
 
 class DatabaseHost(models.Model):
@@ -209,124 +212,13 @@ class Database(models.Model):
     def redacted_db_url(self) -> str:
         return f"{self.host.dbms}://{self.username}:***@{self.host.hostname}:{self.host.port}/{self.username}"
 
-
-class DockerAction(models.Model):
-    """An action that can be performed while setting up a Docker image.
-
-    Think of a Docker action as a single shell command in a
-    docker ``RUN`` statement.
-
-    Arguments to the command will by default be appended to the command::
-
-        command = "pip install"
-        subprocess.run(shlex.split(command) + args)
-
-    The special marker ``{args}`` can be used in the command to specify
-    where the arguments should be placed. This is roughly equivalent to::
-
-        pre_args, post_args = split_by_marker(command, "{args}")
-        escaped_args = [shlex.quote(arg) for arg in args]
-        subprocess.run(pre_args + escaped_args + post_args)
-
-    .. danger::
-
-        :func:`shlex.quote` only handles escaping the shell. The command
-        should still be wary of injection attacks. For example, just
-        setting a command as ``pip install`` would allow users to do
-        e.g. ``pip install --user django``. Instead, consider using::
-
-            pip install --
-
-        to prevent the user from passing arguments that are flags.
-    """
-
-    name = models.CharField(max_length=255)
-    command = models.TextField()
-
-    allows_arguments = models.BooleanField(
-        default=False,
-        help_text="Does the command expect arguments?",
-    )
-
-    version = models.PositiveIntegerField(
-        default=1,
-        validators=[MinValueValidator(1)],
-    )
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["name", "version"],
-                name="unique_action_version",
-            )
-        ]
-
-    def __str__(self):
-        return self.name
-
-    def construct_command(self, args: list[str], *, shell: bool = False) -> list[str]:
-        """Produces a command that can be passed to ``subprocess.run``.
-
-        Args:
-            args: the arguments to pass to the command.
-            shell: whether to escape the command for the shell.
-
-        .. warning::
-
-            Do NOT call this command without checking if :attr:`allows_arguments`
-            is ``True``, as it is a security vulnerability.
-        """
-        if not self.allows_arguments:
-            raise ValueError(f"{self} does not allow arguments.")
-
-        flag = "{args}"
-        command = shlex.split(self.command)
-        if flag not in command:
-            return command
-        if shell:
-            args = [shlex.quote(arg) for arg in args]
-        pre_args = command[: command.index(flag)]
-        post_args = command[command.index(flag) + 1 :]
-        return pre_args + args + post_args
-
-
-class DockerImage(models.Model):
-    """The parent docker images.
-
-    This is the base image that will be used in
-    the ``FROM`` tag in a ``Dockerfile``.
-    """
-
-    LANGUAGES = [
-        ("", "No language"),
-        ("python", "Python"),
-        ("node", "Node.js"),
-        ("php", "PHP"),
-    ]
-
-    name = models.CharField(
-        max_length=255,
-        unique=True,
-    )
-    tag = models.CharField(
-        max_length=255,
-        validators=[RegexValidator(r"^[a-zA-Z0-9]+(\/[a-zA-Z0-9]+)?:[a-zA-Z0-9._-]+$")],
-        help_text="For parent images, this should always be a tag of the form 'alpine:3.20'.",
-        unique=True,
-    )
-
-    logo = models.ImageField(upload_to="docker_image_logos", blank=True)
-    description = models.TextField(blank=True)
-
-    language = models.CharField(
-        max_length=30,
-        blank=True,
-        choices=LANGUAGES,
-        help_text="The programming language of the image. Do not include the version.",
-    )
-
-    def __str__(self):
-        return self.name
+    def serialize_for_appserver(self) -> dict[str, str]:
+        return {
+            "url": self.redacted_db_url,
+            "name": self.site.name,
+            "username": self.username,
+            "password": self.password,
+        }
 
 
 class Domain(models.Model):
@@ -473,8 +365,7 @@ class Action(models.Model):
     # Operations that fail because of failures in Actions with this field set to True will not
     # be exported in the Prometheus metrics, and they will have a special note on the operations
     # page.
-    # The main practical use of this is for building the Docker image, which will fail if the user
-    # enters an incorrect package name.
+    # The main practical use of this is for building the Docker image.
     user_recoverable = models.BooleanField(
         null=False, default=False, help_text="Can the user recover from this failure?"
     )

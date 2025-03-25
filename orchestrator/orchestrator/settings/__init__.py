@@ -4,7 +4,7 @@ Usage:
 
     .. code-block:: pycon
 
-        >>> from .core import settings
+        >>> from . import settings
         >>> settings.DEBUG
         True
 """
@@ -14,8 +14,6 @@ from pathlib import Path
 
 DEBUG = True
 
-DOCKERFILE_IMAGES = Path("/data/images")
-
 TIMEZONE = "America/New_York"
 
 CI = "CI" in os.environ
@@ -24,7 +22,6 @@ SITES_DIR = Path("/data/sites")
 
 if CI:
     SITES_DIR = Path("/tmp/sites")
-    DOCKERFILE_IMAGES = Path("/tmp/images")
 
 if DEBUG and not CI:
     pwd = os.environ.get("PWD_HOST")
