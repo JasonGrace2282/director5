@@ -4,7 +4,7 @@ Usage:
 
     .. code-block:: pycon
 
-        >>> from .core import settings
+        >>> from . import settings
         >>> settings.DEBUG
         True
 """

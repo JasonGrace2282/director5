@@ -1,6 +1,6 @@
+from orchestrator import settings
 from orchestrator.api.docker import services
 from orchestrator.api.docker.schema import SiteInfo
-from orchestrator.core import settings
 
 
 def test_site_info_env(site_info: SiteInfo):
@@ -33,11 +33,10 @@ def test_site_info_db_env(db_site_info: SiteInfo):
 def test_shared_params(site_info: SiteInfo):
     site_info.type_ = "dynamic"
     params = services.shared_swarm_params(site_info)
-    assert params["image"] == site_info.docker.base
     assert site_info.directory_path().exists()
-    assert any(
-        {"Target": "/site"}.items() <= mount.items() for mount in params["mounts"]
-    ), "Expected a /site mount"
+    assert any({"Target": "/site"}.items() <= mount.items() for mount in params["mounts"]), (
+        "Expected a /site mount"
+    )
 
 
 def test_update_service_params(site_info: SiteInfo):

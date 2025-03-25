@@ -22,12 +22,12 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
     },
 )
 def build_image(
-    site_id: int,
-    site_dir: Path,
+    site: SiteInfo,
     resource_limits: ContainerLimits | None = None,
 ) -> dict[str, Any]:
     client = docker.from_env()
 
+    site_dir = site.directory_path()
     dockerfile_path = site_dir / "Dockerfile"
     # make sure a valid dockerfile always exists
     if not dockerfile_path.exists():
@@ -40,12 +40,9 @@ def build_image(
         _image, log = client.images.build(
             path=str(site_dir),
             dockerfile=str(dockerfile_path),
-            nocache=True,
             rm=True,
-            forcerm=True,
-            pull=False,
             container_limits=resource_limits,  # type: ignore[assignment]
-            tag=f"site_{site_id}",
+            tag=str(site),
         )
     except docker.errors.BuildError as e:
         raise HTTPException(
@@ -72,6 +69,10 @@ def build_image(
 
 @router.post("/update-docker-service")
 def update_docker_service(site_info: SiteInfo):
+    """Creates, or updates the Docker service running the site.
+
+    Note that this expects that a docker image exists with the correct tag.
+    """
     params = services.create_service_params(site_info)
     client = docker.from_env()
     service = services.find_service_by_name(client, str(site_info))

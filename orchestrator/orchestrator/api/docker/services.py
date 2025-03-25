@@ -8,7 +8,7 @@ import docker
 from docker.models.services import Service as DockerService
 from docker.types import EndpointSpec, Mount, Resources, RestartPolicy, ServiceMode, UpdateConfig
 
-from orchestrator.core import settings
+from orchestrator import settings
 
 from .schema import SiteInfo
 
@@ -71,7 +71,7 @@ def shared_swarm_params(site: SiteInfo) -> dict[str, Any]:
         ]
 
     return {
-        "image": site.docker.base,
+        "image": str(site),
         "mounts": [
             *mounts,
             Mount(
