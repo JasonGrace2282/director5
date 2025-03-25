@@ -46,6 +46,7 @@ def shared_swarm_params(site: SiteInfo) -> dict[str, Any]:
     (site_dir / "public").mkdir(exist_ok=True, parents=True)
 
     if site.type_ == "dynamic":
+        image = str(site)
         mounts = [
             Mount(
                 type="bind",
@@ -61,6 +62,7 @@ def shared_swarm_params(site: SiteInfo) -> dict[str, Any]:
             ),
         ]
     else:
+        image = "nginx:latest"
         mounts = [
             Mount(
                 type="bind",
@@ -71,7 +73,7 @@ def shared_swarm_params(site: SiteInfo) -> dict[str, Any]:
         ]
 
     return {
-        "image": str(site),
+        "image": image,
         "mounts": [
             *mounts,
             Mount(
@@ -122,8 +124,8 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
 
     max_request_body_size = str(site_info.resource_limits.max_request_body_size)
 
-    if site_info.type_ != "static":
-        params["entrypoint"] = ["sh", "-c", shell_cmd]
+    if site_info.type_ == "dynamic":
+        params["command"] = ["sh", "-c", shell_cmd]
 
     # Docker by default runs with a small set of capacities,
     # so we don't need to modify them here.
@@ -133,7 +135,7 @@ def create_service_params(site_info: SiteInfo) -> dict[str, Any]:
         # nginx requires a writable file system
         # This is safe because for static sites, the user doesn't have
         # access to the nginx container
-        "read_only": site_info.type_ != "static",
+        "read_only": site_info.type_ == "dynamic",
         "workdir": "/site/public",
         # add to the docker swarm network, so traefik can find it
         "networks": ["director-sites"],

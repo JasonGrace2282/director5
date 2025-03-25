@@ -22,7 +22,6 @@ SITES_DIR = Path("/data/sites")
 
 if CI:
     SITES_DIR = Path("/tmp/sites")
-    DOCKERFILE_IMAGES = Path("/tmp/images")
 
 if DEBUG and not CI:
     pwd = os.environ.get("PWD_HOST")

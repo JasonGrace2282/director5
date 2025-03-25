@@ -28,6 +28,6 @@ async def handle_exception(request: Request, exc: Exception):
         content={
             "message": "Internal server error",
             "user_error": False,
-            "exception": "".join(traceback.format_exception(exc)),
+            "exception": traceback.format_exception(exc),
         },
     )

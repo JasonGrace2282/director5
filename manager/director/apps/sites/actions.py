@@ -10,6 +10,8 @@ from .models import Site
 def raise_by_recoverability(site: Site, response: requests.Response):
     if response.status_code == 200:
         return
+    if response.status_code == 422:
+        raise RuntimeError(f"Invalid JSON: {response.json()}")
     try:
         content = response.json()
     except requests.exceptions.JSONDecodeError as e:
@@ -64,7 +66,7 @@ def build_docker_image(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     response = appserver.http_request(
         "/api/docker/image/build",
         method="POST",
-        data=site.serialize_for_appserver(),
+        data={"site": site.serialize_for_appserver()},
     )
     raise_by_recoverability(site, response)
     yield "Docker image built"
