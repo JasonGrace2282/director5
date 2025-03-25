@@ -278,12 +278,6 @@ DIRECTOR_RESOURCES_DEFAULT_MEMORY_LIMIT: Final = 100 * 1000 * 1000
 # Client body (aka file upload) size limit in bytes
 DIRECTOR_RESOURCES_MAX_REQUEST_BODY: Final = 2 * 1024 * 1024
 
-# All new sites will be assigned this Docker image. It should be
-# "docker pull"-able from each appserver somehow
-# This should almost always be a ":latest" image.
-# WARNING: Do not try to delete the DockerImage specified here! Weird things may happen.
-DIRECTOR_DEFAULT_DOCKER_IMAGE = "alpine:latest"
-
 # Appservers
 DIRECTOR_APPSERVER_HOSTS: list[str] = ["fastapi:8080"]
 
@@ -293,3 +287,13 @@ DIRECTOR_APPSERVER_SSL: types.SSLSettings | None = None
 Uses HTTP if is ``None``. Note that the SSL settings must be the same
 for all appservers (by design).
 """
+
+# These options control what is removed when a site is deleted.
+# If SITE_DELETION_REMOVE_FILES is True, all of the site's files are removed. (It
+# may make sense to set this to False so users' files can be recovered later, though
+# the site ID would need to be known.)
+# If SITE_DELETION_REMOVE_DATABASE is True, the site's database is removed. (It is
+# strongly recommended to leave this as True to avoid clogging up the database
+# server.)
+SITE_DELETION_REMOVE_FILES: Final = True
+SITE_DELETION_REMOVE_DATABASE: Final = True
