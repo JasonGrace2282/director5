@@ -37,6 +37,9 @@ def update_docker_service(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     Expects scope to be populated with ``pingable_appservers``.
     If scope has a :class:`.SiteConfig`, it will use the Docker base image from there.
     """
+    if site.availability == "disabled":
+        yield from remove_docker_service(site, scope)
+        return
     appserver = Appserver.random(scope["pingable_appservers"])
     yield f"Connecting to {appserver} to create/update docker service."
 
