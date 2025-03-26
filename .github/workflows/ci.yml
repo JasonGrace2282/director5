@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         uses: ./.github/actions/ci-setup
         with:
-          groups: "lint"
+          group: "lint"
 
       - name: Run pre-commit
         run: uv run pre-commit run --all-files --show-diff-on-failure
@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         uses: ./.github/actions/ci-setup
         with:
-          groups: "test"
+          group: "test"
 
       - name: Check migrations
         working-directory: manager
@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         uses: ./.github/actions/ci-setup
         with:
-          groups: "docs"
+          group: "docs"
 
       - name: Install graphviz
         run: sudo apt install graphviz
