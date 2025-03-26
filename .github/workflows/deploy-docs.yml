@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         uses: ./.github/actions/ci-setup
         with:
-          groups: "docs"
+          group: "docs"
 
       - name: Install graphviz
         run: sudo apt install graphviz
