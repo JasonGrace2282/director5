@@ -4,6 +4,7 @@ from celery import shared_task
 from django.conf import settings
 
 from . import actions
+from .models import Site
 from .operations import auto_run_operation_wrapper
 
 
@@ -25,6 +26,8 @@ def create_site(operation_id: int) -> None:
 def delete_site(operation_id: int) -> None:
     scope: dict[str, Any] = {}
 
+    site = Site.objects.get(operation__id=operation_id)
+
     with auto_run_operation_wrapper(operation_id, scope) as wrapper:
         wrapper.register_action("Pinging appservers", actions.find_pingable_appservers)
 
@@ -35,3 +38,5 @@ def delete_site(operation_id: int) -> None:
 
         wrapper.register_action("Deleting Docker service", actions.remove_docker_service)
         wrapper.register_action("Deleting Docker image", actions.remove_docker_image)
+
+    site.delete()

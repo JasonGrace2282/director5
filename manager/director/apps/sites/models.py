@@ -7,6 +7,8 @@ from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.utils import timezone
 
+from . import operations
+
 if TYPE_CHECKING:
     from ..users.models import User
 
@@ -130,6 +132,11 @@ class Site(models.Model):
         """Return the default URL where the site is served."""
         default = settings.SITE_URL_FORMATS[None]
         return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
+
+    def start_operation(self, ty: str) -> Operation:
+        op = Operation.objects.create(site=self, ty=ty)
+        operations.send_operation_updated_message(self)
+        return op
 
     def list_domains(self) -> list[str]:
         """Returns all the domains for a site."""
