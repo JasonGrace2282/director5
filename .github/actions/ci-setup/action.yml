@@ -19,8 +19,7 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        cmd="uv sync"
         if [ -n "${{ inputs.group }}" ]; then
-          cmd="$cmd --only-group \"${{ inputs.group }}\""
+          exec uv sync --only-group "${{ inputs.group }}"
         fi
-        exec $cmd
+        exec uv sync
