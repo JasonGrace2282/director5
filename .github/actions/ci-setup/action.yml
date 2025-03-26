@@ -2,7 +2,7 @@ name: CI setup
 description: Install the dependencies needed for ci
 
 inputs:
-  groups:
+  group:
     description: The dependency group to install (blank for all).
     required: false
     default: ""
@@ -20,7 +20,7 @@ runs:
       shell: bash
       run: |
         cmd="uv sync"
-        if [ -n "${{ inputs.group }}" ]; then
-          cmd="$cmd --only-group \"${{ inputs.group }}\""
+        if [ -n ${{ inputs.group }} ]; then
+          cmd="$cmd --only-group ${{ inputs.group }}"
         fi
         exec $cmd
