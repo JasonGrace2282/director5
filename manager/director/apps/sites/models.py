@@ -7,8 +7,6 @@ from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.utils import timezone
 
-from . import operations
-
 if TYPE_CHECKING:
     from ..users.models import User
 
@@ -134,6 +132,8 @@ class Site(models.Model):
         return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
 
     def start_operation(self, ty: str) -> Operation:
+        from . import operations
+
         op = Operation.objects.create(site=self, ty=ty)
         operations.send_operation_updated_message(self)
         return op
