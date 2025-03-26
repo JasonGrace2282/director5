@@ -5,6 +5,7 @@ import requests
 
 from .appserver import Appserver
 from .models import Site
+from .operations import UserFacingError
 
 
 def raise_by_recoverability(site: Site, response: requests.Response):
@@ -16,11 +17,12 @@ def raise_by_recoverability(site: Site, response: requests.Response):
         content = response.json()
     except requests.exceptions.JSONDecodeError as e:
         raise ValueError(
-            f"Appserver {site} returned {response.status_code} and could not be decoded to JSON."
+            f"Appserver ({site=}) returned {response.status_code} and could not be decoded to JSON."
         ) from e
 
-    if content.get("user_error"):
-        pass  # TODO: handle this to nicely display reason to user
+    if content.get("user_error") and (explanation := content.get("explanation")):
+        description = content.get("description", "An error occurred")
+        raise UserFacingError(f"{description}: {explanation}")
     response.raise_for_status()
 
 

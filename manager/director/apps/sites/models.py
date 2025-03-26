@@ -369,6 +369,12 @@ class Action(models.Model):
         ),
     )
 
+    user_message = models.TextField(
+        null=False,
+        blank=True,
+        help_text="User-facing message describing the actions taken (and/or what failed).",
+    )
+
     # Operations that fail because of failures in Actions with this field set to True will not
     # be exported in the Prometheus metrics, and they will have a special note on the operations
     # page.
