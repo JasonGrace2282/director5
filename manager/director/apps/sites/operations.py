@@ -7,6 +7,21 @@ from typing import Any, overload
 from .models import Action, Operation, Site
 
 type ActionCallback = Callable[[Site, dict[str, Any]], Iterator[str]]
+"""A callback that runs an action on a site.
+
+Args:
+    site: the :class:`.Site` to run the action on
+    scope: a dictionary that is shared between all actions
+"""
+
+
+class UserFacingError(Exception):
+    """An exception used to signal that we failed with some helpful message.
+
+    This should be used if the appserver has useful information on e.g. why
+    a docker build failed. It will populate :attr:`.Action.user_message` with
+    the content.
+    """
 
 
 class OperationWrapper:
@@ -100,7 +115,12 @@ class OperationWrapper:
                     new_action_callback(action)
 
                 self._run_action(action, callback, scope)
-            except BaseException as e:  # noqa: BLE001
+            except UserFacingError as e:
+                action.user_message += str(e)
+                action.result = False
+                action.save()
+                return False
+            except Exception as e:  # noqa: BLE001
                 e.add_note(f"Scope: {scope}")
                 action.message += f"{traceback.format_exc()}\n"
                 action.result = False

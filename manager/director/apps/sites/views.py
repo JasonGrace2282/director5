@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 from django_htmx.http import HttpResponseLocation
 
 from . import tasks
 from .forms import CreateSiteForm
-from .models import Operation, Site
-from .operations import send_operation_updated_message
+from .models import Site
 
 if TYPE_CHECKING:
     from director.djtypes import AuthenticatedHttpRequest
@@ -34,9 +34,8 @@ def create_site(request: AuthenticatedHttpRequest) -> HttpResponse:
         if form.is_valid():
             site = form.save()
             site.users.add(request.user)
-            op = Operation.objects.create(site=site, ty="create_site")
+            op = site.start_operation("create_site")
             tasks.create_site.delay(op.id)
-            send_operation_updated_message(site)
 
             if site.mode == "static":
                 return HttpResponseLocation(reverse("sites:index"))
@@ -50,3 +49,12 @@ def create_site(request: AuthenticatedHttpRequest) -> HttpResponse:
         form = CreateSiteForm()
 
     return render(request, "sites/create.html", {"form": form})
+
+
+@login_required
+@require_POST
+def delete_site(request: AuthenticatedHttpRequest, site_id: int) -> HttpResponse:
+    site = get_object_or_404(Site.objects.filter_visible(request.user), id=site_id)
+    op = site.start_operation("delete_site")
+    tasks.delete_site.delay(op.id)
+    return redirect("sites:index")
