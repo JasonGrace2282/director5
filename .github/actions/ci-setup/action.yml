@@ -3,7 +3,7 @@ description: Install the dependencies needed for ci
 
 inputs:
   groups:
-    description: The dependency groups to install (blank for all).
+    description: The dependency group to install (blank for all).
     required: false
     default: ""
 
@@ -18,4 +18,9 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: ${{ github.action_path }}/uv-sync.sh ${{ inputs.groups }}
+      run: |
+        cmd="uv sync"
+        if [ -n "${{ inputs.group }}" ]; then
+          cmd="$cmd --only-group \"${{ inputs.group }}\""
+        fi
+        exec $cmd
