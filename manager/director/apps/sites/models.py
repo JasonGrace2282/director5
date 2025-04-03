@@ -131,6 +131,13 @@ class Site(models.Model):
         default = settings.SITE_URL_FORMATS[None]
         return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
 
+    def start_operation(self, ty: str) -> Operation:
+        from . import operations
+
+        op = Operation.objects.create(site=self, ty=ty)
+        operations.send_operation_updated_message(self)
+        return op
+
     def list_domains(self) -> list[str]:
         """Returns all the domains for a site."""
         return [
@@ -360,6 +367,12 @@ class Action(models.Model):
             "Should always be set to allow for easier debugging.\n"
             "Only visible to superusers."
         ),
+    )
+
+    user_message = models.TextField(
+        null=False,
+        blank=True,
+        help_text="User-facing message describing the actions taken (and/or what failed).",
     )
 
     # Operations that fail because of failures in Actions with this field set to True will not

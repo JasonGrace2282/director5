@@ -1,3 +1,4 @@
+import contextlib
 import shutil
 import traceback
 from pathlib import Path
@@ -67,7 +68,15 @@ def build_image(
     return {"build_stdout": tuple(log)}
 
 
-@router.post("/update-docker-service")
+@router.post("/image/delete")
+def delete_image(site: SiteInfo):
+    client = docker.from_env()
+    with contextlib.suppress(docker.errors.ImageNotFound, docker.errors.APIError):
+        client.images.remove(str(site))
+    return {}
+
+
+@router.post("/service/update")
 def update_docker_service(site_info: SiteInfo):
     """Creates, or updates the Docker service running the site.
 
@@ -89,4 +98,14 @@ def update_docker_service(site_info: SiteInfo):
                 "traceback": traceback.format_exc(),
             },
         ) from e
+    return {}
+
+
+@router.post("/service/remove")
+def remove_docker_service(site: SiteInfo):
+    client = docker.from_env()
+    service = services.find_service_by_name(client, str(site))
+    if service is not None:
+        with contextlib.suppress(docker.errors.APIError):
+            service.remove()
     return {}

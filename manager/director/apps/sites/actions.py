@@ -5,6 +5,7 @@ import requests
 
 from .appserver import Appserver
 from .models import Site
+from .operations import UserFacingError
 
 
 def raise_by_recoverability(site: Site, response: requests.Response):
@@ -16,11 +17,12 @@ def raise_by_recoverability(site: Site, response: requests.Response):
         content = response.json()
     except requests.exceptions.JSONDecodeError as e:
         raise ValueError(
-            f"Appserver {site} returned {response.status_code} and could not be decoded to JSON."
+            f"Appserver ({site=}) returned {response.status_code} and could not be decoded to JSON."
         ) from e
 
-    if content.get("user_error"):
-        pass  # TODO: handle this to nicely display reason to user
+    if content.get("user_error") and (explanation := content.get("explanation")):
+        description = content.get("description", "An error occurred")
+        raise UserFacingError(f"{description}: {explanation}")
     response.raise_for_status()
 
 
@@ -40,24 +42,16 @@ def update_docker_service(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     if site.availability == "disabled":
         yield from remove_docker_service(site, scope)
         return
-
     appserver = Appserver.random(scope["pingable_appservers"])
-    yield f"Connecting to appserver {appserver} to create/update docker service."
+    yield f"Connecting to {appserver} to create/update docker service."
 
     response = appserver.http_request(
-        "/api/docker/update-docker-service",
+        "/api/docker/service/update",
         method="POST",
         data=site.serialize_for_appserver(),
     )
     raise_by_recoverability(site, response)
     yield "Created/updated Docker service"
-
-
-def remove_docker_service(_site: Site, scope: dict[str, Any]) -> Iterator[str]:
-    appserver = Appserver.random(scope["pingable_appservers"])
-    yield f"Removing Docker service on {appserver}"
-    # TODO
-    yield "Docker service removed"
 
 
 def build_docker_image(site: Site, scope: dict[str, Any]) -> Iterator[str]:
@@ -70,3 +64,51 @@ def build_docker_image(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     )
     raise_by_recoverability(site, response)
     yield "Docker image built"
+
+
+# For the following delete/remove actions, we don't really
+# care if they fail - we're just blindly deleting everything
+
+
+def delete_site_files(site: Site, scope: dict[str, Any]) -> Iterator[str]:
+    appserver = Appserver.random(scope["pingable_appservers"])
+    yield f"Connecting to {appserver} to delete site files."
+    appserver.http_request(
+        "/api/files/delete-all",
+        method="POST",
+        data=site.serialize_for_appserver(),
+    )
+    yield "Site files deleted"
+
+
+def delete_site_database(site: Site, scope: dict[str, Any]) -> Iterator[str]:
+    appserver = Appserver.random(scope["pingable_appservers"])
+    yield f"Connecting to {appserver} to delete site database."
+    appserver.http_request(
+        "/api/database/delete",
+        method="POST",
+        data=site.serialize_for_appserver(),
+    )
+    yield "Site database deleted"
+
+
+def remove_docker_service(site: Site, scope: dict[str, Any]) -> Iterator[str]:
+    appserver = Appserver.random(scope["pingable_appservers"])
+    yield f"Removing Docker service on {appserver}"
+    appserver.http_request(
+        "/api/docker/service/remove",
+        method="POST",
+        data=site.serialize_for_appserver(),
+    )
+    yield "Docker service removed"
+
+
+def remove_docker_image(site: Site, scope: dict[str, Any]) -> Iterator[str]:
+    appserver = Appserver.random(scope["pingable_appservers"])
+    yield f"Removing Docker image on {appserver}"
+    appserver.http_request(
+        "/api/docker/image/delete",
+        method="POST",
+        data=site.serialize_for_appserver(),
+    )
+    yield "Docker image removed"
