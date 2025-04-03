@@ -101,7 +101,7 @@ def update_docker_service(site_info: SiteInfo):
     return {}
 
 
-@router.post("/service/delete")
+@router.post("/service/remove")
 def remove_docker_service(site: SiteInfo):
     client = docker.from_env()
     service = services.find_service_by_name(client, str(site))

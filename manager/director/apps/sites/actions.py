@@ -107,7 +107,7 @@ def remove_docker_image(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     appserver = Appserver.random(scope["pingable_appservers"])
     yield f"Removing Docker image on {appserver}"
     appserver.http_request(
-        "/api/docker/image/remove",
+        "/api/docker/image/delete",
         method="POST",
         data=site.serialize_for_appserver(),
     )

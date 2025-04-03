@@ -38,6 +38,11 @@
             </svg>
 
             <p class="ml-2">{{ site.name }}</p>
+            {# TODO: remove, for testing only until dashboard is implemented #}
+            <form method="post" action="{% url 'sites:delete' site.id %}">
+              {% csrf_token %}
+              <input type="submit" class="pl-2 text-red-500" value="Delete">
+            </form>
           </div>
           <div class="dt-div-cell">
             {% heroicon_outline "tag" stroke="#999" size="18" class="mr-2" %}
