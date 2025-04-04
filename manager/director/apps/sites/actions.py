@@ -30,6 +30,10 @@ def find_pingable_appservers(_site: Site, scope: dict[str, Any]) -> Iterator[str
     yield "Pinging appservers"
     appservers = Appserver.list_pingable()
     scope["pingable_appservers"] = appservers
+    if not appservers:
+        raise UserFacingError(
+            "Director appservers are not reachable - please contact the Sysadmins if you have any questions."
+        )
     yield f"Found {len(appservers)} pingable appservers"
 
 

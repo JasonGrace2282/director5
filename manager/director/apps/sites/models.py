@@ -380,7 +380,9 @@ class Action(models.Model):
     # page.
     # The main practical use of this is for building the Docker image.
     user_recoverable = models.BooleanField(
-        null=False, default=False, help_text="Can the user recover from this failure?"
+        null=False,
+        default=False,
+        help_text="Can the user recover from this failure?",
     )
 
     def __str__(self) -> str:
