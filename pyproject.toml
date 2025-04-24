@@ -3,7 +3,7 @@ name = "director5"
 version = "0.1.0"
 description = "A next generation website hosting platform"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
   "celery>=5.4.0",
   "django-browser-reload>=1.15.0",
