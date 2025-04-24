@@ -42,6 +42,12 @@ jobs:
         with:
           group: "test"
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Dockerfile
+        uses: docker/build-push-action@v6
+        working-directory: dev/docker
+
       - name: Check migrations
         working-directory: manager
         run: uv run --package manager python manage.py makemigrations --check --noinput
