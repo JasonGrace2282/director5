@@ -11,7 +11,7 @@ ENV UV_LINK_MODE=copy \
     UV_COMPILE_BYTECODE=1 \
     UV_PYTHON_DOWNLOADS=never \
     UV_PYTHON=python3.12 \
-    PATH="/director5/.venv/bin:$PATH"
+    UV_PROJECT_ENVIRONMENT="/venv"
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libpq-dev \

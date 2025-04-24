@@ -37,7 +37,6 @@ services:
       - director_net
     volumes:
       - ../../:/director5
-      - /director5/.venv
     depends_on:
       - redis
 
@@ -56,7 +55,6 @@ services:
     volumes:
       - ../../:/director5
       - ../../docker/storage/:/data
-      - /director5/.venv
     depends_on:
       - postgres
     entrypoint:
@@ -75,7 +73,6 @@ services:
     volumes:
       - ../../:/director5
       - ../../docker/storage/:/data
-      - /director5/.venv
       - /var/run/docker.sock:/var/run/docker.sock
     entrypoint:
       - "/director5/dev/docker/docker-entrypoint.sh"
@@ -92,7 +89,6 @@ services:
       - director_net
     volumes:
       - ../../:/director5
-      - /director5/.venv
     depends_on:
       - django
     entrypoint:
