@@ -1,6 +1,5 @@
 """A module for connecting to the appservers."""
 
-from collections.abc import Callable
 from typing import Any, Self
 
 import requests
@@ -89,10 +88,3 @@ class Appserver:
             raise
 
         return response
-
-
-def pcall[**P, T](f: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -> T | None:
-    try:
-        return f(*args, **kwargs)
-    except BaseException:  # noqa: BLE001
-        return None
