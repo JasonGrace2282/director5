@@ -1,6 +1,5 @@
 """A module for connecting to the appservers."""
 
-import random
 from collections.abc import Callable
 from typing import Any, Self
 
@@ -16,8 +15,9 @@ class Appserver:
 
     Example::
 
+        >>> import random
         >>> pingable = Appserver.list_pingable()
-        >>> appserver = Appserver.random(pingable)
+        >>> appserver = random.choice(pingable)
         >>> appserver.host in pingable
         True
     """
@@ -25,8 +25,13 @@ class Appserver:
     def __init__(self, host: str) -> None:
         self.host = host
 
+    @property
+    def num(self) -> int:
+        """Returns the index of the appserver in the list of appservers."""
+        return settings.DIRECTOR_APPSERVER_HOSTS.index(self.host) + 1
+
     def __str__(self) -> str:
-        return f"{type(self).__name__} {settings.DIRECTOR_APPSERVER_HOSTS.index(self.host) + 1}"
+        return f"{type(self).__name__} {self.num}"
 
     @staticmethod
     def protocol() -> str:
@@ -34,17 +39,12 @@ class Appserver:
         return "https" if settings.DIRECTOR_APPSERVER_SSL else "http"
 
     @classmethod
-    def list_pingable(cls) -> list[str]:
+    def list_pingable(cls) -> list[Self]:
         """Return a list of all pingable appservers."""
-        hosts = [host for host in settings.DIRECTOR_APPSERVER_HOSTS if cls._can_ping(host)]
+        hosts = [cls(host) for host in settings.DIRECTOR_APPSERVER_HOSTS if cls._can_ping(host)]
         if not hosts:
             raise RuntimeError("No pingable app servers found")
         return hosts
-
-    @classmethod
-    def random(cls, hosts: list[str]) -> Self:
-        """Return a random appserver from a list of hosts."""
-        return cls(random.choice(hosts))
 
     @classmethod
     def _can_ping(cls, host: str) -> bool:

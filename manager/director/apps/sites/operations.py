@@ -2,16 +2,17 @@ import contextlib
 import traceback
 from collections.abc import Callable, Iterator
 from functools import wraps
-from typing import Any, overload
+from typing import overload
 
+from .appserver import Appserver
 from .models import Action, Operation, Site
 
-type ActionCallback = Callable[[Site, dict[str, Any]], Iterator[str]]
+type ActionCallback = Callable[[Site, list[Appserver]], Iterator[str]]
 """A callback that runs an action on a site.
 
 Args:
     site: the :class:`.Site` to run the action on
-    scope: a dictionary that is shared between all actions
+    appservers: a list of pingable appservers
 """
 
 
@@ -95,48 +96,45 @@ class OperationWrapper:
         decorator = wraps(callback)(decorator)
         return decorator(callback)
 
-    # TODO: if/once PEP 728 is accepted, use a TypedDict instead of dict[str, Any] for scope
     def execute_operation(
-        self,
-        scope: dict[str, Any] | None = None,
-        *,
-        new_action_callback: Callable[[Action], object] | None = None,
+        self, *, new_action_callback: Callable[[Action], object] | None = None
     ) -> bool:
         """Executes the actions on the operation.
 
         Returns:
             Whether the operation was successful.
         """
-        scope = scope or {}
+        appservers = Appserver.list_pingable()
         for action, callback in self.actions:
             try:
                 action.start_action()
                 if new_action_callback:
                     new_action_callback(action)
 
-                self._run_action(action, callback, scope)
+                self._run_action(action, callback, appservers)
             except UserFacingError as e:
                 action.user_message += str(e)
                 action.result = False
                 action.save()
                 return False
-            except Exception as e:  # noqa: BLE001
-                e.add_note(f"Scope: {scope}")
+            except Exception:  # noqa: BLE001
                 action.message += f"{traceback.format_exc()}\n"
                 action.result = False
                 action.save()
                 return False
         return True
 
-    def _run_action(self, action: Action, callback: ActionCallback, scope: dict[str, Any]) -> None:
+    def _run_action(
+        self, action: Action, callback: ActionCallback, appservers: list[Appserver]
+    ) -> None:
         """Runs an action with the given callback.
 
         Args:
             action: The action to run.
             callback: The callback to run.
-            scope: The scope to pass to the callback.
+            appservers: The pingable appservers
         """
-        for message in callback(self.site, scope):
+        for message in callback(self.site, appservers):
             assert isinstance(message, str), "Messages must be strings"
             action.message += f"{message}\n"
             action.save()
@@ -145,9 +143,7 @@ class OperationWrapper:
 
 
 @contextlib.contextmanager
-def auto_run_operation_wrapper(
-    operation_id: int, scope: dict[str, Any]
-) -> Iterator[OperationWrapper]:
+def auto_run_operation_wrapper(operation_id: int) -> Iterator[OperationWrapper]:
     """A context manager that runs an operation from start to finish.
 
     It does the following:
@@ -168,7 +164,7 @@ def auto_run_operation_wrapper(
     def action_started(_: Action) -> None:
         send_operation_updated_message(operation.site)
 
-    result = wrapper.execute_operation(scope, new_action_callback=action_started)
+    result = wrapper.execute_operation(new_action_callback=action_started)
 
     if result:
         operation.action_set.all().delete()

@@ -1,5 +1,5 @@
+import random
 from collections.abc import Iterator
-from typing import Any
 
 import requests
 
@@ -26,27 +26,16 @@ def raise_by_recoverability(site: Site, response: requests.Response):
     response.raise_for_status()
 
 
-def find_pingable_appservers(_site: Site, scope: dict[str, Any]) -> Iterator[str]:
-    yield "Pinging appservers"
-    appservers = Appserver.list_pingable()
-    scope["pingable_appservers"] = appservers
-    if not appservers:
-        raise UserFacingError(
-            "Director appservers are not reachable - please contact the Sysadmins if you have any questions."
-        )
-    yield f"Found {len(appservers)} pingable appservers"
-
-
-def update_docker_service(site: Site, scope: dict[str, Any]) -> Iterator[str]:
+def update_docker_service(site: Site, appservers: list[Appserver]) -> Iterator[str]:
     """Create or update a Docker service for a site.
 
     Expects scope to be populated with ``pingable_appservers``.
     If scope has a :class:`.SiteConfig`, it will use the Docker base image from there.
     """
     if site.availability == "disabled":
-        yield from remove_docker_service(site, scope)
+        yield from remove_docker_service(site, appservers)
         return
-    appserver = Appserver.random(scope["pingable_appservers"])
+    appserver = random.choice(appservers)
     yield f"Connecting to {appserver} to create/update docker service."
 
     response = appserver.http_request(
@@ -58,8 +47,8 @@ def update_docker_service(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     yield "Created/updated Docker service"
 
 
-def build_docker_image(site: Site, scope: dict[str, Any]) -> Iterator[str]:
-    appserver = Appserver.random(scope["pingable_appservers"])
+def build_docker_image(site: Site, appservers: list[Appserver]) -> Iterator[str]:
+    appserver = random.choice(appservers)
     yield f"Connecting to appserver {appserver} to build docker image."
     response = appserver.http_request(
         "/api/docker/image/build",
@@ -74,8 +63,8 @@ def build_docker_image(site: Site, scope: dict[str, Any]) -> Iterator[str]:
 # care if they fail - we're just blindly deleting everything
 
 
-def delete_site_files(site: Site, scope: dict[str, Any]) -> Iterator[str]:
-    appserver = Appserver.random(scope["pingable_appservers"])
+def delete_site_files(site: Site, appservers: list[Appserver]) -> Iterator[str]:
+    appserver = random.choice(appservers)
     yield f"Connecting to {appserver} to delete site files."
     appserver.http_request(
         "/api/files/delete-all",
@@ -85,8 +74,8 @@ def delete_site_files(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     yield "Site files deleted"
 
 
-def delete_site_database(site: Site, scope: dict[str, Any]) -> Iterator[str]:
-    appserver = Appserver.random(scope["pingable_appservers"])
+def delete_site_database(site: Site, appservers: list[Appserver]) -> Iterator[str]:
+    appserver = random.choice(appservers)
     yield f"Connecting to {appserver} to delete site database."
     appserver.http_request(
         "/api/database/delete",
@@ -96,8 +85,8 @@ def delete_site_database(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     yield "Site database deleted"
 
 
-def remove_docker_service(site: Site, scope: dict[str, Any]) -> Iterator[str]:
-    appserver = Appserver.random(scope["pingable_appservers"])
+def remove_docker_service(site: Site, appservers: list[Appserver]) -> Iterator[str]:
+    appserver = random.choice(appservers)
     yield f"Removing Docker service on {appserver}"
     appserver.http_request(
         "/api/docker/service/remove",
@@ -107,8 +96,8 @@ def remove_docker_service(site: Site, scope: dict[str, Any]) -> Iterator[str]:
     yield "Docker service removed"
 
 
-def remove_docker_image(site: Site, scope: dict[str, Any]) -> Iterator[str]:
-    appserver = Appserver.random(scope["pingable_appservers"])
+def remove_docker_image(site: Site, appservers: list[Appserver]) -> Iterator[str]:
+    appserver = random.choice(appservers)
     yield f"Removing Docker image on {appserver}"
     appserver.http_request(
         "/api/docker/image/delete",
