@@ -36,6 +36,7 @@ test = [
   "pytest",
   "pytest-django",
   "pytest-xdist",
+  "responses",
 ]
 
 
