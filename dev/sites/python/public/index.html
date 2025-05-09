@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TJCSL Sysadmins</title>
+        <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: #fff;
+    }
+
+    header {
+      padding: 2rem;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.25rem;
+      margin-top: 0.5rem;
+    }
+
+    section {
+      padding: 3rem 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 1rem 0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #ffe082;
+    }
+
+    .card p {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: rgba(0, 0, 0, 0.2);
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+
+    button {
+      background-color: #ffe082;
+      border: none;
+      color: #000;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: #ffd54f;
+    }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>TJCSL Sysadmins</h1>
+            <p>
+                This website uses <strong>Python</strong>
+            </p>
+        </header>
+        <section id="content">
+            <div class="card">
+                <h2>Who We Are</h2>
+                <p>
+                    See <a href="about.html" style="color: yellow">our "About" page!</a>
+                </p>
+            </div>
+            <div class="card">
+                <h2>What We Do</h2>
+                <p>
+                    We manage lab machines, update software, maintain internal services, and support student projects. Whether it’s deploying VMs or fixing borked packages, we’ve got it covered.
+                </p>
+            </div>
+            <div class="card">
+                <h2>Want to Join?</h2>
+                <p>
+                    Interested in system administration, Linux, networking, or DevOps? Reach out to a current sysadmin or watch for applications each semester!
+                </p>
+                <button onclick="alert('Ping a sysadmin or email us to learn more!')">Get in Touch</button>
+            </div>
+        </section>
+        <footer>
+            I, uh, made this with ChatGPT because I was lazy.
+        </footer>
+    </body>
+</html>
