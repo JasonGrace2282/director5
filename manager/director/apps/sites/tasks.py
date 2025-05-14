@@ -18,6 +18,17 @@ def create_site(operation_id: int) -> None:
 
 
 @shared_task
+def rebuild_docker_image(operation_id: int) -> None:
+    with auto_run_operation_wrapper(operation_id) as wrapper:
+        wrapper.register_action(
+            "Building Docker image",
+            actions.build_docker_image,
+            user_recoverable=True,
+        )
+        wrapper.register_action("Restarting Docker service", actions.update_docker_service)
+
+
+@shared_task
 def delete_site(operation_id: int) -> None:
     site = Site.objects.get(operation__id=operation_id)
 

@@ -4,7 +4,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -49,6 +49,15 @@ def create_site(request: AuthenticatedHttpRequest) -> HttpResponse:
         form = CreateSiteForm()
 
     return render(request, "sites/create.html", {"form": form})
+
+
+@login_required
+@require_POST
+def build_docker_image(request: AuthenticatedHttpRequest, site_id: int) -> HttpResponse:
+    site = get_object_or_404(Site.objects.filter_visible(request.user), id=site_id)
+    op = site.start_operation("update_docker_image")
+    tasks.rebuild_docker_image.delay(op.id)
+    return JsonResponse({"status": "ok"})
 
 
 @login_required

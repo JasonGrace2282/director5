@@ -1,12 +1,11 @@
 import shutil
 from typing import TypedDict
 
-import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
-from django.urls import reverse
 
+from ... import tasks
 from ...models import Site
 
 
@@ -17,11 +16,12 @@ class SiteInfo(TypedDict):
     purpose: str
 
 
+class DatabaseData(TypedDict):
+    pass
+
+
 class Command(BaseCommand):
     help = "Create sites for development"
-
-    hostname = "127.0.0.1"
-    port = "8080"
 
     def handle(self, *args, **kwargs):
         admin, created = get_user_model().objects.get_or_create(
@@ -30,45 +30,40 @@ class Command(BaseCommand):
         )
         if created:
             admin.set_password("jasongrace")
-            self.stdout.write(self.style.SUCCESS("Admin user created!\n"))
-        self.stdout.write(
-            f"Please navigate to http://{self.hostname}:{self.port} and login as admin, with the password jasongrace."
-        )
-        input("Press Enter to continue...")
+            self.stdout.write(
+                self.style.SUCCESS("Admin user created, with password 'jasongrace'!\n")
+            )
+
         self.stdout.write("Creating python site...")
 
-        self.create_site(
-            {
-                "name": "python",
-                "description": "Python site",
-                "mode": "dynamic",
-                "purpose": "project",
-            }
-        )
+        try:
+            self.create_site(
+                {
+                    "name": "python",
+                    "description": "Python site",
+                    "mode": "dynamic",
+                    "purpose": "project",
+                }
+            )
+        except Exception as e:
+            raise CommandError(f"Failed to create python site: {e}") from e
+        self.stdout.write(self.style.SUCCESS("Python site created!\n"))
 
-    def create_site(self, create_data: SiteInfo) -> None:
+    def create_site(self, create_data: SiteInfo, db_info: DatabaseData | None = None) -> None:
         if Site.objects.filter(name=create_data["name"]).exists():
             self.stdout.write(
                 self.style.WARNING(f"Site {create_data['name']} already exists, skipping...")
             )
             return
-        try:
-            response = requests.post(
-                f"http://{self.hostname}:{self.port}{reverse('sites:create')}",
-                json=create_data,
-            )
-            response.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            raise CommandError(f"Error creating site: {e}") from e
 
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Site {create_data['name']} created successfully! Updating contents..."
-            )
-        )
         site = Site.objects.get(name=create_data["name"])
+        create_op = site.start_operation("create_site")
+
+        tasks.create_site.apply(create_op.id, throw=True)
+
         dst = (
             settings.BASE_DIR
+            / "docker"
             / "storage"
             / "sites"
             / f"{site.id // 100:02d}"
@@ -77,3 +72,10 @@ class Command(BaseCommand):
         src = settings.BASE_DIR / "dev" / "sites" / create_data["name"]
         shutil.rmtree(dst, ignore_errors=True)
         shutil.copytree(src, dst)
+
+        docker_build_op = site.start_operation("update_docker_image")
+        tasks.rebuild_docker_image.apply(docker_build_op.id, throw=True)
+
+        if db_info is not None:
+            # TODO after implementing database stuff
+            pass
