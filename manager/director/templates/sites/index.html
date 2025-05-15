@@ -22,7 +22,7 @@
     </div>
     <div class="mt-4 dt-div-table">
       {% for site in sites %}
-        <div class="dt-div-row">
+        <a class="dt-div-row" href="{% url 'sites:dashboard' site.id %}">
           <div class="dt-div-cell">
             <!-- Globe placeholder svg -->
             {# Maybe at some point replace with a thumbnail #}
@@ -72,7 +72,7 @@
 
             {% heroicon_outline "arrow-right-end-on-rectangle" size="30" class="ml-2" %}
           </div>
-        </div>
+        </a>
       {% endfor %}
     </div>
   </div>
