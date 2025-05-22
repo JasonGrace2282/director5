@@ -1,0 +1,22 @@
+{% extends "base_with_nav.html" %}
+
+{% block head %}
+  {{ block.super }}
+
+  <script src="https://unpkg.com/htmx-ext-ws@2.0.2"
+    integrity="sha384-vuKxTKv5TX/b3lLzDKP2U363sOAoRo5wSvzzc3LJsbaQRSBSS+3rKKHcOx5J8doU" crossorigin="anonymous"></script>
+{% endblock head %}
+
+{% block main %}
+  <h1 class="p-2 text-large">{{ site.name }}</h1>
+  <div hx-ext="ws" ws-connect="{% url '' %}">
+
+  </div>
+  <button htmx-post="{% url 'sites:clear' site.id %}"
+    hx-target="{% url 'sites:clear_operations' %}"
+    class="dt-btn-primary">
+
+    {% heroicon_outline "trash" stroke_width="0.8" size="24" class="mr-2" %}
+    <p>Clear Operations</p>
+  </button>
+{% endblock main %}

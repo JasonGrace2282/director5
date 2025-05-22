@@ -4,6 +4,9 @@ from collections.abc import Callable, Iterator
 from functools import wraps
 from typing import overload
 
+from asgiref.sync import async_to_sync
+from channels.layer import get_channel_layer
+
 from .appserver import Appserver
 from .models import Action, Operation, Site
 
@@ -154,7 +157,7 @@ def auto_run_operation_wrapper(operation_id: int) -> Iterator[OperationWrapper]:
     #. Runs the :class:`OperationWrapper` with the given scope when the with statement has finished.
     #. Deletes the :class:`.Operation` if it was successful.
     """
-    operation = Operation.objects.get(id=operation_id)
+    operation = Operation.objects.select_related("site").get(id=operation_id)
     wrapper = OperationWrapper(operation)
 
     yield wrapper
@@ -173,9 +176,19 @@ def auto_run_operation_wrapper(operation_id: int) -> Iterator[OperationWrapper]:
     send_operation_updated_message(operation.site)
 
 
-def send_operation_updated_message(_site: Site) -> None:
-    pass
+@async_to_sync
+async def send_operation_updated_message(site: Site) -> None:
+    """Broadcast that the operation status has been updated."""
+    await get_channel_layer().group_send(
+        site.channels_group_name(),
+        {"type": "operation.updated"},
+    )
 
 
-def send_site_updated_message(_site: Site) -> None:
-    pass
+@async_to_sync
+async def send_site_updated_message(site: Site) -> None:
+    """Broadcast that the site metadata has been updated."""
+    await get_channel_layer().group_send(
+        site.channels_group_name(),
+        {"type": "site.updated"},
+    )

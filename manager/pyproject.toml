@@ -3,6 +3,7 @@ name = "Manager"
 version = "0.1.0"
 description = "A next generation website hosting platform"
 dependencies = [
+  "channels-redis",
   "celery",
   "channels[daphne]",
   "django",
