@@ -131,6 +131,10 @@ class Site(models.Model):
         default = settings.SITE_URL_FORMATS[None]
         return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
 
+    def channels_group_name(self) -> str:
+        """The name of the channel group for this site."""
+        return f"site_{self.id}"
+
     def start_operation(self, ty: str) -> Operation:
         from . import operations
 
