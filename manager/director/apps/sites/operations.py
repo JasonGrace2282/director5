@@ -5,7 +5,7 @@ from functools import wraps
 from typing import overload
 
 from asgiref.sync import async_to_sync
-from channels.layer import get_channel_layer
+from channels.layers import get_channel_layer
 
 from .appserver import Appserver
 from .models import Action, Operation, Site
