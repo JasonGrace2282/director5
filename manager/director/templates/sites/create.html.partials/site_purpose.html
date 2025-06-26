@@ -1,0 +1,13 @@
+<div class="flex hidden absolute flex-col gap-3 justify-center items-center p-2 w-full w-screen transition duration-500 translate-x-full" id="step2">
+    <c-select class="w-60 lg:w-80" @cselect-change="site_purpose = $event.detail.value">
+        <c-select.trigger>
+            <c-select.value placeholder="Purpose" />
+        </c-select.trigger>
+        <c-select.content>
+            {% for value, label in form.purpose.field.choices %}
+                <c-select.item value="{{ value }}">{{ label }}</c-select.item>
+            {% endfor %}
+        </c-select.content>
+    </c-select>
+    <c-form.description x-text="getSitePurposeDescription()" class="w-60"></c-form.description>
+</div>

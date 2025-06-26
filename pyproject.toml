@@ -9,7 +9,6 @@ dependencies = [
   "django-browser-reload>=1.15.0",
   "django>=5.1",
   "fastapi[standard]>=0.115.0",
-  "heroicons[django]>=2.8.0",
   "psycopg[binary]>3.1.8",
   "pydantic>=2.9.2",
   "requests>=2.32.3",
@@ -59,7 +58,6 @@ dev = [
 [tool.uv]
 package = false
 default-groups = ["lint", "test", "docs", "dev"]
-required-version = ">=0.6.0"
 
 [tool.uv.workspace]
 members = ["manager", "orchestrator"]

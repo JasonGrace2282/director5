@@ -19,13 +19,6 @@ repos:
         name: ruff lint
         args: [ "--exit-non-zero-on-fix" ]
       - id: ruff-format
-  - repo: https://github.com/crate-ci/typos
-    rev: codespell-dict-v0.5.0
-    hooks:
-      - id: typos
-        args:
-          - --exclude
-          - "static/general/dist/.*"
 
   - repo: https://github.com/executablebooks/mdformat
     rev: 0.7.21

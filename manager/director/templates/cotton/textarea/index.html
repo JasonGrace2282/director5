@@ -1,0 +1,28 @@
+{# A copy of shadcn-django input but for textarea's - not part of shadcn-django #}
+<textarea
+  class="
+    flex
+    h-24
+    w-full
+    rounded-md
+    border
+    border-input
+    bg-transparent
+    px-2
+    py-1
+    text-sm
+    shadow-xs
+    transition-colors
+    placeholder:text-muted-foreground
+    focus-visible:outline-hidden
+    focus-visible:ring-1
+    focus-visible:ring-ring
+    disabled:cursor-not-allowed
+    disabled:opacity-50
+    md:text-sm
+    {% if class %}
+      {{ class }}
+    {% endif %}
+  "
+  {{ attrs }}
+>{{ slot }}</textarea>

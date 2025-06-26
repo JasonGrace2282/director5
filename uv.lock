@@ -359,7 +359,6 @@ dependencies = [
     { name = "django-linear-migrations" },
     { name = "docker" },
     { name = "fastapi", extra = ["standard"] },
-    { name = "heroicons", extra = ["django"] },
     { name = "jinja2" },
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
@@ -412,7 +411,6 @@ requires-dist = [
     { name = "django-linear-migrations", specifier = ">=2.16.0" },
     { name = "docker", specifier = ">=7.1.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.0" },
-    { name = "heroicons", extras = ["django"], specifier = ">=2.8.0" },
     { name = "jinja2", specifier = ">=3.1.4" },
     { name = "pillow", specifier = ">=11.0.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">3.1.8" },
@@ -465,16 +463,16 @@ wheels = [
 
 [[package]]
 name = "django"
-version = "5.2"
+version = "5.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "sqlparse" },
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4c/1b/c6da718c65228eb3a7ff7ba6a32d8e80fa840ca9057490504e099e4dd1ef/Django-5.2.tar.gz", hash = "sha256:1a47f7a7a3d43ce64570d350e008d2949abe8c7e21737b351b6a1611277c6d89", size = 10824891 }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/85/ba2c2b83ba8b95354f99ed8344405d9571109ce0175028876209d6b93fba/Django-5.1.3.tar.gz", hash = "sha256:c0fa0e619c39325a169208caef234f90baa925227032ad3f44842ba14d75234a", size = 10698518 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/63/e0/6a5b5ea350c5bd63fe94b05e4c146c18facb51229d9dee42aa39f9fc2214/Django-5.2-py3-none-any.whl", hash = "sha256:91ceed4e3a6db5aedced65e3c8f963118ea9ba753fc620831c77074e620e7d83", size = 8301361 },
+    { url = "https://files.pythonhosted.org/packages/e5/f6/88ed57e1b3ed54ff18c1da352aecbd6f51784c3e642d97586b61f050f5b1/Django-5.1.3-py3-none-any.whl", hash = "sha256:8b38a9a12da3ae00cb0ba72da985ec4b14de6345046b1e174b1fd7254398f818", size = 8276180 },
 ]
 
 [[package]]
@@ -488,6 +486,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/9f/bc/3c67f7daca53b826ec51888576fe5e117d9442d2d0acb58f4264d48b9dba/django_browser_reload-1.17.0.tar.gz", hash = "sha256:3667939cde0eee1a6d698dbe3b78cf10b573dabc4e711fb7933f1ba91fb98da4", size = 14312 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/8f/62fc4fbf5c05c2210e6cb616f1c2a3da53871dfecbaa4c44b1f482ca3e8f/django_browser_reload-1.17.0-py3-none-any.whl", hash = "sha256:d372c12c1c5962c02279a53cac7e8a020c48f104592c637a06d0768b28d2d6be", size = 12228 },
+]
+
+[[package]]
+name = "django-cotton"
+version = "2.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5b/43/49c48d880ac1461356ddd1a70c74be211db1cf499219ed4cfe54d0e02719/django_cotton-2.0.3.tar.gz", hash = "sha256:ffce33d8e680718928e67fe7e9c6bc64c9d03fea0098b313863728fc38c049bf", size = 21555 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/1f/c4277217d24279451901252da6b2d3e7709efe7f1be9aa1d668c99f36d80/django_cotton-2.0.3-py3-none-any.whl", hash = "sha256:53fc1d7756c3728ca9c76c1402758c6778147e0653b12cb3890a5f5e679125e4", size = 21206 },
 ]
 
 [[package]]
@@ -708,20 +718,6 @@ wheels = [
 ]
 
 [[package]]
-name = "heroicons"
-version = "2.9.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/33/b9/1115b843da2a1ddf6cf01f1403e96d756bc2621872f6f7926b917975b64d/heroicons-2.9.0.tar.gz", hash = "sha256:d1b0787e233b6e59583fc1877d77709e21941d2ad0fadb53a27c65a3691d7ebf", size = 420275 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/fd/ec090ea0a4f7e5aeb1fda250ea04739489be62f20594248d527ba9d48f9a/heroicons-2.9.0-py3-none-any.whl", hash = "sha256:c9b380221bc7397aed99fcca86b8e6cd210346bf5326bcd7626cd5df69dce2d3", size = 414967 },
-]
-
-[package.optional-dependencies]
-django = [
-    { name = "django" },
-]
-
-[[package]]
 name = "httpcore"
 version = "1.0.7"
 source = { registry = "https://pypi.org/simple" }
@@ -864,6 +860,20 @@ wheels = [
 ]
 
 [[package]]
+name = "lucide"
+version = "1.1.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/18/466c33b2ebbb63f74496abad1038452bc46b6050decdb2110681c2de5a16/lucide-1.1.3.tar.gz", hash = "sha256:a931b627bc30a529c7f4e57d7b4c2d7379a86a75a4156eb4ced411aa66c1202f", size = 385756 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/77/8ac5fda43469c96630dd81817df7362c72cff671f93950a780ad3b13e7e9/lucide-1.1.3-py3-none-any.whl", hash = "sha256:37c9cd5ac3914577b933896dcc4160631aa63a078b7b0a1cf19e984a93e78234", size = 383488 },
+]
+
+[package.optional-dependencies]
+django = [
+    { name = "django" },
+]
+
+[[package]]
 name = "manager"
 version = "0.1.0"
 source = { virtual = "manager" }
@@ -872,10 +882,11 @@ dependencies = [
     { name = "channels", extra = ["daphne"] },
     { name = "django" },
     { name = "django-browser-reload" },
+    { name = "django-cotton" },
     { name = "django-debug-toolbar" },
     { name = "django-htmx" },
     { name = "django-linear-migrations" },
-    { name = "heroicons", extra = ["django"] },
+    { name = "lucide", extra = ["django"] },
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
     { name = "redis" },
@@ -908,10 +919,11 @@ requires-dist = [
     { name = "channels", extras = ["daphne"] },
     { name = "django" },
     { name = "django-browser-reload" },
+    { name = "django-cotton", specifier = ">=2.0.3" },
     { name = "django-debug-toolbar" },
     { name = "django-htmx" },
     { name = "django-linear-migrations" },
-    { name = "heroicons", extras = ["django"] },
+    { name = "lucide", extras = ["django"], specifier = ">=1.1.3" },
     { name = "pillow" },
     { name = "psycopg", extras = ["binary"] },
     { name = "redis" },

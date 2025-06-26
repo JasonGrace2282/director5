@@ -1,0 +1,4 @@
+{# An <img> tag equivalent that allows you to specify a separate image for light/dark theme respectively #}
+<img src="{{ light_src }}" class="block dark:hidden {% if class %}{{ class }}{% endif %}" {{ attrs }}>
+<img src="{{ dark_src }}" class="hidden dark:block {% if class %}{{ class }}{% endif %}" {{ attrs }}>
+{# We have to use underscores instead of hyphens because hyphens are banned in Django templating #}

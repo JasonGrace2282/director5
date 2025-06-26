@@ -68,8 +68,9 @@ INSTALLED_APPS = [
     "director.apps.users",
     "director.apps.sites",
     "director.apps.marketplace",
-    "heroicons",
+    "lucide",
     "django_htmx",
+    "django_cotton.apps.SimpleAppConfig",
 ]
 
 # they might automatically disable themselves in production
@@ -98,8 +99,18 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / "templates"],
-        "APP_DIRS": True,
+        "APP_DIRS": False,
         "OPTIONS": {
+            "loaders": [
+                (
+                    "django.template.loaders.cached.Loader",
+                    [
+                        "django_cotton.cotton_loader.Loader",
+                        "django.template.loaders.filesystem.Loader",
+                        "django.template.loaders.app_directories.Loader",
+                    ],
+                )
+            ],
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -108,7 +119,8 @@ TEMPLATES = [
                 "director.apps.context_processors.generic_info",
             ],
             "builtins": [
-                "heroicons.templatetags.heroicons",
+                "lucide.templatetags.lucide",
+                "django_cotton.templatetags.cotton",
             ],
         },
     },
