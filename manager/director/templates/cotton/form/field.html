@@ -1,0 +1,12 @@
+{# Manually modified from default shadcn-django implementation to support :error cotton passthrough #}
+<c-vars errors />
+
+<div class="space-y-2 {% if class %}{{ class }}{% endif %}" {{ attrs }}>
+    {{ slot }}
+</div>
+
+{% if errors %}
+    <c-form.error>
+        {{ errors.as_text }}
+    </c-form.error>
+{% endif %}

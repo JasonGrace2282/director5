@@ -1,0 +1,22 @@
+<c-command-dialog shortcut_key="k">
+    <c-slot name="trigger_slot">
+        <div class="hidden relative md:block w-100">
+          <c-input type="text" placeholder="Search..."/>
+          <kbd
+            class="inline-flex absolute top-2 right-3 gap-1 items-center px-1.5 h-5 font-mono font-medium rounded border pointer-events-none select-none bg-muted text-[10px] text-muted-foreground">
+            <span class="text-xs">⌘</span>K
+          </kbd>
+        </div>
+        {% lucide name="search" class="ml-2 md:hidden" %}
+    </c-slot>
+    <c-command.input placeholder="Type a command or search..." />
+    <c-command.list>
+        <c-command.empty>No results found.</c-command.empty>
+        <c-command.group heading="Recents">
+            {# todo: implement later #}
+        </c-command.group>
+        <c-command.group heading="Suggestions">
+            {# todo: implement later #}
+        </c-command.group>
+    </c-command.list>
+</c-command-dialog>

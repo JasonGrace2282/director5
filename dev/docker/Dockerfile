@@ -13,6 +13,6 @@ ENV UV_LINK_MODE=copy \
     UV_PROJECT_ENVIRONMENT="/venv"
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq-dev \
+    && apt-get install -y --no-install-recommends libpq-dev curl \
     && uv sync --frozen \
     && rm -rf /var/lib/apt/lists/*   # Reduce image size

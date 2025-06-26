@@ -14,7 +14,7 @@
 		}
 	},
 	"files": {
-		"ignore": ["build.css", "dist/*.js"],
+		"ignore": ["*.css"],
 		"ignoreUnknown": true
 	}
 }

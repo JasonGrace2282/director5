@@ -1,0 +1,28 @@
+<div class="flex absolute gap-3 justify-center p-2 w-full w-screen transition duration-500" id="step1">
+    <c-card class="flex-auto transition-colors w-45 max-w-90 h-78" @click="site_type = 'static'" x-bind:class="site_type === 'static' ? 'outline-2 outline-ring' : ''">
+        <c-card.header>
+            <c-card.title class="flex items-center">{% lucide "package" class="inline" %} <p class="ml-2">Static</p></c-card.title>
+            <c-card.description>For sites with just HTML, CSS, and Javascript</c-card.description>
+        </c-card.header>
+        <c-card.content>
+            <ul class="list-none">
+                <li>{% lucide "check" class="inline" %} No usage limits </li>
+                <li>{% lucide "check" class="inline" %} Simple, always-on </li>
+                <li>{% lucide "x" class="inline" %} Can't run server-sided code </li>
+            </ul>
+        </c-card.content>
+    </c-card>
+    <c-card class="flex-auto transition-colors w-45 max-w-90 h-78" @click="site_type = 'dynamic'" x-bind:class="site_type === 'dynamic' ? 'outline-2 outline-ring' : ''">
+        <c-card.header>
+            <c-card.title class="flex items-center">{% lucide "container" class="inline" %} <p class="ml-2">Dynamic</p></c-card.title>
+            <c-card.description>For more advanced sites with a backend</c-card.description>
+        </c-card.header>
+        <c-card.content>
+            <ul class="list-none">
+                <li>{% lucide "check" class="inline" %} Run server-sided code </li>
+                <li>{% lucide "x" class="inline" %} Complex </li>
+                <li>{% lucide "x" class="inline" %} Usage limits may apply </li>
+            </ul>
+        </c-card.content>
+    </c-card>
+</div>

@@ -13,6 +13,14 @@
     {% include "meta.html" %}
 
     {% block head %}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"
+              integrity="sha512-2cbsQGdowNDPcKuoBd2bCcsJky87Mv0LEtD/nunJUgk6MOYTgVMGihS/xCEghNf04DPhNiJ4DZw5BxDd1uyOdw=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace-theme-default.min.css"
+            integrity="sha512-Ai6m3x6GYjuLAcJXEGBxHPLNOj6eIxh+/21wGpXT9B2dmcdvaFqEZr+/H/aaup+Rrkw4t3FzifGIuYhVPuBsrg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer" />
       <link rel="stylesheet"
             href="{% static "tailwind/build.css" %}"
             type="text/css">
@@ -29,27 +37,21 @@
               integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ=="
               crossorigin="anonymous"
               referrerpolicy="no-referrer"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
-              integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
+      {# AlpineJS + HTMX state compatibility #}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs-morph/3.14.9/cdn.js"
+              integrity="sha512-pOKwC//TVpP3EBOdJDwgOugKFQ/9t3AAm6+ZQg+gwMO9U6jaEx3f8eSWP/xyFLcDkXVEOxnUhWELFiShDdsJYA=="
               crossorigin="anonymous"
               referrerpolicy="no-referrer"></script>
-      <script src="{% static "general/directorlib.js" %}"></script>
+      {# Optional AlpineJS data persistence across page reloads - see AlpineJS Persist plugin docs for more info #}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs-persist/3.14.9/cdn.js"
+              integrity="sha512-+uj3PpVNOm7SeUC7xulZvhihlE0+mCnAvNsoTcgtKwOBGnEmwz6gD4loPV4AchHn5s+jY3MVljxajRZ6XGZZtA=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"></script>
       {% django_htmx_script %}
     {% endblock %}
   </head>
-  <body>
-    <main>
-      {% block before_content %}
-        <template id="component-templates">
-          {% include "components/reusable/tooltip.html" %}
-          {% include "components/reusable/dialog.html" %}
-          {% include "components/reusable/snackbar.html" %}
-
-        </template>
-        <div class="flex fixed inset-0 top-4 flex-col px-2 md:right-4 md:bottom-4 md:inset-auto md:top-auto md:gap-4 h-fit"
-             id="tooltip-holder"></div>
+  <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
+      {% block main %}
       {% endblock %}
-      {% block main %}{% endblock %}
-    </main>
   </body>
 </html>

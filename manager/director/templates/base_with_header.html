@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main %}
+    <header class="flex fixed top-0 justify-between items-center w-screen h-15 bg-sidebar border-b-1 border-sidebar-border">
+        <div class="flex items-center">
+            <a href="{% url "sites:index" %}" hx-boost="true" class="ml-2">
+                <c-img light_src="{% static "favicon/favicon-dark.svg" %}" dark_src="{% static "favicon/favicon.svg" %}"
+               class="pointer-events-none w-15 h-15"/>
+            </a>
+            {% include "base_with_header.html.partials/search.html" %}
+        </div>
+        <div class="flex gap-3 items-center mr-4">
+            <a href="{{ DOCS_URL }}" class="hover:opacity-75">
+                {% lucide "book-marked" %}
+            </a>
+            <a href="{# todo: add profile settings url #}" class="flex gap-1 items-center hover:opacity-75">
+                {% lucide "user-round-cog" %}
+                <p>{{ user.first_name }} {{ user.last_name.0 }}.</p>
+                {% lucide "chevron-down" class="hidden md:block" %}
+            </a>
+            {% block header_extras %}
+            {% endblock %}
+        </div>
+    </header>
+{% block content %} {% endblock %}
+{% endblock %}

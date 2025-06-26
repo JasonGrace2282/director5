@@ -1,23 +1,58 @@
-{% extends "base_with_nav.html" %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}Director: Login{% endblock %}
+{% block title %}Login | Director{% endblock %}
+
 {% block main %}
-  <div class="login-box">
-    <div class="flex justify-center mt-[20vh]">
-      <div class="justify-center p-4 rounded-sm outline-black outline-2 outline dark:bg-slate-400">
-        <p>
-          Log in with your <b>Intranet account</b> to access Director
-        </p>
-        <div class="flex justify-center mt-6">
-          <div class="flex flex-col space-y-2.5">
-            <a class="dt-btn" href="{% url 'social:begin' 'ion' %}">Log in with Ion</a>
-            {% if debug %}
-              <a href="{% url 'auth:password_login' %}{% if request.GET.next %}?next={{ request.GET.next | urlencode }}{% endif %}"
-                 class="dt-btn">Password login</a>
-            {% endif %}
-          </div>
-        </div>
-      </div>
+<div class="flex flex-col justify-center items-center h-screen">
+    <div class="flex overflow-hidden absolute inset-0 z-0 justify-center items-center opacity-20 pointer-events-none">
+        <img src="{% static "favicon/director-watermark.png" %}" alt=""
+             class="max-w-none w-[150%] h-auto rotate-[20deg] object-contain" />
     </div>
-  </div>
+
+    <c-img light_src="{% static "favicon/favicon-dark.svg" %}" dark_src="{% static "favicon/favicon.svg" %}"
+           class="-mb-3 pointer-events-none w-30 h-30"/>
+
+    <c-tabs default_value="ion-oauth" class="relative z-10 w-80 md:w-100">
+      <c-tabs.list class="grid grid-cols-2 w-80 md:w-100">
+        <c-tabs.trigger value="ion-oauth">Ion OAuth</c-tabs.trigger>
+        <c-tabs.trigger value="password">Password</c-tabs.trigger>
+      </c-tabs.list>
+      <c-tabs.content value="ion-oauth">
+        <c-card>
+          <c-card.header>
+            <c-card.title>Sign in with Ion</c-card.title>
+            <c-card.description>
+              Click the button below to sign in to Director5 using your Intranet account.
+            </c-card.description>
+          </c-card.header>
+          <c-card.content class="space-y-2">
+              <c-button.a href="{% url 'social:begin' 'ion' %}">
+                  <img src="{% static "favicon/ion.svg" %}" class="w-6 h-6 invert">
+                  Sign in with Ion
+              </c-button.a>
+          </c-card.content>
+        </c-card>
+      </c-tabs.content>
+      <c-tabs.content value="password">
+        <c-card>
+          <c-card.header>
+            <c-card.title>Password</c-card.title>
+            <c-card.description>
+              Sign in to Director5 using your username and password.
+              <c-alert variant="default">
+                <c-alert.title class="flex items-center">
+                    {% lucide "circle-alert" size="20" class="inline mr-2" %} Notice
+                </c-alert.title>
+                <c-alert.description>
+                  This will not work with your Intranet username and password.
+                </c-alert.description>
+              </c-alert>
+            </c-card.description>
+          </c-card.header>
+          {% include "auth/login.html.partials/password.html" %}
+        </c-card>
+      </c-tabs.content>
+    </c-tabs>
+</div>
 {% endblock %}
