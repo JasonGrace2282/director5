@@ -26,12 +26,10 @@ services:
     entrypoint:
       - uv
       - run
-      - -m
-      - watchfiles
-      - --filter
-      - python
-      - "uv run celery -A director worker"
-      - /director5/manager/director
+      - celery
+      - -A
+      - director
+      - worker
     working_dir: /director5/manager
     networks:
       - director_net
