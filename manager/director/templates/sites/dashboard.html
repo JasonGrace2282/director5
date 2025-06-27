@@ -11,7 +11,10 @@
   <!-- <h1 class="p-2 text-large">{{ site.name }}</h1> -->
   <div hx-ext="ws" ws-connect="/sites/{{ site.id }}/"
     class="p-2 mb-4" hx-swap-oob='true'>
-    <p id="foo"></p>
+    <pre>
+    <code id="site-info">
+    </code>
+    </pre>
   </div>
   {% comment %}
   <button htmx-post="{% url 'sites:clear' site.id %}"

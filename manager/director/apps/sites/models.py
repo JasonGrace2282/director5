@@ -117,6 +117,7 @@ class Site(models.Model):
 
     id: int
     domain_set: models.QuerySet[Domain]
+    operation: Operation
 
     def __str__(self):
         return self.name
@@ -334,6 +335,9 @@ class Operation(models.Model):
     @property
     def has_started(self) -> bool:
         return self.started_time is not None
+
+    def list_actions_in_order(self) -> models.QuerySet[Action]:
+        return self.action_set.order_by("id")
 
 
 class Action(models.Model):

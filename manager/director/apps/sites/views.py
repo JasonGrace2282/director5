@@ -12,7 +12,7 @@ from django_htmx.http import HttpResponseLocation
 
 from . import tasks
 from .forms import CreateSiteForm
-from .models import Site
+from .models import Operation, Site
 
 if TYPE_CHECKING:
     from director.djtypes import AuthenticatedHttpRequest
@@ -70,8 +70,7 @@ def delete_site(request: AuthenticatedHttpRequest, site_id: int) -> HttpResponse
 
 @require_POST
 @superuser_required
-@login_required
 def clear_operations(request: AuthenticatedHttpRequest, site_id: int) -> HttpResponse:
     site = get_object_or_404(Site, id=site_id)
-    site.operation_set.all().delete()
+    Operation.objects.filter(site=site).delete()
     return JsonResponse({})
