@@ -4,14 +4,16 @@
   {{ block.super }}
 
   <script src="https://unpkg.com/htmx-ext-ws@2.0.2"
-    integrity="sha384-vuKxTKv5TX/b3lLzDKP2U363sOAoRo5wSvzzc3LJsbaQRSBSS+3rKKHcOx5J8doU" crossorigin="anonymous"></script>
+    integrity="sha384-932iIqjARv+Gy0+r6RTGrfCkCKS5MsF539Iqf6Vt8L4YmbnnWI2DSFoMD90bvXd0" crossorigin="anonymous"></script>
 {% endblock head %}
 
 {% block main %}
-  <h1 class="p-2 text-large">{{ site.name }}</h1>
-  <div hx-ext="ws" ws-connect="{% url '' %}">
-
+  <!-- <h1 class="p-2 text-large">{{ site.name }}</h1> -->
+  <div hx-ext="ws" ws-connect="/sites/{{ site.id }}/"
+    class="p-2 mb-4" hx-swap-oob='true'>
+    <p id="foo"></p>
   </div>
+  {% comment %}
   <button htmx-post="{% url 'sites:clear' site.id %}"
     hx-target="{% url 'sites:clear_operations' %}"
     class="dt-btn-primary">
@@ -19,4 +21,5 @@
     {% heroicon_outline "trash" stroke_width="0.8" size="24" class="mr-2" %}
     <p>Clear Operations</p>
   </button>
+  {% endcomment %}
 {% endblock main %}

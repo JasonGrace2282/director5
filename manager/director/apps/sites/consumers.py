@@ -38,6 +38,9 @@ class SiteInfoConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
 
+        await self.accept()
+        await self.send(text_data=f'<p id="foo">site name: {site.name}</p>')
+
     @asynccontextmanager
     async def close_on_error(
         self, error: type[BaseException] | tuple[BaseException, ...] = Exception
