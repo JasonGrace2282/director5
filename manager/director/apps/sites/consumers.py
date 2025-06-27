@@ -33,15 +33,23 @@ class SiteInfoConsumer(AsyncWebsocketConsumer):
             return
         async with self.close_on_error():
             site_id = int(self.scope["url_route"]["kwargs"]["site_id"])
-            site = await find_site(site_id, user)
+            self.site: Site = await find_site(site_id, user)
 
         # Listen for events for this site
         await self.channel_layer.group_add(
-            site.channels_group_name(),
+            self.site.channels_group_name(),
             self.channel_name,
         )
 
         await self.accept()
+        await self.send_site_info(self.site)
+
+    async def operation_updated(self, event: dict[str, Any]) -> None:
+        """Handle an operation update event."""
+        await self.send_site_info(self.site)
+
+    async def send_site_info(self, site: Site) -> None:
+        """Send the site information to the client."""
         info = await self.gather_site_info(site)
         await self.send(text_data=f"<code id='site-info'>\n{json.dumps(info, indent=4)}</code>")
 
@@ -74,21 +82,18 @@ class SiteInfoConsumer(AsyncWebsocketConsumer):
                 "actions": [],
             }
             for action in op.list_actions_in_order():
-                operation_info["actions"].append(
-                    {
-                        "slug": action.slug,
-                        "name": action.name,
-                        "started_time": (
-                            action.started_time.isoformat()
-                            if action.started_time is not None
-                            else None
-                        ),
-                        "result": action.result,
-                        "user_message": action.user_message,
-                    }
-                )
+                action_info = {
+                    "slug": action.slug,
+                    "name": action.name,
+                    "started_time": (
+                        action.started_time.isoformat() if action.started_time is not None else None
+                    ),
+                    "result": action.result,
+                    "user_message": action.user_message,
+                }
                 if self.scope["user"].is_superuser:
-                    operation_info["actions"][-1]["message"] = action.message
+                    action_info["message"] = action.message
+                operation_info["actions"].append(action_info)
 
             info["operation"] = operation_info
 

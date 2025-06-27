@@ -181,6 +181,7 @@ async def send_operation_updated_message(site: Site) -> None:
     """Broadcast that the operation status has been updated."""
     await get_channel_layer().group_send(
         site.channels_group_name(),
+        # dispatch to the consumer's `operation_updated` method
         {"type": "operation.updated"},
     )
 
@@ -190,5 +191,6 @@ async def send_site_updated_message(site: Site) -> None:
     """Broadcast that the site metadata has been updated."""
     await get_channel_layer().group_send(
         site.channels_group_name(),
+        # dispatch to the consumer's `site_updated` method
         {"type": "site.updated"},
     )
