@@ -69,6 +69,7 @@ def delete_site(request: AuthenticatedHttpRequest, site_id: int) -> HttpResponse
 
 
 @require_POST
+@login_required
 @superuser_required
 def clear_operations(request: AuthenticatedHttpRequest, site_id: int) -> HttpResponse:
     site = get_object_or_404(Site, id=site_id)
