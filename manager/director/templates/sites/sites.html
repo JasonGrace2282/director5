@@ -14,10 +14,10 @@
         <div class="flex flex-col gap-y-3 items-center w-screen md:block min-h-[90vh] mt-22 md:w-[83vw] md:ml-65">
             <div class="flex gap-x-2">
                 <c-button.a href="{% url "sites:create" %}" hx-boost="true">New Site</c-button.a>
-                <c-input class="md:!w-70" placeholder="Search your sites..."></c-input>
+                <c-input class="md:!w-70" placeholder="Search your sites..."  hx-post="" hx-trigger="keyup changed delay:500ms"></c-input>
                 <c-button class="w-9" variant="outline">{% lucide "filter" %}</c-button>
             </div>
-            <div class="flex flex-wrap gap-3 justify-center py-8 md:justify-start">
+            <div class="flex flex-wrap gap-3 justify-center py-8 md:justify-start" id="sites-list" hx-swap-oob="outerHTML">
                 {% for site in sites %}
                     <c-card class="cursor-pointer min-w-100 max-w-100 max-h-50 min-h-50 group hover:bg-accent">
                         <c-card.header>
