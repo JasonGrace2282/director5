@@ -53,5 +53,18 @@
   <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
       {% block main %}
       {% endblock %}
+      <footer id="toast-messages">
+          {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <c-toast visible="true">
+                <c-toast.content description="{{ message }}" type="destructive" />
+            </c-toast>
+            {% else %}
+            <c-toast visible="true">
+                <c-toast.content description="{{ message }}" />
+            </c-toast>
+            {% endif %}
+          {% endfor %}
+      </footer>
   </body>
 </html>

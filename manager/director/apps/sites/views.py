@@ -3,15 +3,17 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.contrib.postgres.search import SearchVector, TrigramSimilarity
+from django.db.models import QuerySet, Q, F
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView
-from django_htmx.http import HttpResponseLocation
+from django_htmx.http import HttpResponseLocation, HttpResponseClientRedirect
 
 from ..users.models import User
 from . import tasks
@@ -26,79 +28,125 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def index(request: AuthenticatedHttpRequest) -> HttpResponse:
+    if request.method == "POST" and request.htmx:
+        query = request.POST.get("query", "").strip()
+
+        availability_filter = Q()
+
+        if ("served" in request.POST) ^ ("not_served" in request.POST):
+            if "served" in request.POST:
+                availability_filter = Q(availability=Site.Availabilities.ENABLED)
+            else:
+                availability_filter = Q(availability__in=[
+                    Site.Availabilities.NOT_SERVED,
+                    Site.Availabilities.DISABLED
+                ])
+
+        sites = Site.objects.filter(Q(users=request.user), availability_filter)
+
+        if query:
+            sites = sites.annotate(
+                sim_name=TrigramSimilarity("name", query),
+                sim_desc=TrigramSimilarity("description", query)
+            ).annotate(
+                total_similarity=
+                    F("sim_name") + F("sim_desc")  # More weighting towards name in search
+            ).filter(
+                total_similarity__gt=0.2
+            ).order_by("-total_similarity")
+
+        return render(request, "sites/sites.html.partials/sites_list.html", {
+            "sites": sites,
+            "query": query
+        })
+
     sites = Site.objects.filter_visible(request.user)
+
+    if request.htmx:
+        return render(request, "sites/sites.html.partials/sites_list.html", {"sites": sites})
 
     return render(
         request,
-        "sites/index.html",
+        "sites/sites.html",
         {
             "sites": sites,
-            "filler_elem_count": [None for _ in range((3 - (len(sites) + 1) % 3) % 3)],
         },
     )
 
 
-class CreateSiteView(LoginRequiredMixin, CreateView):
-    model = Site
-    form_class = CreateSiteForm
-    success_url = reverse_lazy("sites:index")
-    template_name = "sites/create.html"
+@login_required
+def create_site_view(request):
+    form = CreateSiteForm(request.POST)
 
-    def get_template_names(self) -> list[str]:
-        if self.request.htmx and self.request.method == "POST":
-            return ["sites/create.html.partials/site_details.html"]
+    if request.htmx and request.method == "POST":
+        template = "sites/create.html.partials/site_details.html"
+    else:
+        template = "sites/create.html"
 
-        return [self.template_name]
+    context = {"form": form}
+    if not request.htmx:
+        context["users"] = User.objects.filter(is_student=True)
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        if not self.request.htmx:
-            context["users"] = User.objects.filter(is_student=True)
+    if request.method == "POST":
+        if form.is_valid():
+            # When site-form makes an HTMX request, it's only for validation
+            if request.htmx and request.htmx.trigger != "site-form":
+                try:
+                    users = _get_selected_users(request)
+                except ValueError as e:
+                    return HttpResponseBadRequest(str(e))
 
-        return context
+                site = form.save()
+                site.users.set(users)
 
-    def form_valid(self, form) -> HttpResponse | HttpResponseLocation:
-        if (
-            self.request.htmx and self.request.htmx.trigger != "site-form"
-        ):  # Any HTMX submissions from the form is just for validation, the button handles the actual creating
-            try:
-                users = self.get_selected_users()
-            except ValueError as e:
-                return HttpResponseBadRequest(str(e))
+                op = site.start_operation("create_site")
+                tasks.create_site.delay(op.id)
 
-            site = form.save(commit=False)
-            site.save()
+                messages.success(request, "Site created successfully")
+                return HttpResponseClientRedirect(reverse("sites:index"))
+            else:
+                return render(request, template, context)
+
+        return render(request, template, context)
+
+    return render(request, template, context)
+
+def create_site_view_basic_form(request):
+    form = CreateSiteForm(request.POST)
+
+    if request.method == "POST":
+        if form.is_valid():
+            site = form.save()
+            users = request.POST.getlist("users")
+            if request.user.pk not in users:
+                users.append(request.user.pk)
+
             site.users.set(users)
-            self.object = site
 
             op = site.start_operation("create_site")
             tasks.create_site.delay(op.id)
 
-            # todo: snackbar that the site was created
-            return HttpResponseLocation(self.get_success_url())
+            return redirect("sites:index")
 
-        return self.render_to_response(self.get_context_data(form=form))
+    return render(request, "sites/create_basic.html", {"form": form })
 
-    def form_invalid(self, form) -> HttpResponse:
-        return self.render_to_response(self.get_context_data(form=form))
 
-    def get_selected_users(self) -> QuerySet[User]:
-        try:
-            user_ids = list(map(int, self.request.POST.getlist("users")))
-        except ValueError as ex:
-            raise ValueError("Invalid user IDs passed. Was the POST data malformed?") from ex
+def _get_selected_users(request) -> QuerySet[User]:
+    try:
+        user_ids = list(map(int, request.POST.getlist("users")))
+    except ValueError as ex:
+        raise ValueError("Invalid user IDs passed. Was the POST data malformed?") from ex
 
-        if self.request.user.id not in user_ids:
-            user_ids.append(self.request.user.id)
+    if request.user.id not in user_ids:
+        user_ids.append(request.user.id)
 
-        users = User.objects.filter(id__in=user_ids)
-        if len(users) != len(user_ids):
-            raise ValueError(
-                "One or more selected users do not exist. Try creating the site with just yourself as a collaborator."
-            ) from None
+    users = User.objects.filter(id__in=user_ids)
+    if len(users) != len(user_ids):
+        raise ValueError(
+            "One or more selected users do not exist. Try creating the site with just yourself as a collaborator."
+        ) from None
 
-        return users
-
+    return users
 
 @login_required
 @require_POST

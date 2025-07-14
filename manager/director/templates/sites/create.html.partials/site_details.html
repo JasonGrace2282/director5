@@ -1,7 +1,7 @@
 <div class="flex hidden absolute gap-3 justify-center p-2 w-full w-screen transition duration-500 translate-x-full" id="step3" @htmx:after-swap="details_form_has_errors = $el.querySelectorAll('[dt-error]').length > 0">
     <form id="site-form" x-data="{ name: '{{ form.name.value|default:'' }}'}" hx-post="" hx-swap="outerHTML" hx-select="#site-form" hx-trigger="keyup changed delay:500ms">
         <c-form.field class="w-60 lg:w-80" :errors="form.name.errors">
-            <c-form.label for="id_name">Username</c-form.label>
+            <c-form.label for="id_name">Project name</c-form.label>
             <c-input id="id_name" name="name" type="text" x-model="name"></c-input>
             <c-form.description class="w-60 lg:w-80">Enter a name for your site.
                 <span x-show="name !== ''">It'll be hosted at <span class="font-mono text-pink-400 break-all bg-gray-100" x-text="getDomainName(name)"></span></span>

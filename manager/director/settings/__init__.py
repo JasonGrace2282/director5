@@ -127,6 +127,7 @@ TEMPLATES = [
 ]
 WSGI_APPLICATION = "director.wsgi.application"
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

@@ -105,16 +105,111 @@
     <p x-text="step_text[current_step]" class="text-xl font-semibold"></p>
 
     <div class="overflow-hidden relative w-full h-85">
-        {% include "sites/create.html.partials/site_type.html" %}
-        {% include "sites/create.html.partials/site_purpose.html" %}
+        <div class="flex absolute gap-3 justify-center p-2 w-full w-screen transition duration-500" id="step1">
+            <c-card class="flex-auto transition-colors w-45 max-w-90 h-78" @click="site_type = 'static'" x-bind:class="site_type === 'static' ? 'outline-2 outline-ring' : ''">
+                <c-card.header>
+                    <c-card.title class="flex items-center">{% lucide "package" class="inline" %} <p class="ml-2">Static</p></c-card.title>
+                    <c-card.description>For sites with just HTML, CSS, and Javascript</c-card.description>
+                </c-card.header>
+                <c-card.content>
+                    <ul class="list-none">
+                        <li>{% lucide "check" class="inline" %} No usage limits </li>
+                        <li>{% lucide "check" class="inline" %} Simple, always-on </li>
+                        <li>{% lucide "x" class="inline" %} Can't run server-sided code </li>
+                    </ul>
+                </c-card.content>
+            </c-card>
+            <c-card class="flex-auto transition-colors w-45 max-w-90 h-78" @click="site_type = 'dynamic'" x-bind:class="site_type === 'dynamic' ? 'outline-2 outline-ring' : ''">
+                <c-card.header>
+                    <c-card.title class="flex items-center">{% lucide "container" class="inline" %} <p class="ml-2">Dynamic</p></c-card.title>
+                    <c-card.description>For more advanced sites with a backend</c-card.description>
+                </c-card.header>
+                <c-card.content>
+                    <ul class="list-none">
+                        <li>{% lucide "check" class="inline" %} Run server-sided code </li>
+                        <li>{% lucide "x" class="inline" %} Complex </li>
+                        <li>{% lucide "x" class="inline" %} Usage limits may apply </li>
+                    </ul>
+                </c-card.content>
+            </c-card>
+        </div>
+        <div class="flex hidden absolute flex-col gap-3 justify-center items-center p-2 w-full w-screen transition duration-500 translate-x-full" id="step2">
+            <c-select class="w-60 lg:w-80" @cselect-change="site_purpose = $event.detail.value">
+                <c-select.trigger>
+                    <c-select.value placeholder="Purpose" />
+                </c-select.trigger>
+                <c-select.content>
+                    {% for value, label in form.purpose.field.choices %}
+                        <c-select.item value="{{ value }}">{{ label }}</c-select.item>
+                    {% endfor %}
+                </c-select.content>
+            </c-select>
+            <c-form.description x-text="getSitePurposeDescription()" class="w-60"></c-form.description>
+        </div>
+
         {% include "sites/create.html.partials/site_details.html" %}
-        {% include "sites/create.html.partials/site_collaborators.html" %}
+
+        <div class="flex hidden absolute flex-col gap-3 justify-center items-center p-2 w-full w-screen transition duration-500 translate-x-full" id="step4" x-data="{ open: false }">
+            <div x-data="{
+                open: false,
+                search: '',
+                selectedValues: [{id: {{ request.user.id }}, username: '{{ request.user.username }}'}],
+                toggleValue(id, username) {
+                    if (!this.isSelected(id)) {
+                        this.selectedValues.push({id: id, username: username});
+                        selected_user_ids.push(id);
+                    }
+                    else
+                    {
+                        this.removeValue(id);
+                    }
+                },
+                removeValue(id) {
+                    this.selectedValues = this.selectedValues.filter(user => user.id !== id);
+                    selected_user_ids = selected_user_ids.filter(user_id => user_id !== id);
+                },
+                isSelected(id) {
+                    return this.selectedValues.some(user => user.id === id);
+                }
+            }">
+              <div class="relative w-80 lg:w-100">
+                <div @click="open = !open" class="flex items-center p-2 bg-white rounded border cursor-pointer">
+                    <div class="flex flex-wrap gap-1">
+                        <template x-for="user in selectedValues" :key="user.id">
+                            <div class="flex items-center py-0.5 px-2.5 text-sm font-medium text-gray-800 bg-gray-200 rounded me-2">
+                                <p class="pointer-events-none" x-text="user.username"></p>
+                                <button @click="removeValue(user.id)" class="ml-1 text-gray-600 hover:text-black">{% lucide "x" class="w-3 h-3" %}</button>
+                            </div>
+                            <span class="text-gray-400" x-show="selectedValues.length === 0">Select users...</span>
+                        </template>
+                        <input class="w-full focus:outline-none" type="text" x-init="$watch('open', value => { value ? $el.focus() : $el.blur() })" x-model="search" />
+                    </div>
+                    {% lucide "chevron-down" class="absolute right-3" %}
+                </div>
+              </div>
+              <div class="mt-1 w-64" x-cloak x-show="open" x-transition @click.away="open = false">
+                <ul class="overflow-y-auto z-10 w-full max-h-60 bg-white rounded-lg border shadow-lg border-border">
+                  {% for user in users %}
+                    <li class="block flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+                        x-show="search === '' || '{{ user.full_name }}'.toLowerCase().includes(search.toLowerCase()) || '{{ user.username }}'.toLowerCase().includes(search.toLowerCase())"
+                        @click="toggleValue({{ user.id }}, '{{ user.username }}')">
+                        <span x-show="isSelected({{ user.id }})">{% lucide "check" %}</span>
+                        <span class="ml-2">{{ user.username }}</span>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+        </div>
     </div>
 
-    <div class="flex justify-between p-4 -mt-5 w-screen lg:w-190">
+    <div class="flex justify-between px-4 -mt-5 w-screen lg:w-190">
         <button @click="prevStep()" x-bind:disabled="current_step === 1 || transitioning" x-bind:class="current_step === 1 ? 'opacity-50' : ''">{% lucide "circle-chevron-left" class="w-8 h-8" %}</button>
         <c-button id="next-button" @click="nextStep()" x-bind:disabled="!isNextStepAvailable() || transitioning" x-show="current_step !== 4" disabled>Next</c-button>
         <c-button hx-post="" hx-include="#site-form" x-show="current_step === 4">Create</c-button>
+    </div>
+    <div class="lg:w-190 px-4 -mt-2">
+        <a href="{% url "sites:create_basic" %}" hx-boost="true" class="opacity-50 hover:opacity-100 hover:text-chart-3 cursor-pointer">I'll use the old form instead {% lucide "arrow-right" class="inline" %}</a>
     </div>
 </div>
 {% endblock %}

@@ -1,10 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base_with_header.html" %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}Create Site | Director{% endblock %}
+
+{% block content %}
+    <div class="flex justify-center w-screen mt-22">
+        <form method="post" class="space-y-6">
+          {% csrf_token %}
+            <c-form.field class="w-60 lg:w-80" :errors="form.name.errors">
+                <c-form.label for="{{ form.name.id_for_label }}">{{ form.name.label }}</c-form.label>
+                <c-input id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}" type="text" value="{{ form.name.value|default:'' }}" class="mt-1"></c-input>
+            </c-form.field>
+
+            <c-form.field class="w-60 lg:w-80" :errors="form.description.errors">
+                <c-form.label for="{{ form.description.id_for_label }}">{{ form.description.label }}</c-form.label>
+                <c-textarea id="{{ form.description.id_for_label }}" name="{{ form.description.html_name }}" type="text" class="mt-1">{{ form.description.value|default:'' }}</c-textarea>
+            </c-form.field>
+
+            <c-form.field class="w-60 lg:w-80" :errors="form.purpose.errors">
+                <c-form.label for="{{ form.purpose.id_for_label }}">{{ form.purpose.label }}</c-form.label>
+                <c-select id="{{ form.purpose.id_for_label }}" name="{{ form.purpose.html_name }}" class="mt-1">
+                    <c-select.trigger>
+                        <c-select.value placeholder="---" />
+                    </c-select.trigger>
+                    <c-select.content>
+                      {% for val, label in form.purpose.field.choices %}
+                         <c-select.item value="{{ val }}">{{ label }}</c-select.item>
+                      {% endfor %}
+                    </c-select.content>
+                </c-select>
+            </c-form.field>
+
+            <c-form.field class="w-60 lg:w-80" :errors="form.mode.errors">
+                <c-form.label for="{{ form.mode.id_for_label }}">{{ form.mode.label }}</c-form.label>
+                <c-select id="{{ form.mode.id_for_label }}" name="{{ form.mode.html_name }}" class="mt-1">
+                    <c-select.trigger>
+                        <c-select.value placeholder="---" />
+                    </c-select.trigger>
+                    <c-select.content>
+                      {% for val, label in form.mode.field.choices %}
+                         <c-select.item value="{{ val }}">{{ label }}</c-select.item>
+                      {% endfor %}
+                    </c-select.content>
+                </c-select>
+            </c-form.field>
+
+            {{ form.users }}
+
+            {% if form.non_field_errors %}
+                <c-form.error>
+                    {{ form.non_field_errors }}
+                </c-form.error>
+            {% endif %}
+
+          <c-button type="submit" variant="default">Create Site</c-button>
+
+        </form>
+    </div>
+{% endblock %}

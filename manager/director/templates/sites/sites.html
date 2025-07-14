@@ -14,28 +14,31 @@
         <div class="flex flex-col gap-y-3 items-center w-screen md:block min-h-[90vh] mt-22 md:w-[83vw] md:ml-65">
             <div class="flex gap-x-2">
                 <c-button.a href="{% url "sites:create" %}" hx-boost="true">New Site</c-button.a>
-                <c-input class="md:!w-70" placeholder="Search your sites..."  hx-post="" hx-trigger="keyup changed delay:500ms"></c-input>
-                <c-button class="w-9" variant="outline">{% lucide "filter" %}</c-button>
-            </div>
-            <div class="flex flex-wrap gap-3 justify-center py-8 md:justify-start" id="sites-list" hx-swap-oob="outerHTML">
-                {% for site in sites %}
-                    <c-card class="cursor-pointer min-w-100 max-w-100 max-h-50 min-h-50 group hover:bg-accent">
-                        <c-card.header>
-                            <c-card.title>{{ site.name|truncatechars:"50" }}</c-card.title>
-                            <c-card.description>{{ site.description|truncatechars:"100" }}</c-card.description>
-                        </c-card.header>
-                        <c-card.content>
-                            <c-badge class="font-mono" variant="outline">{{ site.mode|upper }}</c-badge>
-                        </c-card.content>
-                        <c-card.footer>
-                            <div class="flex">
-                                <p class="group-hover:font-semibold">Manage</p>
-                                {% lucide "chevron-right" class="mt-0.5 transition-all group-hover:translate-x-1" %}
+                <form class="flex gap-x-2" hx-post="" hx-trigger="change, keyup changed delay:500ms" hx-target="#sites-list" hx-swap="outerHTML">
+                    <c-input class="md:!w-70" placeholder="Search your sites..." name="query"></c-input>
+                    <c-popover>
+                        <c-popover.trigger>
+                            <c-button type="button" class="w-9" variant="outline">{% lucide "filter" %}</c-button>
+                        </c-popover.trigger>
+                        <c-popover.content>
+                            <div class="flex flex-col gap-y-2">
+                                <p class="font-semibold">Filter projects</p>
+                                <div class="flex">
+                                    <c-checkbox id="id_served" name="served" checked/>
+                                    <c-label for="id_served" class="ml-2 font-normal align-middle">Served</c-label>
+                                </div>
+                                <div class="flex">
+                                    <c-checkbox id="id_not_served" name="not_served" checked/>
+                                    <c-label for="id_not_served" class="ml-2 font-normal align-middle">Not Served</c-label>
+                                </div>
                             </div>
-                        </c-card.footer>
-                    </c-card>
-                {% endfor %}
+                        </c-popover.content>
+                    </c-popover>
+
+                    <input type="submit" disabled hidden /> {# So pressing enter on the c-input does not automatically submit the form #}
+                </form>
             </div>
+            {% include "sites/sites.html.partials/sites_list.html" %}
         </div>
     {% endif %}
 {% endblock %}

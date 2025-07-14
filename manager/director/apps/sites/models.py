@@ -50,26 +50,25 @@ class Site(models.Model):
     dynamic -> static.
     """
 
-    TYPES = (("static", "Static"), ("dynamic", "Dynamic"))
+    class Types(models.TextChoices):
+        STATIC = "static", "Static"
+        DYNAMIC = "dynamic", "Dynamic"
 
-    PURPOSES = (
-        ("legacy", "Legacy"),
-        ("user", "User"),
-        ("project", "Project"),
-        ("activity", "Activity"),
-        ("other", "Other"),
-    )
+    class Purposes(models.TextChoices):
+        LEGACY = "legacy", "Legacy"
+        USER = "user", "User"
+        PROJECT = "project", "Project"
+        ACTIVITY = "activity", "Activity"
+        OTHER = "other", "Other"
 
-    AVAILABILITIES = [
-        ("enabled", "Enabled (fully functional)"),
-        ("not-served", "Not served publicly"),
-        ("disabled", "Disabled (not served, only viewable/editable by admins)"),
-    ]
+    class Availabilities(models.TextChoices):
+        ENABLED = "enabled", "Enabled (fully functional)"
+        NOT_SERVED = "not-served", "Not served publicly"
+        DISABLED = "disabled", "Disabled (not served, only viewable/editable by admins)"
 
     name = models.CharField(
         max_length=100,
         unique=True,
-        # Don't replace these classes with "\w". That allows Unicode characters. We just want ASCII.
         validators=[
             MinLengthValidator(2),
             RegexValidator(
@@ -84,11 +83,14 @@ class Site(models.Model):
 
     description = models.TextField(blank=True)
 
-    mode = models.CharField(max_length=10, choices=TYPES)
+    mode = models.CharField(
+        max_length=10,
+        choices=Types.choices,
+    )
 
     purpose = models.CharField(
         max_length=10,
-        choices=PURPOSES,
+        choices=Purposes.choices,
         help_text="What the site was created for.",
     )
 
@@ -108,22 +110,22 @@ class Site(models.Model):
 
     availability = models.CharField(
         max_length=20,
-        choices=AVAILABILITIES,
-        default="enabled",
+        choices=Availabilities.choices,
+        default=Availabilities.ENABLED,
         help_text="Controls who can access the site",
     )
 
     objects = SiteQuerySet.as_manager()
 
     id: int
-    domain_set: models.QuerySet[Domain]
+    domain_set: models.QuerySet["Domain"]
 
     def __str__(self):
         return self.name
 
     @property
     def is_served(self) -> bool:
-        return self.availability == "enabled"
+        return self.availability == self.Availabilities.ENABLED
 
     @property
     def sites_url(self) -> str:
@@ -131,7 +133,7 @@ class Site(models.Model):
         default = settings.SITE_URL_FORMATS[None]
         return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
 
-    def start_operation(self, ty: str) -> Operation:
+    def start_operation(self, ty: str) -> "Operation":
         from . import operations
 
         op = Operation.objects.create(site=self, ty=ty)
