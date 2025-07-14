@@ -117,6 +117,7 @@ class Site(models.Model):
 
     id: int
     domain_set: models.QuerySet[Domain]
+    operation: Operation
 
     def __str__(self):
         return self.name
@@ -130,6 +131,10 @@ class Site(models.Model):
         """Return the default URL where the site is served."""
         default = settings.SITE_URL_FORMATS[None]
         return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
+
+    def channels_group_name(self) -> str:
+        """The name of the channel group for this site."""
+        return f"site_{self.id}"
 
     def start_operation(self, ty: str) -> Operation:
         from . import operations
@@ -330,6 +335,9 @@ class Operation(models.Model):
     @property
     def has_started(self) -> bool:
         return self.started_time is not None
+
+    def list_actions_in_order(self) -> models.QuerySet[Action]:
+        return self.action_set.order_by("id")
 
 
 class Action(models.Model):

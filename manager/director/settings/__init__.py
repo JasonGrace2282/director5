@@ -252,6 +252,15 @@ CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_LOG_LEVEL = "WARNING"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
+
 
 # Director settings
 DOCS_URL = "https://jasongrace2282.github.io/director5/"

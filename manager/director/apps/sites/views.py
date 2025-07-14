@@ -28,6 +28,12 @@ def index(request: AuthenticatedHttpRequest) -> HttpResponse:
 
 
 @login_required
+def site_dashboard(request: AuthenticatedHttpRequest, site_id: int) -> HttpResponse:
+    site = get_object_or_404(Site.objects.filter_visible(request.user), id=site_id)
+    return render(request, "sites/dashboard.html", {"site": site})
+
+
+@login_required
 def create_site(request: AuthenticatedHttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = CreateSiteForm(request.POST)
