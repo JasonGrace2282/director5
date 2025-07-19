@@ -6,6 +6,7 @@ dependencies = [
   "docker",
   "fastapi[standard]",
   "jinja2",
+  "mysql-connector-python",
   "pydantic",
   "pydantic-extra-types",
   "requests",
