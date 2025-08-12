@@ -1,11 +1,19 @@
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
+from typing import Literal, override
 
 import mysql.connector
 import psycopg
 from psycopg import sql as psql
 
 from ..docker.schema import DatabaseInfo
+
+
+class DatabaseError(Exception):
+    def __init__(self, ty: Literal["postgres", "mysql"], ex: Exception):
+        super().__init__()
+        self.ty = ty
+        self.ex = ex
 
 
 class DatabaseHandler(ABC):
@@ -23,7 +31,7 @@ class DatabaseHandler(ABC):
         raise NotImplementedError("This method should be implemented by subclasses.")
 
     @abstractmethod
-    def run_query(self, query: str) -> None:
+    def run_query(self, db: str, query: str) -> str:
         """Run a query on the database using the provided database information."""
         raise NotImplementedError("This method should be implemented by subclasses.")
 
@@ -86,6 +94,7 @@ class PostgresHandler(DatabaseHandler):
             with conn.cursor() as cursor:
                 yield cursor
 
+    @override
     def create_database(self) -> None:
         with self.open_cursor("postgres", admin=True) as cursor:
             # Check if the user exists
@@ -128,3 +137,33 @@ class PostgresHandler(DatabaseHandler):
                     psql.Identifier(self.db_info.username),
                 )
             )
+
+    @override
+    def delete_database(self) -> None:
+        with self.open_cursor("postgres", admin=True) as cursor:
+            _ = cursor.execute(
+                psql.SQL("DROP DATABASE IF EXISTS {}").format(psql.Identifier(self.db_info.db_name))
+            )
+
+            _ = cursor.execute(
+                psql.SQL("REVOKE ALL ON SCHEMA public FROM {}").format(
+                    psql.Identifier(self.db_info.username)
+                )
+            )
+            _ = cursor.execute(
+                psql.SQL("DROP USER IF EXISTS {}").format(psql.Identifier(self.db_info.username))
+            )
+
+    @override
+    def run_query(self, db: str, query: str) -> str:
+        with self.open_cursor(db) as cursor:
+            try:
+                _ = cursor.execute(query)
+            except psycopg.DatabaseError as e:
+                raise DatabaseError("postgres", e) from e
+            result = (
+                "\t".join([desc[0] for desc in cursor.description]) if cursor.description else ""
+            )
+            for row in cursor:
+                result += f"\n{'\t'.join(str(x) for x in row)}"
+            return result
