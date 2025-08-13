@@ -1,0 +1,22 @@
+{% extends "base_with_site_header_and_nav.html" %}
+{% load static %}
+
+{% block title %}{{ site.name|truncatechars:"10" }} | Director{% endblock %}
+
+{% block inner_content %}
+    <div class="min-h-[90vh] md:w-[83vw] mt-38 ml-10 md:ml-65">
+        <div class="flex flex-col md:flex-row md:items-center">
+            <h1 class="text-[2rem] font-semibold">{{ site.name }}</h1>
+            <c-badge class="font-mono md:ml-3 mt-1.5 max-w-15" variant="outline">{{ site.mode|upper }}</c-badge>
+        </div>
+        <div class="ml-0.5 group">
+            <a class="text-sm text-chart-3" href="{{ site.sites_url }}">{{ site.sites_url }}</a>
+            <div class="flex">
+                <p>{{ site.description }}</p>
+                <a href="{# todo: redirect to settings #}">
+                    {% lucide "square-pen" class="ml-2 mt-1.5 w-4 h-4 md:opacity-0 md:group-hover:opacity-100 transition cursor-pointer" %}
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

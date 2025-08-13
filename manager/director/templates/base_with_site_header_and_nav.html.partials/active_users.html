@@ -1,0 +1,7 @@
+<div class="flex w-20 md:w-30 lg:w-40" id="site-active-users">
+    {% if active_users %}
+        {% for active_user in active_users %}
+            <img src="{{ active_user.avatar.url }}" class="rounded-full w-8 h-8 outline-2 outline-white -mr-2 animate-in slide-in-from-left-2 animate-out slide-out-from-right-2" x-data x-tooltip.raw="{{ active_user.username }} {% if active_user.is_superuser %}(Administrator){% endif %}">
+        {% endfor %}
+    {% endif %}
+</div>
