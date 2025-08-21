@@ -204,6 +204,14 @@ class DatabaseHost(models.Model):
     def __str__(self):
         return f"{self.dbms}://{self.hostname}:{self.port}"
 
+    def serialize_for_appserver(self) -> dict[str, str]:
+        return {
+            "admin_hostname": self.admin_hostname or self.hostname,
+            "admin_port": self.admin_port or self.port,
+            "admin_username": self.admin_username,
+            "admin_password": self.admin_password,
+        }
+
 
 class Database(models.Model):
     """A database for a specific site."""
@@ -224,12 +232,20 @@ class Database(models.Model):
     def redacted_db_url(self) -> str:
         return f"{self.host.dbms}://{self.username}:***@{self.host.hostname}:{self.host.port}/{self.username}"
 
-    def serialize_for_appserver(self) -> dict[str, str]:
+    @property
+    def db_url(self) -> str:
+        return f"{self.host.dbms}://{self.username}:{self.password}@{self.host.hostname}:{self.host.port}/{self.username}"
+
+    def serialize_for_appserver(self) -> dict[str, Any]:
         return {
-            "url": self.redacted_db_url,
-            "name": self.site.name,
+            "host": self.host.serialize_for_appserver(),
             "username": self.username,
             "password": self.password,
+            "db_type": self.host.dbms,
+            "db_host": self.host.hostname,
+            "db_port": self.host.port,
+            "db_name": self.username,
+            "db_url": self.db_url,
         }
 
 

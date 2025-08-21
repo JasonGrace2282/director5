@@ -1,15 +1,12 @@
 from pathlib import Path
-from typing import Annotated, Any, Literal, TypedDict, cast
+from typing import Annotated, Any, Literal, TypedDict
 
 from pydantic import (
     BaseModel,
     Field,
-    MySQLDsn,
-    PostgresDsn,
     UrlConstraints,
     ValidationInfo,
     ValidatorFunctionWrapHandler,
-    field_validator,
 )
 from pydantic.functional_validators import AfterValidator, WrapValidator
 
@@ -59,43 +56,27 @@ class ResourceLimits(BaseModel):
 _db_url_validator = UrlConstraints(host_required=True, default_port=5432)
 
 
+class DatabaseHost(BaseModel):
+    admin_hostname: str
+    admin_username: str
+    admin_password: str
+    admin_port: int
+
+
 class DatabaseInfo(BaseModel):
-    url: Annotated[PostgresDsn, _db_url_validator] | Annotated[MySQLDsn, _db_url_validator]
-    name: str
+    host: DatabaseHost
 
     username: str
     password: str
 
-    @property
-    def type_(self) -> Literal["postgres", "mysql"]:
-        return cast(Literal["postgres", "mysql"], self.url.scheme)
-
-    @property
-    def port(self) -> int:
-        if isinstance(self.url, PostgresDsn):
-            port = self.url.hosts()[0]["port"]
-        else:
-            port = self.url.port
-        assert port is not None
-        return port
-
-    @property
-    def host(self) -> str:
-        host = self.url.host if isinstance(self.url, MySQLDsn) else self.url.hosts()[0]["host"]
-        # UrlConstraints(host_required=True) was used
-        assert host is not None
-        return host
-
-    @field_validator("url", mode="after")
-    @classmethod
-    def check_db_url(cls, v: PostgresDsn | MySQLDsn) -> PostgresDsn | MySQLDsn:
-        if isinstance(v, PostgresDsn):
-            assert len(v.hosts()) == 1, "Only one host is allowed"
-            assert v.hosts()[0]["port"] is not None, "Port is required"
-        return v
+    db_type: Literal["postgres", "mysql"]
+    db_host: str
+    db_port: int
+    db_name: str
+    db_url: str
 
     def __str__(self) -> str:
-        return f"{type(self).__name__}({self.url}, {self.name})"
+        return f"{type(self).__name__}({self.db_url}, {self.db_name})"
 
 
 # We're not too strict, the Manager should have a more
@@ -119,12 +100,12 @@ class SiteInfo(BaseModel):
         }
         if self.db is not None:
             env |= {
-                "DATABASE_URL": str(self.db),
-                "DIRECTOR_DATABASE_URL": str(self.db),
-                "DIRECTOR_DATABASE_TYPE": self.db.type_,
-                "DIRECTOR_DATABASE_HOST": self.db.host,
-                "DIRECTOR_DATABASE_PORT": self.db.port,
-                "DIRECTOR_DATABASE_NAME": self.db.name,
+                "DATABASE_URL": self.db.db_url,
+                "DIRECTOR_DATABASE_URL": self.db.db_url,
+                "DIRECTOR_DATABASE_TYPE": self.db.db_type,
+                "DIRECTOR_DATABASE_HOST": self.db.db_host,
+                "DIRECTOR_DATABASE_PORT": self.db.db_port,
+                "DIRECTOR_DATABASE_NAME": self.db.db_name,
                 "DIRECTOR_DATABASE_USERNAME": self.db.username,
                 "DIRECTOR_DATABASE_PASSWORD": self.db.password,
             }
