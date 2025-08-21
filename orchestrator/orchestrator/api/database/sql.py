@@ -1,12 +1,16 @@
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Literal, override
+from typing import TYPE_CHECKING, Literal, override
 
 import mysql.connector
 import psycopg
 from psycopg import sql as psql
 
 from ..docker.schema import DatabaseInfo
+
+if TYPE_CHECKING:
+    from mysql.connector.abstracts import MySQLCursorAbstract
 
 
 class DatabaseError(Exception):
@@ -38,7 +42,7 @@ class DatabaseHandler(ABC):
 
 class MySqlHandler(DatabaseHandler):
     @contextmanager
-    def open_cursor(self, db: str, *, admin: bool = False):
+    def open_cursor(self, db: str, *, admin: bool = False) -> Iterator[MySQLCursorAbstract]:
         kwargs = {}
         hostname = self.db_info.host.admin_hostname
 
@@ -69,6 +73,66 @@ class MySqlHandler(DatabaseHandler):
             conn.commit()
         finally:
             conn.close()
+
+    @staticmethod
+    def clean_identifier(identifier: str) -> str:
+        return "".join(c for c in identifier if c.isalnum() or c == "_")
+
+    @override
+    def create_database(self) -> None:
+        """Create a database using the provided database information."""
+        with self.open_cursor("mysql", admin=True) as cursor:
+            cursor.execute(
+                "SELECT 1 FROM mysql.user WHERE user = %s;",
+                (self.clean_identifier(self.db_info.username),),
+            )
+
+            if cursor.rowcount == 0:
+                cursor.execute(
+                    f"CREATE USER '{self.clean_identifier(self.db_info.username)}'@'%%' IDENTIFIED BY %s;",
+                    (self.db_info.password,),
+                )
+            else:
+                cursor.execute(
+                    f"SET PASSWORD FOR {self.clean_identifier(self.db_info.username)}@'%%' = PASSWORD(%s);",
+                    (self.db_info.password,),
+                )
+
+            cursor.execute(
+                f"CREATE DATABASE IF NOT EXISTS {self.clean_identifier(self.db_info.db_name)}"
+            )
+            cursor.execute(
+                f"GRANT ALL ON {self.clean_identifier(self.db_info.db_name)} . * TO {self.clean_identifier(self.db_info.username)};"
+            )
+
+            cursor.execute("FLUSH PRIVILEGES;")
+
+    @override
+    def delete_database(self) -> None:
+        """Delete a database using the provided database information."""
+        with self.open_cursor("mysql", admin=True) as cursor:
+            cursor.execute(
+                f"DROP DATABASE IF EXISTS {self.clean_identifier(self.db_info.db_name)};"
+            )
+
+            cursor.execute(
+                f"DROP USER IF EXISTS {self.clean_identifier(self.db_info.username)}@'%%';"
+            )
+
+    @override
+    def run_query(self, db: str, query: str) -> str:
+        """Run a query on the database using the provided database information."""
+        with self.open_cursor(db) as cursor:
+            try:
+                _ = cursor.execute(query)
+            except mysql.connector.Error as e:
+                raise DatabaseError("mysql", e) from e
+            result = (
+                "\t".join([desc[0] for desc in cursor.description]) if cursor.description else ""
+            )
+            for row in cursor:
+                result += f"\n{'\t'.join(str(x) for x in row)}"
+            return result
 
 
 class PostgresHandler(DatabaseHandler):
