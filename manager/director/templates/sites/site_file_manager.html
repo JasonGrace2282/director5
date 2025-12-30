@@ -1,10 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base_with_site_header_and_nav.html" %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}{{ site.name }} | Director{% endblock %}
+
+{% block inner_content %}
+    <div class="flex flex-col md:w-[83vw] mt-38 ml-10 md:ml-65">
+        <h1 class="text-[2rem] font-semibold mb-2">Files</h1>
+        <div class="flex justify-between">
+            {% include "sites/file_path.html" %}
+            <div class="flex flex-col">
+                <div class="flex gap-3">
+                    <c-popover>
+                        <c-popover.trigger>
+                            <c-button variant="outline">+ New</c-button>
+                        </c-popover.trigger>
+                        <c-popover.content class="w-fit">
+                            <div class="flex flex-col gap-y-2">
+                                <c-button variant="ghost" class="!justify-start">{% lucide "file-plus-2" %} New File</c-button>
+                                <c-button variant="ghost" class="!justify-start">{% lucide "folder-plus" %} New Folder</c-button>
+                            </div>
+                        </c-popover.content>
+                    </c-popover>
+                    <c-button>{% lucide "upload" %} Upload Files</c-button>
+                </div>
+                <c-input placeholder="Search files..." class="mt-2"  />
+            </div>
+        </div>
+        <c-card class="mt-4">
+            <c-card.content class="mt-6">
+                <c-table>
+                    <c-table.header>
+                        <c-table.row>
+                            <c-table.head class="md:w-[60%]">Name</c-table.head>
+                            <c-table.head>Size</c-table.head>
+                            <c-table.head>Modified</c-table.head>
+                            <c-table.head class="text-right">Actions</c-table.head>
+                        </c-table.row>
+                    </c-table.header>
+                    <c-table.body>
+                        {% for file in files %}
+                            <c-table.row class="h-14">
+                                <c-table.cell>
+                                    <a class="flex gap-2 items-center cursor-pointer" hx-boost="true" hx-swap="outerHTML" hx-target="#main-panel-content" hx-select="#main-panel-content" href="{% url "sites:files" site_id=site.id subpath=file.path %}">
+                                        {% if file.type == "file" %}
+                                            {% lucide "file" %}
+                                        {# todo: make different file icons depending on file extension #}
+                                        {% elif file.type == "folder" %}
+                                            <div>
+                                                {% lucide "folder" class="stroke-[#04abcc]" %}
+                                            </div>
+                                        {% elif file.type == "symlink" %}
+                                            {% lucide "folder-symlink" class="stroke-green-600" %}
+                                        {% elif file.type == "previous_directory" %}
+                                            <div x-data x-tooltip.raw="Go to {{ path_back }}">
+                                                {% lucide "folder-output" class="stroke-purple-500" %}
+                                            </div>
+                                        {% else %}
+                                            <div x-data x-tooltip.raw="Unknown file type">
+                                                {% lucide "circle-question-mark" %}
+                                            </div>
+                                        {% endif %}
+                                        {{ file.name }}
+                                    </a>
+                                </c-table.cell>
+                                <c-table.cell>
+                                    {{ file.size_kb }} kb
+                                </c-table.cell>
+                                <c-table.cell>
+                                    {{ file.modified }}
+                                </c-table.cell>
+                                <c-table.cell class="float-right">
+                                    <c-popover>
+                                        <c-popover.trigger>
+                                            <div class="hover:bg-border rounded-sm h-8 w-8 flex items-center justify-center mt-1">
+                                                {% lucide "ellipsis-vertical" %}
+                                            </div>
+                                        </c-popover.trigger>
+                                        <c-popover.content transition_enter_end="!-translate-y-1/4" class="flex flex-col w-fit -translate-x-[95%] -translate-y-1/4">
+                                            {% if file.type == "file" %}
+                                                <c-button variant="ghost" class="!justify-start">{% lucide "file-pen" %} Edit</c-button>
+                                            {% endif %}
+                                            <c-button variant="ghost" class="!justify-start">{% lucide "trash" class="stroke-red-500" %} Delete</c-button>
+                                            <c-button variant="ghost" class="!justify-start">{% lucide "pen-line" class="stroke-[#04abcc]" %} Rename</c-button>
+                                        </c-popover.content>
+                                    </c-popover>
+                                </c-table.cell>
+                            </c-table.row>
+                        {% endfor %}
+                    </c-table.body>
+                </c-table>
+            </c-card.content>
+        </c-card>
+    </div>
+{% endblock %}

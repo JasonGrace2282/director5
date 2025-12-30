@@ -1,10 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base_with_site_header_and_nav.html" %}
+{% load static %}
+
+{% block title %}{{ site.name }} | Director{% endblock %}
+
+{% block inner_content %}
+    <div class="flex flex-col md:flex-row justify-between md:w-[83vw] mt-38 ml-10 md:ml-65">
+        <div>
+            <h1 class="text-[2rem] font-semibold mb-2">Database</h1>
+            {% if site.database %}
+                <c-card class="w-200">
+                    <c-card.header>
+                        <c-card.title class="flex items-center">{% lucide "database" %} <p class="ml-2 text-xl font-semibold">{{ site.database.username }}</></c-card.title>
+                        <c-card.description>
+                            <div class="flex items-center gap-2">
+                                <div x-data x-tooltip.raw="Database Management System">
+                                    {% lucide "bolt" class="w-5 h-5" %}
+                                </div>
+                                <p>{{ site.database.host.get_dbms_display }}</p>
+                            </div>
+                        </c-card.description>
+                    </c-card.header>
+                    <c-card.content>
+                        <div class="flex flex-col gap-3">
+                            <c-form.field>
+                                <c-form.label for="id_username">Username</c-form.label>
+                                <c-input id="id_username" type="text" value="{{ site.database.username }}" readonly></c-input>
+                            </c-form.field>
+                            <c-form.field class="relative" x-data="{ revealed: false }">
+                                <c-form.label for="id_password">Password</c-form.label>
+                                <div class="flex items-center gap-2">
+                                    <c-input id="id_password" type="text" value="{{ site.database.password }}" readonly class="filter" x-bind:class="revealed ? 'blur-0' : 'blur-lg'"></c-input>
+                                    {% lucide "refresh-cw" %}
+                                </div>
+                                <div
+                                    class="absolute inset-0 flex items-center justify-center cursor-pointer select-none"
+                                    x-show="!revealed"
+                                    @click="revealed = true"
+                                >
+                                    <p class="border border-muted-foreground p-2 mt-1 rounded-md">Click to reveal</p>
+                                </div>
+                            </c-form.field>
+                            <c-form.field>
+                                <c-form.label for="id_server_port">Server & Port</c-form.label>
+                                <c-input id="id_sever_port" type="text" value="{{ site.database.host }}" readonly></c-input>
+                            </c-form.field>
+                            <c-form.field>
+                                <c-form.label for="id_connection_string">Connection String</c-form.label>
+                                <c-input id="id_connection_string" type="text" value="{{ site.database.redacted_db_url }}" readonly></c-input>
+                                <c-form.description>
+                                    <div class="flex items-center">
+                                        {% lucide "lightbulb" class="w-4 h-4" %} <p class="ml-1 text-sm">Replace <span class="font-mono text-pink-400 bg-gray-100">***</span> with your database password</p>
+                                    </div>
+                                </c-form.description>
+                            </c-form.field>
+                            <div class="flex gap-2">
+                                <p>Use environment variables, not raw strings, to connect your code to the database. For more information on how
+                                    to do this, <a href="{{ DOCS_URL }}" class="text-chart-3">view the documentation</a></p>
+                            </div>
+                        </div>
+                    </c-card.content>
+                </c-card>
+            {% else %}
+                <p>You don't have a database right now. Click <b class="font-mono">+ Create Database</b> to make one</p>
+            {% endif %}
+        </div>
+        <div class="mt-4 md:mt-0">
+            {% if site.database %}
+                <c-button variant="destructive">{% lucide "unplug" %} Destroy Database</c-button>
+            {% else %}
+                <c-button>+ Create Database</c-button>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,55 @@
+<c-tabs default_value="operations" class="w-80 md:w-100" id="site-operation-process-log" hx-ws-swap="morph">
+    <c-tabs.list class="grid grid-cols-2 w-80 md:w-100">
+        <c-tabs.trigger value="operations">Operations</c-tabs.trigger>
+        <c-tabs.trigger value="process_log">Process Log</c-tabs.trigger>
+    </c-tabs.list>
+    <c-tabs.content value="operations">
+        <c-card>
+            <c-card.header class="font-semibold">
+                Operations
+            </c-card.header>
+            <c-card.content>
+                {% if operation %}
+                    <div class="flex flex-col">
+                        <div class="flex">
+                            {% if operation.progress < 100.0 %}
+                                {% lucide "loader-circle" class="animate-spin mr-3" %}
+                            {% endif %}
+                            <h1 class="font-semibold">{{ operation.get_ty_display }}</h1>
+                        </div>
+                        <c-progress value="{{ operation.progress }}" max="100" class="mt-3"/>
+                        <p class="text-muted-foreground mt-1">{{ operation.progress }}% complete</p>
+                    </div>
+                    {% for action in operation.list_actions_in_order %}
+                        <div class="flex items-center gap-2 mt-2 animate-in fade-in duration-300">
+                            {% if not action.has_started %}
+                                {% lucide "clock" class="w-5 h-5 mt-0.5 stroke-muted-foreground" %}
+                            {% elif action.result == True %}
+                                {% lucide "circle-check-big" class="w-5 h-5 mt-0.5 stroke-[#06c964]" %}
+                            {% elif action.result == False %}
+                                {% lucide "circle-x" class="w-5 h-5 mt-0.5 stroke-red" %}
+                            {% else %}
+                                <div x-tooltip.raw="Started running {{ action.started_time|date:"g:i A" }}">
+                                    {% lucide "loader-circle" class="animate-spin mt-0.5 w-5 h-5 stroke-[#04abcc] dark:stroke-orange" %}
+                                </div>
+                            {% endif %}
+                            {{ action.name }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted-foreground">No site operations found running.</p>
+                {% endif %}
+            </c-card.content>
+        </c-card>
+    </c-tabs.content>
+    <c-tabs.content value="process_log" x-cloak>
+        <c-card>
+            <c-card.header class="font-semibold">
+                Process Log
+            </c-card.header>
+            <c-card.content>
+                Test2
+            </c-card.content>
+        </c-card>
+    </c-tabs.content>
+</c-tabs>

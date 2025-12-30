@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base_with_site_header_and_nav.html" %}
+{% load static %}
+
+{% block title %}{{ file.name }} - {{ site.name }} | Director{% endblock %}
+
+{% block inner_content %}
+    <div class="flex flex-col md:w-[83vw] mt-38 ml-10 md:ml-65">
+        <h1 class="text-[2rem] font-semibold mb-2">Files</h1>
+        <div class="flex justify-between">
+            {% include "sites/file_path.html" %}
+            <c-button variant="outline">Back</c-button>
+        </div>
+        <div x-data>
+            <div class="mt-2 shadow-sm rounded-md resize both overflow-auto border h-[70vh]" x-ref="codeEditor">
+                <div class="w-full h-full pt-8 p-2" id="editor"></div>
+            </div>
+            <c-button variant="link" x-on:click="$refs.codeEditor.style.width = ''; $refs.codeEditor.style.height = '';" class="mt-1 cursor-pointer">Reset to original size</c-button>
+        </div>
+    </div>
+    <script>
+      require.config({ paths: { "vs": "https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs" } });
+
+      require(["vs/editor/editor.main"], function () {
+        const ydoc = new Y.Doc()
+        const ytext = ydoc.getText('monaco')
+
+        // Use global WebsocketProvider
+        const provider = new Y.WebsocketProvider('wss://demos.yjs.dev', 'your-room-name', ydoc)
+        provider.on('status', evt => console.log('WS status:', evt.status))
+
+        const editor = monaco.editor.create(document.getElementById('editor'), {
+          value: 'function hello() {\n  console.log("Hello, world!");\n}',
+          language: 'javascript',
+          theme: 'vs-light',
+          automaticLayout: true
+        })
+
+        const monacoBinding = new Y.MonacoBinding(ytext, editor.getModel(), new Set([editor]), provider.awareness)
+      })
+
+    </script>
+{% endblock %}

@@ -28,18 +28,27 @@ repos:
       types: [markdown]
       additional_dependencies:
       - mdformat-myst
-  -   repo: https://github.com/biomejs/pre-commit
-      rev: v0.6.1
-      hooks:
-      -   id: biome-check
-          additional_dependencies: ["@biomejs/biome@1.9.2"]
+
   - repo: local
     hooks:
-      - id: rustywind # Remove rustywind once biomejs tailwind sorting is competent: https://github.com/biomejs/biome/issues/1274
-        name: Tailwind CSS Class sorter
+      - id: rustywind
+        name: rustywind Tailwind CSS class linter  # The Prettier tailwind plugin doesn't like Django templates
         language: node
         additional_dependencies:
           - rustywind@latest
         entry: rustywind
-        args: [--write]
-        types_or: [html]
+        args: ["--write"]
+        types_or: ["html"]
+
+  - repo: https://github.com/JoC0de/pre-commit-prettier
+    on: push  # Prettier can be slow (5-10s) so only run on push to not be annoying every commit
+    # We need to run prettier-tailwind and prettier-jinja separately since prettier-jinja overrides tailwind
+    hooks:
+      - id: prettier-jinja
+        name: Prettier + Jinja/DTL 🥳 (push)
+        language: node
+        additional_dependencies:
+          - prettier@3.6.2
+          - prettier-plugin-jinja-template@2.1.0
+        entry: prettier
+        args: ["--write", "--plugin=prettier-plugin-jinja-template"]

@@ -1,22 +1,35 @@
-<c-command-dialog shortcut_key="k">
-    <c-slot name="trigger_slot">
-        <div class="hidden relative md:block w-100 ">
-          <c-input type="text" placeholder="Search..."/>
-          <kbd
-            class="inline-flex absolute top-2 right-3 gap-1 items-center px-1.5 h-5 font-mono font-medium rounded border pointer-events-none select-none bg-muted text-[10px] text-muted-foreground">
-            <span class="text-xs">⌘</span>K
-          </kbd>
-        </div>
-        {% lucide name="search" class="-ml-20 md:hidden" %}
-    </c-slot>
-    <c-command.input placeholder="Type a command or search..." />
-    <c-command.list>
-        <c-command.empty>No results found.</c-command.empty>
-        <c-command.group heading="Recents">
-            {# todo: implement later #}
-        </c-command.group>
-        <c-command.group heading="Suggestions">
-            {# todo: implement later #}
-        </c-command.group>
-    </c-command.list>
-</c-command-dialog>
+<c-command.list>
+    <c-command.empty>No results found.</c-command.empty>
+    <c-command.group heading="Recents">
+        {# todo: implement later #}
+    </c-command.group>
+    <c-command.group heading="Actions">
+        <c-command.item value="start">Server: Start</c-command.item>
+        <c-command.item value="restart">Server: Restart</c-command.item>
+        <c-command.item value="shutdown">Server: Shutdown</c-command.item>
+    </c-command.group>
+    <c-command.group heading="Navigation">
+        {# todo: make htmx load this only on opening #}
+        {% if site %}
+            <c-command.item value="dashboard">Go to dashboard</c-command.item>
+            <c-command.item value="database">Go to database</c-command.item>
+            <c-command.item value="files">Go to files</c-command.item>
+            <c-command.item value="console">Go to console</c-command.item>
+            <c-command.item value="siteSettings">Go to site settings</c-command.item>
+        {% endif %}
+        {% if recent_sites %}
+            {% for recent_site in recent_sites %}
+                <c-command.item value="recentSite-{{ recent_site.id }}">Open {{ recent_site.name }}'s dashboard</c-command.item>
+            {% endfor %}
+        {% endif %}
+        <c-command.item value="mySites">View all sites</c-command.item>
+        <c-command.item value="marketplace">View marketplace</c-command.item>
+        <c-command.item value="myClasses">View classes</c-command.item>
+        <c-command.item value="documentation">View documentation</c-command.item>
+        <c-command.item value="information">View information page</c-command.item>
+        <c-command.item value="userSettings">View user settings</c-command.item>
+        {% if user.is_superuser %}
+            {# todo: superuser navigation #}
+        {% endif %}
+    </c-command.group>
+</c-command.list>

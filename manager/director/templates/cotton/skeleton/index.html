@@ -1,2 +1,2 @@
 {# Custom skeleton loading component - not from shadcn django #}
-<div class="bg-gray-200 rounded-full dark:bg-gray-700 animate-pulse"></div>
+<div class="bg-gray-200 rounded-full dark:bg-gray-700 animate-pulse {% if class %}{{ class }}{% endif %}" {{ attrs }}></div>

@@ -1,26 +1,28 @@
 <div class="flex flex-wrap gap-3 justify-center py-8 md:justify-start" id="sites-list">
     {% for site in sites %}
-        <c-card class="cursor-pointer min-w-100 max-w-100 max-h-50 min-h-50 group hover:bg-accent">
-            <c-card.header>
-                <c-card.title>{{ site.name|truncatechars:"50" }}</c-card.title>
-                <c-card.description>{{ site.description|truncatechars:"100" }}</c-card.description>
-            </c-card.header>
-            <c-card.content>
-                <c-badge class="font-mono" variant="outline">{{ site.mode|upper }}</c-badge>
-            </c-card.content>
-            <c-card.footer>
-                <div class="flex">
-                    <p class="group-hover:font-semibold">Manage</p>
-                    {% lucide "chevron-right" class="mt-0.5 transition-all group-hover:translate-x-1" %}
-                </div>
-            </c-card.footer>
-        </c-card>
+        <a href="{% url "sites:dashboard" site_id=site.id %}">
+            <c-card class="cursor-pointer min-w-100 max-w-100 max-h-50 min-h-50 group hover:bg-accent">
+                <c-card.header>
+                    <c-card.title>{{ site.name|truncatechars:"50" }}</c-card.title>
+                    <c-card.description>{{ site.description|truncatechars:"100" }}</c-card.description>
+                </c-card.header>
+                <c-card.content>
+                    <c-badge class="font-mono" variant="outline">{{ site.mode|upper }}</c-badge>
+                </c-card.content>
+                <c-card.footer>
+                    <div class="flex">
+                        <p class="group-hover:font-semibold">Manage</p>
+                        {% lucide "chevron-right" class="mt-0.5 transition-all group-hover:translate-x-1" %}
+                    </div>
+                </c-card.footer>
+            </c-card>
+        </a>
     {% empty %}
         <c-card class="min-h-10 min-w-full">
             <c-card.header>
                 <p class="font-semibold">No results found</p>
                 {% if query %}
-                    <p>Your search for "{{ query }}" did not return any results. Try being more specific.</p>
+                    <p>Your search for "{{ query }}" did not return any results. Try increasing your search specificity.</p>
                 {% else %}
                     <p>Your search with the specified filters did not return any results. Try disabling them?</p>
                 {% endif %}

@@ -28,6 +28,10 @@
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
             rel="stylesheet">
+      <script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-tooltip@2.0.1/dist/cdn.min.js"
+              integrity="sha256-uOPrYl2NMP/1fCsv3IhJVaSs9bsdbJ9hT8Z5s1aRD0E="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"></script>
       <script defer
               src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.8/cdn.js"
               integrity="sha512-9pBoQWH5nbYAzoNQy3KkxHn6UDIEfuz7VGPb++0kkcPHaYbe/Obfbd1F2dNbJ1lfuAPQ52Y3Lw1QFO3za2Bxug=="
@@ -42,15 +46,22 @@
               integrity="sha512-pOKwC//TVpP3EBOdJDwgOugKFQ/9t3AAm6+ZQg+gwMO9U6jaEx3f8eSWP/xyFLcDkXVEOxnUhWELFiShDdsJYA=="
               crossorigin="anonymous"
               referrerpolicy="no-referrer"></script>
+      <script src="https://cdn.jsdelivr.net/npm/htmx-ext-alpine-morph@2.0.1/alpine-morph.min.js"
+              integrity="sha512-/4N47U2/vrVvHLSvlRGCeOExof5kNorwiWclPAyUZmlMZ1ouH2IQLq7h/PTpu/BRCAxAggGqn94GBXfEZuXYOg=="
+              crossorigin="anonymous"></script>
       {# Optional AlpineJS data persistence across page reloads - see AlpineJS Persist plugin docs for more info #}
       <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs-persist/3.14.9/cdn.js"
               integrity="sha512-+uj3PpVNOm7SeUC7xulZvhihlE0+mCnAvNsoTcgtKwOBGnEmwz6gD4loPV4AchHn5s+jY3MVljxajRZ6XGZZtA=="
               crossorigin="anonymous"
               referrerpolicy="no-referrer"></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.css"
+              integrity="sha256-WWn0l9kVjXaC+CGcbxP6Zyac31v1Cjkx2VMnFR3uVng="
+              crossorigin="anonymous"
+              type="text/css">
       {% django_htmx_script %}
     {% endblock %}
   </head>
-  <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
+  <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}' {% block htmx_extensions %}{% endblock %}>
       {% block main %}
       {% endblock %}
       <footer id="toast-messages">

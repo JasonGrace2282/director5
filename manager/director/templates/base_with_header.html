@@ -9,20 +9,28 @@
                 <c-img light_src="{% static "favicon/favicon-dark.svg" %}" dark_src="{% static "favicon/favicon.svg" %}"
                class="pointer-events-none w-15 h-15"/>
             </a>
-            {% include "base_with_header.html.partials/search.html" %}
-        </div>
-        <div class="flex gap-3 items-center mr-4">
-            <a href="{{ DOCS_URL }}" class="hover:opacity-75">
-                {% lucide "book-marked" %}
-            </a>
-            <a href="{# todo: add profile settings url #}" class="flex gap-1 items-center hover:opacity-75">
-                {% lucide "user-round-cog" %}
-                <p>{{ user.first_name }} {{ user.last_name.0 }}.</p>
-                {% lucide "chevron-down" class="hidden md:block" %}
-            </a>
-            {% block header_extras %}
+            {% block header_extras_left %}
             {% endblock %}
         </div>
+        <c-command-dialog shortcut_key="k">
+            {% block header_search_trigger_slot %}
+            {% endblock %}
+            <c-command.input placeholder="Type a command or search..." />
+            {% include "base_with_header.html.partials/search.html" %}
+        </c-command-dialog>
+        {% block header_right %}
+            {% block header_right_extra_items_left %}
+            {% endblock %}
+            <div class="flex gap-3 items-center mr-4">
+                <a href="{# todo: add profile settings url #}" class="flex gap-1 items-center hover:opacity-75">
+                    {% lucide "user-round-cog" %}
+                    <p class="overflow-clip text-nowrap">{{ user.first_name }} {{ user.last_name.0 }}.</p>
+                    <img src="{{ user.avatar.url }}" alt="User Avatar" class="rounded-full w-8 h-8 outline outline-sidebar-ring ml-1">
+                </a>
+                {% block header_right_extra_items_right %}
+                {% endblock %}
+            </div>
+        {% endblock %}
     </header>
 {% block content %} {% endblock %}
 {% endblock %}

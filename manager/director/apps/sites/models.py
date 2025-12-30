@@ -119,6 +119,7 @@ class Site(models.Model):
 
     id: int
     domain_set: models.QuerySet["Domain"]
+    operation: Operation
 
     def __str__(self):
         return self.name
@@ -133,11 +134,16 @@ class Site(models.Model):
         default = settings.SITE_URL_FORMATS[None]
         return settings.SITE_URL_FORMATS.get(self.purpose, default).format(self.name)
 
+    @property
+    def channels_group_name(self) -> str:
+        """Return the group name used to specify differentiate on a site-by-site basis in a consumer"""
+        return f"site_{self.id}"
+
     def start_operation(self, ty: str) -> "Operation":
         from . import operations
 
         op = Operation.objects.create(site=self, ty=ty)
-        operations.send_operation_updated_message(self)
+        operations.trigger_operation_updated_event(self)
         return op
 
     def list_domains(self) -> list[str]:
@@ -208,7 +214,7 @@ class Database(models.Model):
     host = models.ForeignKey(DatabaseHost, on_delete=models.CASCADE)
     password = models.CharField(max_length=255, null=False, blank=False)
 
-    site: Site
+    site: Site  # reverse OneToOneField from Site.database, this is automatically done by Django, we just type annotate it to be clearer
 
     def __str__(self) -> str:
         return self.redacted_db_url
@@ -219,7 +225,13 @@ class Database(models.Model):
 
     @property
     def redacted_db_url(self) -> str:
-        return f"{self.host.dbms}://{self.username}:***@{self.host.hostname}:{self.host.port}/{self.username}"
+        # We check if the reverse relation to a Site has been created, if not, don't use the variables
+        # or else anything relying on Database's __str__ method will fail, i.e. django admin, since this database is not always
+        # guaranteed to have a reverse relation
+        if hasattr(self, "site"):
+            return f"{self.host.dbms}://{self.username}:***@{self.host.hostname}:{self.host.port}/{self.username}"
+        else:
+            return "No site linked to this database (database url does not exist)"
 
     def serialize_for_appserver(self) -> dict[str, str]:
         return {
@@ -327,12 +339,21 @@ class Operation(models.Model):
     started_time = models.DateTimeField(null=True)
 
     def __str__(self) -> str:
-        return f"{type(self).__name__}: {self.ty}"
+        return f"{type(self).__name__}: {self.ty} - {self.site.name}"
 
     @property
     def has_started(self) -> bool:
         return self.started_time is not None
 
+    @property
+    def progress(self) -> float:
+        try:
+            return round((1 - self.action_set.filter(result=None).count() / self.action_set.count()) * 100)
+        except ZeroDivisionError:
+            return 100.0
+
+    def list_actions_in_order(self) -> models.QuerySet[Action]:
+        return self.action_set.order_by("id")
 
 class Action(models.Model):
     """An individual task in an operation.
@@ -389,6 +410,10 @@ class Action(models.Model):
 
     def __str__(self) -> str:
         return f"{type(self).__name__}: {self.name}"
+
+    @property
+    def has_started(self) -> bool:
+        return self.started_time is not None
 
     def start_action(self) -> None:
         self.started_time = timezone.localtime()

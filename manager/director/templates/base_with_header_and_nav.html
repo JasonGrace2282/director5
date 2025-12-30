@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block header_extras %}
+{% block header_extras_right %}
     <a class="flex gap-1 items-center transition-all hover:opacity-75" @click="document.getElementById('nav').setAttribute( 'data-mobile-expanded', document.getElementById('nav').getAttribute('data-mobile-expanded') === 'true' ? 'false' : 'true' )" x-init>
         {% lucide "menu" class="md:hidden" %}
     </a>
@@ -10,20 +10,26 @@
 
 {% block main %}
     {{ block.super }}
-    <div data-mobile-expanded="false" class="group fixed bottom-0 left-0 w-full bg-sidebar border-t border-sidebar-border translate-y-full transition-all duration-300 data-[mobile-expanded=true]:translate-y-0 md:block md:translate-y-0 md:left-0 md:top-[3.75rem] md:bottom-0 md:w-13 md:border-t-0 md:border-r-1 md:hover:w-60 md:overflow-clip data-[mobile-expanded=true]:md:w-60 h-90 md:h-screen" id="nav">
-        <ul class="flex flex-col gap-y-2 mt-2 [&_svg]:size-5">
-            <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "house" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">My Sites</p></c-button.a></li>
-            <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/a" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "store" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Marketplace</p></c-button.a></li>
-<li>
-  <div class="border-1 border-t border-border w-7 group-hover:w-54 group-data-[mobile-expanded=true]:w-[96vw] transition-all duration-300 ml-3"></div>
-</li>
-            <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/b" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "school" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">My Classes</p></c-button.a></li>
-<li>
-  <div class="border-1 border-t border-border w-7 group-hover:w-54 group-data-[mobile-expanded=true]:w-[96vw] transition-all duration-300 ml-3"></div>
-</li>
-            <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/c" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "book-marked" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Documentation</p></c-button.a></li>
-            <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/asdasdqdwi" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "info" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Information</p></c-button.a></li>
+        <div data-mobile-expanded="false" class="group fixed bottom-0 left-0 w-full bg-sidebar border-t border-sidebar-border translate-y-full transition-all duration-300 data-[mobile-expanded=true]:translate-y-0 md:block md:translate-y-0 md:left-0 md:top-[3.75rem] md:bottom-0 md:w-13 md:border-t-0 md:border-r-1 md:hover:w-60 md:overflow-clip data-[mobile-expanded=true]:md:w-60 h-90 md:h-screen" id="nav">
+            <ul class="flex flex-col gap-y-2 mt-2 [&_svg]:size-5">
+                <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "house" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">My Sites</p></c-button.a></li>
+                <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/a" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "store" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Marketplace</p></c-button.a></li>
+    <li>
+      <div class="border-1 border-t border-border w-7 group-hover:w-54 group-data-[mobile-expanded=true]:w-[96vw] transition-all duration-300 ml-3"></div>
+    </li>
+                <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/b" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "school" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">My Classes</p></c-button.a></li>
+    <li>
+      <div class="border-1 border-t border-border w-7 group-hover:w-54 group-data-[mobile-expanded=true]:w-[96vw] transition-all duration-300 ml-3"></div>
+    </li>
+                <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/c" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "book-marked" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Documentation</p></c-button.a></li>
+                <li><c-button.a hx-boost="true" href="{% url "sites:index" %}" data-selected="{% if request.path == "/asdasdqdwi" %}true{% else %}false{% endif %}" class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent" variant="ghost">{% lucide "info" class="ml-1" %} <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Information</p></c-button.a></li>
 
-        </ul>
+            </ul>
+        <c-button class="bottom-17 absolute w-14" variant="ghost" x-data x-tooltip.raw="Access global search using ⌘ + K">
+          <kbd
+            class="inline-flex absolute top-2 right-3 gap-1 items-center px-1.5 h-5 font-mono font-medium rounded border pointer-events-none select-none bg-muted text-[10px] text-muted-foreground">
+            <span class="text-xs">⌘</span>K
+          </kbd>
+        </c-button>
     </div>
 {% endblock %}

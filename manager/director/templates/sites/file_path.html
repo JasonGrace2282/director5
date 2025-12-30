@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="flex items-center gap-1 overflow-scroll w-40 md:w-auto md:overflow-clip">
+    <div class="flex gap-2">
+        {% lucide "hard-drive" %}
+        <p class="font-semibold">root</p>
+    </div>
+    {% for directory_item in path_list %}
+        <p class="hover:underline cursor-pointer">{{ directory_item }}</p>
+        {% if not forloop.last %}{% lucide "chevron-right" %}{% endif %}
+    {% endfor %}
+</div>

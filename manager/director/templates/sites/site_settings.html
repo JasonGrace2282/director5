@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base_with_site_header_and_nav.html" %}
+{% load static %}
+
+{% block title %}{{ site.name }} | Director{% endblock %}
+
+{% block inner_content %}
+    <div class="min-h-[90vh] md:w-[83vw] mt-38 ml-10 md:ml-65">
+    </div>
+{% endblock %}

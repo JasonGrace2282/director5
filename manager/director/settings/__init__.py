@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "director.apps.users",
     "director.apps.sites",
     "director.apps.marketplace",
+    "director.apps.utils",
     "lucide",
     "django_htmx",
     "django_cotton.apps.SimpleAppConfig",
@@ -91,6 +92,8 @@ MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "director.apps.users.middleware.RequireGuidelinesMiddleware",
+    "director.apps.users.middleware.BanMiddleware",
 ]
 
 ROOT_URLCONF = "director.urls"
@@ -250,6 +253,7 @@ STATIC_ROOT = BASE_DIR / "collected_static"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -259,12 +263,22 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ASGI for websockets
 ASGI_APPLICATION = "director.asgi.application"
 
+# Redis
+REDIS_URL = "redis://redis:6379/0"
 
 # Celery
-CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_BROKER_URL = REDIS_URL
 CELERY_LOG_LEVEL = "WARNING"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 # Director settings
 DOCS_URL = "https://jasongrace2282.github.io/director5/"

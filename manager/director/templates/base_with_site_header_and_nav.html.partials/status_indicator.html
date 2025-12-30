@@ -1,0 +1,54 @@
+<c-popover class="ml-4 w-20 md:w-30 lg:w-40 animate-in slide-in-from-left-4 fade-in" id="site-power-status" hx-ws-swap="morph">
+    <c-popover.trigger>
+        <div class="flex items-center gap-2">
+            {% if not status %}
+                <c-skeleton class="w-4 h-4"></c-skeleton>
+            {% elif status == "Online" %}
+                {% lucide "circle" class="w-4 h-4" fill="#04c955" stroke="none" %}
+            {% elif status == "Offline" %}
+                {% lucide "circle" class="w-4 h-4" fill="red" stroke="none" %}
+            {% elif status == "Restarting" or status == "Starting" or status == "Stopping" %}
+                {% lucide "circle" class="w-4 h-4" fill="#04abcc" stroke="none" %}
+            {% endif %}
+
+            <div class="relative">
+                <c-input
+                    value="     {% if status %}{{ status }}{% endif %}"
+                    class="-ml-8 cursor-pointer !w-20 md:!w-30 lg:!w-40"
+                    readonly
+                ></c-input>
+
+                {% lucide "chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50 hidden md:block" %}
+
+                {% if not status %}
+                    <c-skeleton class="absolute top-1/2 -translate-y-1/2 w-14 h-2"></c-skeleton>
+                {% endif %}
+            </div>
+        </div>
+
+    </c-popover.trigger>
+    <c-popover.content class="max-w-55 flex flex-col -ml-2 gap-2">
+        <p class="text-muted-foreground">Actions</p>
+            <a href="{% url "sites:dashboard" site_id=site.id %}" class="group {% if status|default:"Online" == "Online" %}opacity-50 pointer-events-none{% endif %}">
+                <div class="flex items-center h-8 rounded-sm group-hover:bg-secondary px-2">
+                    <div class="flex">
+                        <p class="text-sm font-semibold">{% lucide "power" class="-mt-1 inline mr-1 w-4 h-4" stroke="#04c955" %} Start</p>
+                    </div>
+                </div>
+            </a>
+            <a href="{% url "sites:dashboard" site_id=site.id %}" class="group {% if status|default:"Restarting" == "Restarting" %}opacity-50 pointer-events-none{% endif %}">
+                <div class="flex items-center h-8 rounded-sm group-hover:bg-secondary px-2">
+                    <div class="flex">
+                        <p class="text-sm font-semibold">{% lucide "rotate-ccw" class="-mt-1 inline mr-1 w-4 h-4" stroke="#04abcc" %} Restart</p>
+                    </div>
+                </div>
+            </a>
+            <a href="{% url "sites:dashboard" site_id=site.id %}" class="group {% if status|default:"Offline" == "Offline" %}opacity-50 pointer-events-none{% endif %}">
+                <div class="flex items-center h-8 rounded-sm group-hover:bg-secondary px-2">
+                    <div class="flex">
+                        <p class="text-sm font-semibold">{% lucide "power-off" class="-mt-1 inline mr-1 w-4 h-4" stroke="red" %} Shutdown</p>
+                    </div>
+                </div>
+            </a>
+    </c-popover.content>
+</c-popover>

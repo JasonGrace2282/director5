@@ -1,10 +1,187 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base_with_header.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <script src="{% static "libs/ws.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@5.2.0/dist/apexcharts.min.js"
+            integrity="sha256-UIl6m72GUKaVk+H6ufvkI2Wwh3VcB9AXTAUH/KsASxE="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/5.5.0/xterm.js"
+            integrity="sha512-Gujw5GajF5is3nMoGv9X+tCMqePLL/60qvAv1LofUZTV9jK8ENbM9L+maGmOsNzuZaiuyc/fpph1KT9uR5w3CQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/5.5.0/xterm.min.css"
+          integrity="sha512-XpXUuzg5afNt1bsgnrOesXP70TLH8tXYYK5sK+Y0UV+YBvJn9EfRFYWy4HT3TVDfH0nl1CO0lwOxIrt2gk9qjg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.min.js"
+            integrity="sha512-ApqaLgikPd0sx5OEsT8RB0bO2pfuslb0RbPhAlsqdBGZX9HSGlY/n0MD7XWc4xig2A3arVs3aqamEDIHOd6iuQ=="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-web-links@0.11.0/lib/addon-web-links.min.js"
+            integrity="sha512-HgDAdg1Me089v7X6xFMbnwQ+FeWwtt55Tv5Jpbpk31SwbaSVxiP/vcefPMZVd69l28IICI3y6w3A6YCuVb5Ojw=="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-search@0.15.0/lib/addon-search.min.js"
+            integrity="sha512-1xcVAP6joQ6LKnbm/HCrJ9RtN3Tpzc0nODVAawNDhyRBEpf5ulxh1WAgLPDjmxx9BmglpKtv+TnDVH2sFIpecQ=="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-clipboard@0.1.0/lib/addon-clipboard.min.js"
+            integrity="sha512-xg4FpBQx7HRmimQChvb49NSTc0of8ErfOHu6k6AcV8xpeyyAIU3zLiuQr/LD0692LvjF48Wv9sVqFRVMe96QQg=="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-attach@0.11.0/lib/addon-attach.min.js"
+            integrity="sha512-ICDZBSGtoX8aYOtozWABaeBZX+Ewb9TRqmhM44Ju8o4qOOHe1WCs4bqlzdBbLvLWjswiaD6HaP2A0bWNyMidNw=="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/yjs@13.6.27/src/structs/GC.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/y-websocket@3.0.0/src/y-websocket.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/y-monaco@0.1.6/src/y-monaco.min.js"></script>
+{% endblock %}
+
+{% block htmx_extensions %}
+    hx-ext="alpine-morph,ws" ws-connect="/sites/{{ site.id }}/websocket/status"
+{% endblock %}
+
+{% block header_extras_left %}
+    <c-popover class="ml-4 w-20 md:w-30 lg:w-40">
+        <c-popover.trigger>
+            <div class="flex items-center animate-in slide-in-from-left-4 fade-in">
+                {% if site.mode == "static" %}{% lucide "package" class="mr-2 w-4 h-4" %}{% else %}{% lucide "container" class="mr-2 w-4 h-4" %}{% endif %}
+                <div class="relative">
+                    <c-input value="     {{ site.name }}" class="-ml-8 cursor-pointer !w-20 md:!w-30 lg:!w-40" readonly></c-input>
+                    <div class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 top-0 h-4 w-9 bg-gradient-to-l z-0 from-white/100 via-white/80 to-white/0"></div>
+                    {% lucide "chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 z-10 opacity-50 hidden md:block" %}
+
+                </div>
+            </div>
+        </c-popover.trigger>
+        <c-popover.content class="max-w-55 flex flex-col -ml-2 gap-2">
+            <p class="text-muted-foreground">Recents</p>
+            {% for recent_site in recent_sites %}
+                <a href="{% url "sites:dashboard" site_id=recent_site.id %}" class="group">
+                    <div class="flex items-center h-12 rounded-sm group-hover:bg-secondary px-2">
+                        {% if recent_site.mode == "static" %}{% lucide "package" class="w-6 h-6" %}{% else %}{% lucide "container" class="w-6 h-6" %}{% endif %}
+                        <div class="ml-3 flex flex-col">
+                            <p class="text-sm font-bold">{{ recent_site.name|truncatechars:"24" }}</p>
+                            <p class="text-[0.7rem] text-muted-foreground text-nowrap">{{ recent_site.sites_url|truncatechars:"34" }}</p>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </c-popover.content>
+    </c-popover>
+    {% include "base_with_site_header_and_nav.html.partials/status_indicator.html" %}
+    {% include "base_with_site_header_and_nav.html.partials/active_users.html" %}
+{% endblock %}
+
+{% block header_search_trigger_slot %}
+    <c-slot name="trigger_slot">
+        <div class="hidden relative md:block w-100 ">
+          <c-input type="text" placeholder="Search..."/>
+          <kbd
+            class="inline-flex absolute top-2 right-3 gap-1 items-center px-1.5 h-5 font-mono font-medium rounded border pointer-events-none select-none bg-muted text-[10px] text-muted-foreground">
+            <span class="text-xs">⌘</span>K
+          </kbd>
+        </div>
+        {% lucide name="search" class="ml-2 md:hidden" %}
+    </c-slot>
+{% endblock %}
+
+{% block header_right_extra_items_left %}
+    {# Blank placeholder div to center the search box #}
+    <div class="w-7"></div>
+{% endblock %}
+{% block header_right_extra_items_right %}
+    <a class="flex gap-1 items-center transition-all hover:opacity-75" @click="document.getElementById('nav').setAttribute( 'data-mobile-expanded', document.getElementById('nav').getAttribute('data-mobile-expanded') === 'true' ? 'false' : 'true' )" x-init>
+        {% lucide "menu" class="md:hidden" %}
+    </a>
+{% endblock %}
+
+{% block main %}
+    {{ block.super }}
+<div
+    x-data="{
+        currentPath: window.location.pathname,
+        isSelected(segment) {
+            return this.currentPath.includes(segment);
+        },
+        init() {
+            document.body.addEventListener('htmx:afterSettle', () => {
+                this.currentPath = window.location.pathname;
+            });
+        }
+    }"
+    data-mobile-expanded="false"
+    class="group fixed bottom-0 left-0 w-full bg-sidebar border-t border-sidebar-border translate-y-full transition-all duration-300 data-[mobile-expanded=true]:translate-y-0 md:block md:translate-y-0 md:left-0 md:top-[3.75rem] md:bottom-0 md:w-13 md:border-t-0 md:border-r-1 md:hover:w-60 md:overflow-clip data-[mobile-expanded=true]:md:w-60 h-90 md:h-screen animate-in slide-in-from-top-4 fade-in"
+    id="nav"
+>
+    <ul class="flex flex-col gap-y-2 mt-2 [&_svg]:size-5"
+        hx-boost="true"
+        hx-swap="outerHTML"
+        hx-target="#main-panel-content"
+        hx-select="#main-panel-content"
+    >
+        <li>
+            <c-button.a
+                href="{% url 'sites:dashboard' site_id=site.id %}"
+                x-bind:data-selected="isSelected('dashboard')"
+                class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent"
+                variant="ghost"
+            >
+                {% lucide "gauge" class="ml-1" %}
+                <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Dashboard</p>
+            </c-button.a>
+        </li>
+        <li>
+            <c-button.a
+                href="{% url 'sites:database' site_id=site.id %}"
+                x-bind:data-selected="isSelected('database')"
+                class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent"
+                variant="ghost"
+            >
+                {% lucide "database" class="ml-1" %}
+                <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Database</p>
+            </c-button.a>
+        </li>
+        <li>
+            <c-button.a
+                href="{% url 'sites:files_root' site_id=site.id %}"
+                x-bind:data-selected="isSelected('files')"
+                class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent"
+                variant="ghost"
+            >
+                {% lucide "folder-open" class="ml-1" %}
+                <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">File Manager</p>
+            </c-button.a>
+        </li>
+        <li>
+            <c-button.a
+                href="{% url 'sites:console' site_id=site.id %}"
+                x-bind:data-selected="isSelected('console')"
+                class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent"
+                variant="ghost"
+            >
+                {% lucide "square-terminal" class="ml-1" %}
+                <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Console</p>
+            </c-button.a>
+        </li>
+        <li>
+            <c-button.a
+                href="{% url 'sites:settings' site_id=site.id %}"
+                x-bind:data-selected="isSelected('settings')"
+                class="w-9 group-hover:w-56 group-data-[mobile-expanded=true]:w-[96vw] justify-start !px-1 ml-2 opacity-50 data-[selected=true]:opacity-100 data-[selected=true]:bg-dark-accent"
+                variant="ghost"
+            >
+                {% lucide "settings" class="ml-1" %}
+                <p class="group-hover:block group-data-[mobile-expanded=true]:block hidden">Settings</p>
+            </c-button.a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+    <div id="main-panel-content" hx-history-elt>
+        {% block inner_content %}
+        {% endblock %}
+    </div>
+{% endblock %}

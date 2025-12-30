@@ -30,7 +30,7 @@ services:
       - watchfiles
       - --filter
       - python
-      - "uv run celery -A director worker"
+      - "uv run celery -A director worker --concurrency=4"
       - /director5/manager/director
     working_dir: /director5/manager
     networks:

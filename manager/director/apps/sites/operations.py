@@ -4,7 +4,11 @@ from collections.abc import Callable, Iterator
 from functools import wraps
 from typing import overload
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
 from .appserver import Appserver
+from .consumers.site_status import trigger_operation_updated_event
 from .models import Action, Operation, Site
 
 type ActionCallback = Callable[[Site, list[Appserver]], Iterator[str]]
@@ -154,15 +158,15 @@ def auto_run_operation_wrapper(operation_id: int) -> Iterator[OperationWrapper]:
     #. Runs the :class:`OperationWrapper` with the given scope when the with statement has finished.
     #. Deletes the :class:`.Operation` if it was successful.
     """
-    operation = Operation.objects.get(id=operation_id)
+    operation = Operation.objects.select_related("site").get(id=operation_id)
     wrapper = OperationWrapper(operation)
 
     yield wrapper
 
-    send_operation_updated_message(operation.site)
+    trigger_operation_updated_event(operation.site)
 
     def action_started(_: Action) -> None:
-        send_operation_updated_message(operation.site)
+        trigger_operation_updated_event(operation.site)
 
     result = wrapper.execute_operation(new_action_callback=action_started)
 
@@ -170,12 +174,4 @@ def auto_run_operation_wrapper(operation_id: int) -> Iterator[OperationWrapper]:
         operation.action_set.all().delete()
         operation.delete()
 
-    send_operation_updated_message(operation.site)
-
-
-def send_operation_updated_message(_site: Site) -> None:
-    pass
-
-
-def send_site_updated_message(_site: Site) -> None:
-    pass
+    trigger_operation_updated_event(operation.site)

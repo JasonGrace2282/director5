@@ -1,10 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "sites/sites.html" %}
+{% load function_mappings %}
+
+{% block content %}
+    {{ block.super }}
+    <div>
+        <c-alert-dialog default_open="true" unignorable="true">
+            <c-alert-dialog.content class="!max-w-2xl !pt-2 !pb-6">
+                <c-alert-dialog.header>
+                    <c-alert-dialog.title>
+                        <div class="flex justify-between items-center">
+                            Your account has been temporarily suspended.
+                            <img src="{{ "favicon/mascot/mocha-bear-angry.gif"|static }}" class="w-20" />
+                        </div>
+                    </c-alert-dialog.title>
+                    <c-alert-dialog.description class="flex flex-col space-y-4">
+                        <c-table>
+                            <c-table.caption>
+                                Ban history
+                            </c-table.caption>
+                            <c-table.header>
+                                <c-table.row>
+                                    <c-table.head>Reason</c-table.head>
+                                    <c-table.head>Start time</c-table.head>
+                                    <c-table.head>End time</c-table.head>
+                                </c-table.row>
+                            </c-table.header>
+                            <c-table.body>
+                                {% for ban in user.bans.all %}
+                                    <c-table.row>
+                                        <c-table.cell>{{ ban.reason }}</c-table.cell>
+                                        <c-table.cell>{{ ban.start_time }}</c-table.cell>
+                                        <c-table.cell class="font-semibold">{{ ban.end_time }}</c-table.cell>
+                                    </c-table.row>
+                                {% endfor %}
+                            </c-table.body>
+                        </c-table>
+
+                    </c-alert-dialog.description>
+                </c-alert-dialog.header>
+                <c-alert-dialog.footer>
+                    <div class="flex flex-col items-end">
+                        <c-button.a class="max-w-50" href="{% url "auth:logout" %}">Logout</c-button.a>
+                        <p class="text-center color-muted-foreground mt-2">For questions, or to appeal, email: <a href="mailto:{{ CONTACT_EMAIL }}" class="text-blue-400">{{ CONTACT_EMAIL }}</a></p>
+                    </div>
+                </c-alert-dialog.footer>
+            </c-alert-dialog.content>
+        </c-alert-dialog>
+    </div>
+{% endblock %}

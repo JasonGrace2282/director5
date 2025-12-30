@@ -162,10 +162,8 @@ cython_debug/
 
 **/settings/secret.py
 
-# Pycharm tailwind autocomplete workaround folder
-
-pyc-autocomplete/
-
 /docker/
 **/docker/tailwindcss
 **/tailwind/build.css
+
+**/media/

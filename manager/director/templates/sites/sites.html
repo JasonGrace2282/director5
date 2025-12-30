@@ -8,12 +8,12 @@
         <div class="flex flex-col gap-3 justify-center items-center w-screen min-h-[90vh]">
             <img src="{% static "favicon/mascot/milk-bear-crying.gif" %}" class="h-40"/>
             <p>It's lonely here... maybe make a new site?</p>
-            <c-button.a href="{% url "sites:create" %}" hx-boost="true">New Site</c-button.a>
+            <c-button.a href="{% url "sites:create" %}">New Site</c-button.a>
         </div>
     {% else %}
         <div class="flex flex-col gap-y-3 items-center w-screen md:block min-h-[90vh] mt-22 md:w-[83vw] md:ml-65">
             <div class="flex gap-x-2">
-                <c-button.a href="{% url "sites:create" %}" hx-boost="true">New Site</c-button.a>
+                <c-button.a href="{% url "sites:create" %}">New Site</c-button.a>
                 <form class="flex gap-x-2" hx-post="" hx-trigger="change, keyup changed delay:500ms" hx-target="#sites-list" hx-swap="outerHTML">
                     <c-input class="md:!w-70" placeholder="Search your sites..." name="query"></c-input>
                     <c-popover>

@@ -1,10 +1,127 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "sites/sites.html" %}
+{% load function_mappings %}
+
+{% block content %}
+    {{ block.super }}
+    <div x-data="{ scrolledToBottom: false, acceptGuidelinesBoxChecked: false }">
+        <form method="post">
+            {% csrf_token %}
+            <c-alert-dialog default_open="true" unignorable="true">
+                <c-alert-dialog.content class="!max-w-2xl !pt-2 !pb-6">
+                    <c-alert-dialog.header>
+                        <c-alert-dialog.title>
+                            <div class="flex justify-between items-center">
+                                Accept the Director5 Usage Guidelines
+                                <img src="{{ "favicon/mascot/mocha-bear-reading.png"|static }}" class="w-14" />
+                            </div>
+                        </c-alert-dialog.title>
+                        <c-alert-dialog.description class="flex flex-col space-y-4">
+                            <c-textarea
+                                readonly
+                                class="h-64 overflow-y-auto resize-none text-black"
+                                x-ref="guidelinesBox"
+                                x-on:scroll="scrolledToBottom = $refs.guidelinesBox.scrollTop + $refs.guidelinesBox.clientHeight >= $refs.guidelinesBox.scrollHeight"
+                            >
+Director5 Terms of Service and Usage Agreement
+
+1. Introduction
+
+This Terms of Service ("Agreement") governs your use of the Director5 platform, a web hosting service provided by the Computer Systems Lab ("CSL") at Thomas Jefferson High School for Science and Technology ("TJHSST"). By accessing or using Director5, you agree to comply with all provisions outlined in this Agreement. If you do not agree, you are not authorized to use the platform.
+
+2. Purpose and Scope
+
+Director5 is intended solely for the hosting of websites under the *.tjhsst.edu domain. It may not be used for personal, commercial, or unauthorized purposes. Users may host content that  complies with applicable school and district policies, including but not limited to:
+
+TJHSST Website Guidelines
+
+Fairfax County Public Schools ("FCPS") Acceptable Use Policy
+
+FCPS Student Rights and Responsibilities ("SR&R")
+
+CSL Security Policy
+
+3. Acceptable Use
+
+By using Director5, you agree to the following:
+
+Permitted Use: All hosted content must serve a school-affiliated or community-driven purpose.
+
+Prohibited Activities: Compute-intensive tasks are not permitted on Director5. For such activities, the Cluster must be used.
+
+Content Restrictions: Content must not include anything obscene, libelous, disruptive, plagiarized, or in violation of privacy laws or SR&R.
+
+External Links: Do not link to websites that conflict with FCPS or SR&R policies.
+
+Violations may result in the immediate suspension or removal of your site and may lead to further disciplinary action.
+
+4. Privacy and Personal Information
+
+You agree not to publish the following types of personal information:
+
+Home addresses or telephone numbers
+
+Social Security Numbers or FCPS student identification numbers
+
+Images of students whose guardians have opted out of directory sharing
+
+When using student images, only first names may be displayed.
+
+5. Copyright and Attribution
+
+Do not use copyrighted materials (including but not limited to images, music, and text) without prior written permission.
+
+Materials used under public domain or open licenses must be properly attributed to their original authors.
+
+6. Security Obligations
+
+Administrators of Director5-hosted sites are responsible for maintaining security and compliance:
+
+Access Control: Content restricted to TJHSST users must not be publicly accessible.
+
+Policy Compliance: All activity must adhere to the CSL Acceptable Use Policy and all applicable laws.
+
+Security Practices: Sites must implement basic security measures and avoid exposing sensitive data.
+
+The CSL Sysadmins reserve the right to disable, modify, or investigate any site at their discretion if it:
+
+Violates these Terms of Service
+
+Introduces security vulnerabilities
+
+Conflicts with school or district policies
+
+7. Administrative Access and Modifications
+
+You acknowledge and agree that Director5 administrators:
+
+May access or alter any hosted site’s configuration or content at any time
+
+May suspend or terminate site access without prior notice if required for operational, legal, or security reasons
+
+8. Amendments
+
+This Agreement may be updated at any time. Notification of updates will be sent to your official TJHSST email address. It is your responsibility to regularly check your email and remain informed of policy changes.
+
+By checking the box below and clicking "Continue to Director5," you confirm that you have read, understood, and agreed to abide by these Terms of Service governing the use of Director5.
+
+If you have questions, contact a Sysadmin or email: director@tjhsst.edu
+
+                            </c-textarea>
+                            <div class="flex items-center">
+                                <div x-tooltip="scrolledToBottom ? false : 'Please scroll through and review all guidelines before proceeding.'">
+                                    <c-checkbox id="id_accept_guidelines" name="accept_guidelines" x-bind:disabled="!scrolledToBottom" x-model="acceptGuidelinesBoxChecked"/>
+                                </div>
+                                <c-label for="id_accept_guidelines" class="ml-2 font-normal">
+                                    I have read and agree to abide by the Director5 Usage Guidelines.
+                                </c-label>
+                            </div>
+                        </c-alert-dialog.description>
+                    </c-alert-dialog.header>
+                    <c-alert-dialog.footer>
+                        <c-button x-bind:disabled="!acceptGuidelinesBoxChecked" disabled>Continue to Director5</c-button>
+                    </c-alert-dialog.footer>
+                </c-alert-dialog.content>
+            </c-alert-dialog>
+        </form>
+    </div>
+{% endblock %}

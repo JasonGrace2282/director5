@@ -4,212 +4,348 @@
 {% block title %}Create Site | Director{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-y-4 items-center w-screen mt-22" x-data="{
- transitioning: false,
- current_step: 1,
- step_text: {
-    1: 'Type of site',
-    2: 'Select site purpose',
-    3: 'Enter site details',
-    4: 'Collaborators'
-  },
- site_type: null,
- site_purpose: null,
- selected_user_ids: [],
- details_form_has_errors: true,
- prevStep() {
-    const current = document.getElementById('step' + this.current_step);
-    const previous = document.getElementById('step' + (this.current_step - 1));
-    this.transitioning = true;
+  <div
+    class="mt-22 flex w-screen flex-col items-center gap-y-4"
+    x-data="{
+transitioning: false,
+current_step: 1,
+step_text: {
+1: 'Type of site',
+2: 'Select site purpose',
+3: 'Enter site details',
+4: 'Collaborators'
+},
+site_type: null,
+site_purpose: null,
+selected_user_ids: [],
+details_form_has_errors: true,
+prevStep() {
+const current = document.getElementById('step' + this.current_step);
+const previous = document.getElementById('step' + (this.current_step - 1));
+this.transitioning = true;
 
-    current.classList.add('translate-x-full');
+current.classList.add('translate-x-full');
 
-    current.addEventListener('transitionend', function handler() {
-        current.classList.add('hidden');
-        current.removeEventListener('transitionend', handler);
-    });
+current.addEventListener('transitionend', function handler() {
+current.classList.add('hidden');
+current.removeEventListener('transitionend', handler);
+});
 
-    previous.classList.remove('hidden');
-    requestAnimationFrame(() => {
-        previous.classList.remove('-translate-x-full');
-    });
+previous.classList.remove('hidden');
+requestAnimationFrame(() => {
+previous.classList.remove('-translate-x-full');
+});
 
-    this.current_step--;
-    this.transitioning = false;
- },
- nextStep() {
-      {# We can't use x-show and x-transition here - it just doesn't work for conditional transitions #}
-      const current = document.getElementById('step' + this.current_step);
-      const next = document.getElementById('step' + (this.current_step + 1));
-      this.transitioning = true;
+this.current_step--;
+this.transitioning = false;
+},
+nextStep() {
+{# We can't use x-show and x-transition here - it just doesn't work for conditional transitions #}
+const current = document.getElementById('step' + this.current_step);
+const next = document.getElementById('step' + (this.current_step + 1));
+this.transitioning = true;
 
-      current.classList.add('-translate-x-full');
-      current.addEventListener('transitionend', function handler() {
-        current.classList.add('hidden');
-        current.removeEventListener('transitionend', handler);
-      });
+current.classList.add('-translate-x-full');
+current.addEventListener('transitionend', function handler() {
+current.classList.add('hidden');
+current.removeEventListener('transitionend', handler);
+});
 
-      next.classList.remove('hidden');
-        requestAnimationFrame(() => {
-          next.classList.remove('translate-x-full');
-      });
+next.classList.remove('hidden');
+requestAnimationFrame(() => {
+next.classList.remove('translate-x-full');
+});
 
-      this.current_step++;
-      this.transitioning = false;
- },
- isNextStepAvailable() {
- // Returns true if the user can proceed to the next step, otherwise false
-    switch(this.current_step) {
-        case 1: return this.site_type != null;
-        case 2: return this.site_purpose != null;
-        case 3: return !this.details_form_has_errors;
-        default: return false;
-    }
- },
- getDomainName(name) {
-    switch(this.site_purpose) {
-        case 'user': return 'user.tjhsst.edu/' + name;
-        case 'activity': return 'activities.tjhsst.edu/' + name;
-        default: return name + '.sites.tjhsst.edu';
-    }
- },
- getSitePurposeDescription() {
-    switch (this.site_purpose) {
-        case 'project':
-            return 'Use this type if you are creating a site for your own project or class. It will be hosted on *.sites.tjhsst.edu.';
-        case 'user':
-            return 'Use this type if you want a personal webpage for yourself hosted on user.tjhsst.edu.';
-        case 'activity':
-            return 'Use this type to request a site for a club or activity. It will be hosted on activities.tjhsst.edu.'
-        case 'other':
-            return '';
-        default:
-            return '';
-    }
- }
-}">
-    {# 1 = package (site type), 2 = pencil (site details like name etc.), 3 = users (collaborators), 4 = folder kanban (project type) #}
-    <div class="flex mt-8">
-        <img src="{% static "sites/package-circle.svg" %}" class="w-10 h-10" x-show="current_step <= 1" />
-        <img src="{% static "sites/check-circle.svg" %}" class="w-10 h-10" x-show="current_step > 1" x-cloak x-transition:enter />
-        <img src="{% static "sites/pipe.svg" %}" class="w-12"/>
-        <img src="{% static "sites/folder-kanban-circle.svg" %}" class="w-10 h-10" x-show="current_step <= 2" />
-        <img src="{% static "sites/check-circle.svg" %}" class="w-10 h-10" x-show="current_step > 2" x-cloak x-transition:enter />
-        <img src="{% static "sites/pipe.svg" %}" class="w-12"/>
-        <img src="{% static "sites/pencil-circle.svg" %}" class="w-10 h-10" x-show="current_step <= 3" />
-        <img src="{% static "sites/check-circle.svg" %}" class="w-10 h-10" x-show="current_step > 3" x-cloak x-transition:enter />
-        <img src="{% static "sites/pipe.svg" %}" class="w-12"/>
-        <img src="{% static "sites/users-circle.svg" %}" class="w-10 h-10" x-show="current_step <= 4" />
-        <img src="{% static "sites/check-circle.svg" %}" class="w-10 h-10" x-show="current_step > 4" x-cloak x-transition:enter />
+this.current_step++;
+this.transitioning = false;
+},
+isNextStepAvailable() {
+// Returns true if the user can proceed to the next step, otherwise false
+switch(this.current_step) {
+case 1: return this.site_type != null;
+case 2: return this.site_purpose != null;
+case 3: return !this.details_form_has_errors;
+default: return false;
+}
+},
+getDomainName(name) {
+switch(this.site_purpose) {
+case 'user': return 'user.tjhsst.edu/' + name;
+case 'activity': return 'activities.tjhsst.edu/' + name;
+default: return name + '.sites.tjhsst.edu';
+}
+},
+getSitePurposeDescription() {
+switch (this.site_purpose) {
+case 'project':
+return 'Use this type if you are creating a site for your own project or class. It will be hosted on *.sites.tjhsst.edu.';
+case 'user':
+return 'Use this type if you want a personal webpage for yourself hosted on user.tjhsst.edu.';
+case 'activity':
+return 'Use this type to request a site for a club or activity. It will be hosted on activities.tjhsst.edu.'
+case 'other':
+return '';
+default:
+return '';
+}
+}
+}"
+  >
+    {# 1 = package (site type), 2 = pencil (site details like name etc.), 3 =
+  users (collaborators), 4 = folder kanban (project type) #}
+    <div class="mt-8 flex">
+      <img
+        src="{% static "sites/package-circle.svg" %}"
+        class="h-10 w-10"
+        x-show="current_step <= 1"
+      />
+      <img
+        src="{% static "sites/check-circle.svg" %}"
+        class="h-10 w-10"
+        x-show="current_step > 1"
+        x-cloak
+        x-transition:enter
+      />
+      <img src="{% static "sites/pipe.svg" %}" class="w-12" />
+      <img
+        src="{% static "sites/folder-kanban-circle.svg" %}"
+        class="h-10 w-10"
+        x-show="current_step <= 2"
+      />
+      <img
+        src="{% static "sites/check-circle.svg" %}"
+        class="h-10 w-10"
+        x-show="current_step > 2"
+        x-cloak
+        x-transition:enter
+      />
+      <img src="{% static "sites/pipe.svg" %}" class="w-12" />
+      <img
+        src="{% static "sites/pencil-circle.svg" %}"
+        class="h-10 w-10"
+        x-show="current_step <= 3"
+      />
+      <img
+        src="{% static "sites/check-circle.svg" %}"
+        class="h-10 w-10"
+        x-show="current_step > 3"
+        x-cloak
+        x-transition:enter
+      />
+      <img src="{% static "sites/pipe.svg" %}" class="w-12" />
+      <img
+        src="{% static "sites/users-circle.svg" %}"
+        class="h-10 w-10"
+        x-show="current_step <= 4"
+      />
+      <img
+        src="{% static "sites/check-circle.svg" %}"
+        class="h-10 w-10"
+        x-show="current_step > 4"
+        x-cloak
+        x-transition:enter
+      />
     </div>
     <p x-text="step_text[current_step]" class="text-xl font-semibold"></p>
 
-    <div class="overflow-hidden relative w-full h-85">
-        <div class="flex absolute gap-3 justify-center p-2 w-full w-screen transition duration-500" id="step1">
-            <c-card class="flex-auto transition-colors w-45 max-w-90 h-78" @click="site_type = 'static'" x-bind:class="site_type === 'static' ? 'outline-2 outline-ring' : ''">
-                <c-card.header>
-                    <c-card.title class="flex items-center">{% lucide "package" class="inline" %} <p class="ml-2">Static</p></c-card.title>
-                    <c-card.description>For sites with just HTML, CSS, and Javascript</c-card.description>
-                </c-card.header>
-                <c-card.content>
-                    <ul class="list-none">
-                        <li>{% lucide "check" class="inline" %} No usage limits </li>
-                        <li>{% lucide "check" class="inline" %} Simple, always-on </li>
-                        <li>{% lucide "x" class="inline" %} Can't run server-sided code </li>
-                    </ul>
-                </c-card.content>
-            </c-card>
-            <c-card class="flex-auto transition-colors w-45 max-w-90 h-78" @click="site_type = 'dynamic'" x-bind:class="site_type === 'dynamic' ? 'outline-2 outline-ring' : ''">
-                <c-card.header>
-                    <c-card.title class="flex items-center">{% lucide "container" class="inline" %} <p class="ml-2">Dynamic</p></c-card.title>
-                    <c-card.description>For more advanced sites with a backend</c-card.description>
-                </c-card.header>
-                <c-card.content>
-                    <ul class="list-none">
-                        <li>{% lucide "check" class="inline" %} Run server-sided code </li>
-                        <li>{% lucide "x" class="inline" %} Complex </li>
-                        <li>{% lucide "x" class="inline" %} Usage limits may apply </li>
-                    </ul>
-                </c-card.content>
-            </c-card>
-        </div>
-        <div class="flex hidden absolute flex-col gap-3 justify-center items-center p-2 w-full w-screen transition duration-500 translate-x-full" id="step2">
-            <c-select class="w-60 lg:w-80" @cselect-change="site_purpose = $event.detail.value">
-                <c-select.trigger>
-                    <c-select.value placeholder="Purpose" />
-                </c-select.trigger>
-                <c-select.content>
-                    {% for value, label in form.purpose.field.choices %}
-                        <c-select.item value="{{ value }}">{{ label }}</c-select.item>
-                    {% endfor %}
-                </c-select.content>
-            </c-select>
-            <c-form.description x-text="getSitePurposeDescription()" class="w-60"></c-form.description>
-        </div>
+    <div class="h-85 relative w-full overflow-hidden">
+      <div
+        class="absolute flex w-full w-screen justify-center gap-3 p-2 transition duration-500"
+        id="step1"
+      >
+        <c-card
+          class="w-45 max-w-90 h-78 flex-auto transition-colors"
+          @click="site_type = 'static'"
+          x-bind:class="site_type === 'static' ? 'outline-2 outline-ring' : ''"
+        >
+          <c-card.header>
+            <c-card.title class="flex items-center"
+              >{% lucide "package" class="inline" %}
+              <p class="ml-2">Static</p></c-card.title
+            >
+            <c-card.description
+              >For sites with just HTML, CSS, and Javascript</c-card.description
+            >
+          </c-card.header>
+          <c-card.content>
+            <ul class="list-none">
+              <li>{% lucide "check" class="inline" %} No usage limits</li>
+              <li>{% lucide "check" class="inline" %} Simple, always-on</li>
+              <li>
+                {% lucide "x" class="inline" %} Can't run server-sided code
+              </li>
+            </ul>
+          </c-card.content>
+        </c-card>
+        <c-card
+          class="w-45 max-w-90 h-78 flex-auto transition-colors"
+          @click="site_type = 'dynamic'"
+          x-bind:class="site_type === 'dynamic' ? 'outline-2 outline-ring' : ''"
+        >
+          <c-card.header>
+            <c-card.title class="flex items-center"
+              >{% lucide "container" class="inline" %}
+              <p class="ml-2">Dynamic</p></c-card.title
+            >
+            <c-card.description
+              >For more advanced sites with a backend</c-card.description
+            >
+          </c-card.header>
+          <c-card.content>
+            <ul class="list-none">
+              <li>{% lucide "check" class="inline" %} Run server-sided code</li>
+              <li>{% lucide "x" class="inline" %} Complex</li>
+              <li>{% lucide "x" class="inline" %} Usage limits may apply</li>
+            </ul>
+          </c-card.content>
+        </c-card>
+      </div>
+      <div
+        class="absolute flex hidden w-full w-screen translate-x-full flex-col items-center justify-center gap-3 p-2 transition duration-500"
+        id="step2"
+      >
+        <c-select
+          class="w-60 lg:w-80"
+          @cselect-change="site_purpose = $event.detail.value"
+        >
+          <c-select.trigger>
+            <c-select.value placeholder="Purpose" />
+          </c-select.trigger>
+          <c-select.content>
+            {% for value, label in form.purpose.field.choices %}
+              <c-select.item value="{{ value }}">{{ label }}</c-select.item>
+            {% endfor %}
+          </c-select.content>
+        </c-select>
+        <c-form.description
+          x-text="getSitePurposeDescription()"
+          class="w-60"
+        ></c-form.description>
+      </div>
 
-        {% include "sites/create.html.partials/site_details.html" %}
+      {% include "sites/create.html.partials/site_details.html" %}
 
-        <div class="flex hidden absolute flex-col gap-3 justify-center items-center p-2 w-full w-screen transition duration-500 translate-x-full" id="step4" x-data="{ open: false }">
-            <div x-data="{
-                open: false,
-                search: '',
-                selectedValues: [{id: {{ request.user.id }}, username: '{{ request.user.username }}'}],
-                toggleValue(id, username) {
-                    if (!this.isSelected(id)) {
-                        this.selectedValues.push({id: id, username: username});
-                        selected_user_ids.push(id);
-                    }
-                    else
-                    {
-                        this.removeValue(id);
-                    }
-                },
-                removeValue(id) {
-                    this.selectedValues = this.selectedValues.filter(user => user.id !== id);
-                    selected_user_ids = selected_user_ids.filter(user_id => user_id !== id);
-                },
-                isSelected(id) {
-                    return this.selectedValues.some(user => user.id === id);
-                }
-            }">
-              <div class="relative w-80 lg:w-100">
-                <div @click="open = !open" class="flex items-center p-2 bg-white rounded border cursor-pointer">
-                    <div class="flex flex-wrap gap-1">
-                        <template x-for="user in selectedValues" :key="user.id">
-                            <div class="flex items-center py-0.5 px-2.5 text-sm font-medium text-gray-800 bg-gray-200 rounded me-2">
-                                <p class="pointer-events-none" x-text="user.username"></p>
-                                <button @click="removeValue(user.id)" class="ml-1 text-gray-600 hover:text-black">{% lucide "x" class="w-3 h-3" %}</button>
-                            </div>
-                            <span class="text-gray-400" x-show="selectedValues.length === 0">Select users...</span>
-                        </template>
-                        <input class="w-full focus:outline-none" type="text" x-init="$watch('open', value => { value ? $el.focus() : $el.blur() })" x-model="search" />
-                    </div>
-                    {% lucide "chevron-down" class="absolute right-3" %}
-                </div>
+      <div
+        class="absolute flex hidden w-full w-screen translate-x-full flex-col items-center justify-center gap-3 p-2 transition duration-500"
+        id="step4"
+        x-data="{ open: false }"
+      >
+        <div
+          x-data="{
+				  open: false,
+				  search: '',
+				  selectedValues: [{ id: {{ request.user.id }}, username: '{{ request.user.username }}' }],
+				  toggleValue(id, username) {
+				    if (!this.isSelected(id)) {
+				      this.selectedValues.push({ id: id, username: username });
+				      selected_user_ids.push(id);
+				    } else {
+				      this.removeValue(id);
+				    }
+				  },
+				  removeValue(id) {
+				    this.selectedValues = this.selectedValues.filter((user) => user.id !== id);
+				    selected_user_ids = selected_user_ids.filter((user_id) => user_id !== id);
+				  },
+				  isSelected(id) {
+				    return this.selectedValues.some((user) => user.id === id);
+				  },
+				}"
+        >
+          <div class="lg:w-100 relative w-80">
+            <div
+              @click="open = !open"
+              class="flex cursor-pointer items-center rounded border bg-white p-2"
+            >
+              <div class="flex flex-wrap gap-1">
+                <template x-for="user in selectedValues" :key="user.id">
+                  <div
+                    class="me-2 flex items-center rounded bg-gray-200 px-2.5 py-0.5 text-sm font-medium text-gray-800"
+                  >
+                    <p class="pointer-events-none" x-text="user.username"></p>
+                    <button
+                      @click="removeValue(user.id)"
+                      class="ml-1 text-gray-600 hover:text-black"
+                    >
+                      {% lucide "x" class="w-3 h-3" %}
+                    </button>
+                  </div>
+                  <span
+                    class="text-gray-400"
+                    x-show="selectedValues.length === 0"
+                    >Select users...</span
+                  >
+                </template>
+                <input
+                  class="w-full focus:outline-none"
+                  type="text"
+                  x-init="$watch('open', (value) => {
+								  value ? $el.focus() : $el.blur();
+								})"
+                  x-model="search"
+                />
               </div>
-              <div class="mt-1 w-64" x-cloak x-show="open" x-transition @click.away="open = false">
-                <ul class="overflow-y-auto z-10 w-full max-h-60 bg-white rounded-lg border shadow-lg border-border">
-                  {% for user in users %}
-                    <li class="block flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
-                        x-show="search === '' || '{{ user.full_name }}'.toLowerCase().includes(search.toLowerCase()) || '{{ user.username }}'.toLowerCase().includes(search.toLowerCase())"
-                        @click="toggleValue({{ user.id }}, '{{ user.username }}')">
-                        <span x-show="isSelected({{ user.id }})">{% lucide "check" %}</span>
-                        <span class="ml-2">{{ user.username }}</span>
-                    </li>
-                  {% endfor %}
-                </ul>
-              </div>
+              {% lucide "chevron-down" class="absolute right-3" %}
             </div>
+          </div>
+          <div
+            class="mt-1 w-64"
+            x-cloak
+            x-show="open"
+            x-transition
+            @click.away="open = false"
+          >
+            <ul
+              class="border-border z-10 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-lg"
+            >
+              {% for user in users %}
+                <li
+                  class="block flex cursor-pointer items-center border-b p-2 hover:bg-gray-100"
+                  x-show="search === '' ||
+							  '{{ user.full_name }}'.toLowerCase().includes(search.toLowerCase()) ||
+							  '{{ user.username }}'.toLowerCase().includes(search.toLowerCase())"
+                  @click="toggleValue({{ user.id }}, '{{ user.username }}')"
+                >
+                  <span x-show="isSelected({{ user.id }})"
+                    >{% lucide "check" %}</span
+                  >
+                  <span class="ml-2">{{ user.username }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
+      </div>
     </div>
 
-    <div class="flex justify-between px-4 -mt-5 w-screen lg:w-190">
-        <button @click="prevStep()" x-bind:disabled="current_step === 1 || transitioning" x-bind:class="current_step === 1 ? 'opacity-50' : ''">{% lucide "circle-chevron-left" class="w-8 h-8" %}</button>
-        <c-button id="next-button" @click="nextStep()" x-bind:disabled="!isNextStepAvailable() || transitioning" x-show="current_step !== 4" disabled>Next</c-button>
-        <c-button hx-post="" hx-include="#site-form" x-show="current_step === 4">Create</c-button>
+    <div class="lg:w-190 -mt-5 flex w-screen justify-between px-4">
+      <button
+        @click="prevStep()"
+        x-bind:disabled="current_step === 1 || transitioning"
+        x-bind:class="current_step === 1 ? 'opacity-50' : ''"
+      >
+        {% lucide "circle-chevron-left" class="w-8 h-8" %}
+      </button>
+      <c-button
+        id="next-button"
+        @click="nextStep()"
+        x-bind:disabled="!isNextStepAvailable() || transitioning"
+        x-show="current_step !== 4"
+        disabled
+        >Next</c-button
+      >
+      <c-button hx-post="" hx-include="#site-form" x-show="current_step === 4"
+        >Create</c-button
+      >
     </div>
-    <div class="lg:w-190 px-4 -mt-2">
-        <a href="{% url "sites:create_basic" %}" hx-boost="true" class="opacity-50 hover:opacity-100 hover:text-chart-3 cursor-pointer">I'll use the old form instead {% lucide "arrow-right" class="inline" %}</a>
+    <div class="lg:w-190 -mt-2 px-4">
+      <a
+        href="{% url "sites:create_basic" %}"
+        hx-boost="true"
+        class="hover:text-chart-3 cursor-pointer opacity-50 hover:opacity-100"
+        >I'll use the old form instead
+        {% lucide "arrow-right" class="inline" %}</a
+      >
     </div>
-</div>
+  </div>
 {% endblock %}

@@ -1,10 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base_with_site_header_and_nav.html" %}
+{% load static %}
+
+{% block title %}{{ site.name }} | Director{% endblock %}
+
+{% block inner_content %}
+    <div class="md:w-[83vw] mt-38 ml-10 md:ml-65">
+        <h1 class="text-[2rem] font-semibold">Console</h1>
+        <div class="mr-10 md:ml-0 mt-4 mb-3 rounded-md h-[71.8vh] border-2 border-muted-foreground overflow-hidden" id="terminal">
+        </div>
+        <a href="{# todo: redirect to director5 cli page #}" class="flex items-center gap-2 hover:text-chart-3 cursor-pointer w-fit z-0"><c-badge variant="outline" class="border-purple-500">NEW</c-badge> Consider using the Director5 CLI for an improved experience</a>
+    </div>
+    <script>
+        let term = null;
+
+        function renderTerminal() {
+            if (term) {
+                term.dispose();
+                term = null;
+            }
+
+            term = new Terminal({
+              cursorBlink: true,
+              theme: {
+                foreground: "#c5c8c6",
+                cursor: "#ffffff",
+                black: "#1d1f21",
+                red: "#cc6666",
+                green: "#b5bd68",
+                yellow: "#f0c674",
+                blue: "#81a2be",
+                magenta: "#b294bb",
+                cyan: "#8abeb7",
+                white: "#c5c8c6",
+                brightBlack: "#666666",
+                brightRed: "#d54e53",
+                brightGreen: "#b9ca4a",
+                brightYellow: "#e7c547",
+                brightBlue: "#7aa6da",
+                brightMagenta: "#c397d8",
+                brightCyan: "#70c0b1",
+                brightWhite: "#eaeaea"
+              },
+              fontFamily: "monospace",
+              fontSize: 14
+            });
+            let fitAddon = new FitAddon.FitAddon();
+            // let attachAddon = new AttachAddon.AttachAddon(webSocket);
+            let webLinksAddon = new WebLinksAddon.WebLinksAddon();
+            let clipboardAddon = new ClipboardAddon.ClipboardAddon();
+            let searchAddon = new SearchAddon.SearchAddon();
+
+            term.loadAddon(fitAddon);
+            term.loadAddon(webLinksAddon);
+            term.loadAddon(clipboardAddon);
+            term.loadAddon(searchAddon);
+            // term.loadAddon(attachAddon);
+            term.open(document.getElementById("terminal"));
+            term.write("Hello from \x1B[1;3;31mxterm.js\x1B[0m $");
+            fitAddon.fit();
+        }
+
+        renderTerminal();
+
+        document.body.addEventListener("htmx:afterSwap", function (e) {
+            renderTerminal();
+        })
+    </script>
+{% endblock %}
